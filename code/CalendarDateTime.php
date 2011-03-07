@@ -491,7 +491,32 @@ class CalendarDateTime extends DataObject
 			$this->Event()->Calendar()->DefaultEventDisplay
 		);
 	}
-	
+
+	/**
+	 * @return int
+	 */
+	public function getStartTimestamp() {
+		$date = $this->StartDate;
+		$time = !$this->AllDay() && $this->StartTime ? $this->StartTime : '00:00:00';
+
+		return strtotime("$date $time");
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getEndTimestamp() {
+		if (!$this->EndDate && $this->AllDay()) {
+			$date = $this->StartDate;
+			$time = '23:59:59';
+		} else {
+			$date = $this->EndDate ? $this->EndDate : $this->StartDate;
+			$time = $this->EndTime ? $this->EndTime : ($this->StartTime ? $this->StartTime : '23:59:59');
+		}
+
+		return strtotime("$date $time");
+	}
+
 	protected function MicroformatStart($offset = true)
 	{
 		if(!$this->StartDate)
