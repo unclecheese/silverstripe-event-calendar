@@ -682,7 +682,7 @@ class Calendar_Controller extends Page_Controller
 		}
 		if(is_numeric($id) && isset($this->urlParams['OtherID'])) {
 			if(!$feed) { 
-				$event = DataObject::get_by_id($announcement ? $this->getModel()->getEventDateTimeClass() : $this->getModel()->getEventClass(), $id);
+				$event = DataObject::get_by_id($announcement ? $this->data()->getEventDateTimeClass() : $this->data()->getEventClass(), $id);
 				$FILENAME = $announcement ? preg_replace("/[^a-zA-Z0-9s]/", "", $event->Title) : $event->URLSegment;
 			}
 			else
@@ -735,7 +735,7 @@ class Calendar_Controller extends Page_Controller
 	
 	public function rss() 
 	{
-		$events = $this->getModel()->UpcomingEvents(null,$this->DefaultEventDisplay);
+		$events = $this->data()->UpcomingEvents(null,$this->DefaultEventDisplay);
 		foreach($events as $event) {
 			$event->Title = strip_tags($event->_Dates()) . " : " . $event->EventTitle();
 			$event->Description = $event->EventContent();
@@ -779,7 +779,7 @@ class Calendar_Controller extends Page_Controller
   					}
   					if(isset($event[$dt_start]) && isset($event[$dt_end])) {
   						list($start_date, $end_date, $start_time, $end_time) = CalendarUtil::date_info_from_ics($event[$dt_start], $event[$dt_end]);
-							$c = $this->getModel()->getEventDateTimeClass();
+							$c = $this->data()->getEventDateTimeClass();
 							$new_date = new $c();
 							$new_date->StartDate = $start_date;
 							$new_date->StartTime = $start_time;
@@ -847,14 +847,7 @@ class Calendar_Controller extends Page_Controller
 			break;
 		}
 	 }
-	 
-	public function getModel() 
-	{
-		$model_class = str_replace("_Controller", "", get_class($this));
-		return DataObject::get_by_id($model_class,$this->ID);	
-	}
-	
-	
+
 	public function Events($filter = null, $announcement_filter = null)
 	{
 		if(list($db_clauses,$event_filters,$datetime_filters) = Calendar::getFiltersForDB()) {
@@ -862,7 +855,7 @@ class Calendar_Controller extends Page_Controller
       if(!empty($datetime_filters))
         $announcement_filter = sizeof($datetime_filters) > 1 ? implode(" AND ", $datetime_filters) : $datetime_filters;
 		}
-		return $this->getModel()->Events($filter, $this->start_date, $this->end_date, ($this->view == "default"), null, $announcement_filter);
+		return $this->data()->Events($filter, $this->start_date, $this->end_date, ($this->view == "default"), null, $announcement_filter);
 	}
 		
 	public function CalendarWidget()
@@ -892,7 +885,7 @@ class Calendar_Controller extends Page_Controller
 		$form = new Form(
 			$this,
 			'CalendarFilterForm',
-			$this->getModel()->getFilterFields(),
+			$this->data()->getFilterFields(),
 			new FieldSet(
 				new FormAction('doCalendarFilter',_t('Calendar.FILTER','Filter'))
 			)
