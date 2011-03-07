@@ -236,23 +236,34 @@ class Calendar extends Page
 			$this->getEventJoin()
 		);
 	}
-		
 
-	protected function getRecurringEvents($filter = null)
-	{
+	/**
+	 * Gets all recurring events attached to this calendar and any nested
+	 * calendars.
+	 *
+	 * @param  string $filter
+	 * @return DataObjectSet
+	 */
+	protected function getRecurringEvents($filter = null) {
+		$parents = array();
 
-		$where = "Recursion = 1 AND ParentID = {$this->ID}";
-		$where .= $filter !== null ? " AND " . $filter : "";
+		foreach ($this->getAllCalendars() as $calendar) {
+			$parents[] = $calendar->ID;
+		}
+
+		$where = sprintf(
+			'"Recursion" = 1 AND "ParentID" IN (%s)', implode(', ', $parents)
+		);
+
+		if ($filter) $where .= "AND $filter";
 
 		return DataObject::get(
 			$this->getEventClass(),
 			$where,
-			"`CalendarDateTime`.StartDate ASC",
-      $this->getDateJoin()
-		);
-		
+			'"CalendarDateTime"."StartDate" ASC',
+			$this->getDateJoin());
 	}
-	
+
 	protected function addRecurringEvents($recurring_events,$all_events)
 	{
 		$date_counter = $this->start_date;
