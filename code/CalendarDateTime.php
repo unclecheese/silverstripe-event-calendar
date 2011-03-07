@@ -170,7 +170,9 @@ class CalendarDateTime extends DataObject
 		$filter = "`CalendarDateTime`.EventID = {$eventID}";
 		$fields = $this->getPopupFields();			
 		$fields->push(new HiddenField('EventID','',$eventID));
-		$table = new DataObjectManager($this->getEventObject(), $name, get_class($this), $titles, $fields, $filter);
+
+		$tableClass = class_exists('DataObjectManager') ? 'DataObjectManager' : 'ComplexTableField';
+		$table = new $tableClass($this->getEventObject(), $name, get_class($this), $titles, $fields, $filter);
 		$table->setAddTitle(_t("CalendarDateTime.ADATE","a Date"));
 
 		return $table;
@@ -179,7 +181,9 @@ class CalendarDateTime extends DataObject
 	public function getAnnouncementTable($calendarID)
 	{
 		$this->extendAnnouncement();
-		$table = new DataObjectManager(
+
+		$tableClass = class_exists('DataObjectManager') ? 'DataObjectManager' : 'ComplexTableField';
+		$table = new $tableClass(
 			$this->getEventObject()->Parent(),
 			'Announcements',
 			$this->class,

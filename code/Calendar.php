@@ -124,7 +124,8 @@ class Calendar extends Page
 		$announcements = _t('Calendar.Announcements','Announcements');
 		$f->addFieldToTab("Root.Content.$announcements", $table);
 		
-		$table = new DataObjectManager(
+		$tableClass = class_exists('DataObjectManager') ? 'DataObjectManager' : 'ComplexTableField';
+		$table = new $tableClass(
 			$this,
 			'Feeds',
 			'ICSFeed',
