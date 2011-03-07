@@ -1,0 +1,93 @@
+/* CALENDAR WIDGET */
+#live-calendar-widget {
+	padding: 5px 4px;
+	font-family: Verdana, sans-serif;
+	}
+#live-calendar-widget-wrap {width:250px;margin:0 auto;}
+#live-calendar-widget a:link {  }
+#live-calendar-widget a:hover { text-decoration: none; }
+
+/* table globals */
+#live-calendar-widget table.calendar {
+	margin: 0;
+	border: 0; border-collapse: collapse;
+	font-size: 11px;
+width:250px;
+	}
+#live-calendar-widget .calendar td {
+	border: 0;
+	padding: 0;
+	vertical-align: middle;
+	}
+
+/* thead */
+#live-calendar-widget .calendar td.calendarMonthName {padding:4px 0;}
+#live-calendar-widget .calendar tr.calendarHeader a { color: #225eaf; }
+#live-calendar-widget .calendar thead td {
+	color: #fff;
+	font-weight: normal;
+	text-align: center;
+	}
+#live-calendar-widget .calendar thead td.calendarMonthName {
+	font-family: Georgia;
+	font-size: 13px;
+	text-align:center;
+	}
+#live-calendar-widget select#live-calendar-widget-navigator option  {
+    font-family: Georgia;
+    text-align:left;
+  }
+#live-calendar-widget .calendar thead tr.calendarDays {
+	
+	}
+#live-calendar-widget .calendar thead td.calendarDayName {
+	background: #989898;
+	border: 1px solid #666;
+	font-weight:400;
+	}
+
+/* tbody */
+#live-calendar-widget .calendar tbody {
+	border-left: 1px solid #666;
+	}
+#live-calendar-widget .calendar tbody td {
+	border: 1px solid #666;
+	background-color: #fff;
+	}
+#live-calendar-widget .calendar tbody td a {
+	display: block;
+	height: 26px;
+	width: 30px;
+	padding: 3px 0 0 3px;
+	}
+#live-calendar-widget .calendar tbody td a:hover {
+	background-color: #fff9bf;
+	background-image:inherit;
+	background-repeat:inherit;
+	background-position:inherit;
+	}
+
+#live-calendar-widget .calendar tbody td.calendarOutOfMonth a:link, #live-calendar-widget .calendar tbody td.calendarOutOfMonth a:active, #live-calendar-widget .calendar tbody td.calendarOutOfMonth a:hover, #live-calendar-widget .calendar tbody td.calendarOutOfMonth a:visited { color: #666; }
+
+#live-calendar-widget .calendar tbody td.showWeek {
+	border: 0;
+	background-color: transparent;
+	font-size: 18px;
+	text-align: left;
+	}
+#live-calendar-widget .calendar tbody td.showWeek a:hover {
+	padding: 3px 3px 0 0;
+	background-color: transparent;
+	}
+#live-calendar-widget .calendar tbody td.currentDay {
+	background-color: #fff9bf;
+	}
+#live-calendar-widget .calendar tbody td.calendarToday {
+	background-color: #def0f2;
+	}
+#live-calendar-widget .calendar tbody td.hasEvent,
+#live-calendar-widget .calendar tbody td.hasEvent a:hover {
+  background-image:url(../images/dot.png);
+  background-repeat:no-repeat;
+  background-position: center 20px;
+  }

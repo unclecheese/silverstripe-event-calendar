@@ -1,0 +1,41 @@
+#Form_EditForm_RecurringDaysOfWeek {width:400px;}
+#Form_EditForm_RecurringDaysOfMonth {width:360px;}
+#Form_EditForm_WeeklyInterval_Wrapper .field,
+#Form_EditForm_MonthlyInterval_Wrapper .field {}
+#Form_EditForm_RecurringDaysOfWeek li,
+#Form_EditForm_RecurringDaysOfMonth li {
+	float:left;
+	padding:2px 9px;
+}
+#Form_EditForm_RecurringDaysOfWeek li:hover,
+#Form_EditForm_RecurringDaysOfMonth li:hover {
+background:#ccc;
+}
+
+div#RecurringDaysOfMonth div.middleColumn,
+div#RecurringDaysOfWeek div.middleColumn,
+div#RecurringDaysOfMonth span.middleColumn,
+div#RecurringDaysOfWeek span.middleColumn {
+overflow:hidden;
+}
+
+div#RecurringDaysOfMonth .optionset li,
+div#RecurringDaysOfWeek .optionset li 
+{width:50px;padding:0;margin:0;height:50px;font-weight:bold;padding-top:0px;}
+
+
+div#RecurringDaysOfMonth .optionset li label,
+div#RecurringDaysOfWeek .optionset li label {display:block;height:30px;font-size:16px;margin-top:0;text-align:center;padding-top:20px;}
+div#RecurringDaysOfMonth .optionset li input,
+div#RecurringDaysOfWeek .optionset li input {float:left;}
+
+div#RecurringDaysOfWeek .optionset li {border-bottom:1px solid #666;}
+div#RecurringDaysOfMonth .optionset li.selected,
+div#RecurringDaysOfWeek .optionset li.selected {background:#aaa;}
+
+.optionset li.b-btm {border-bottom:1px solid #666;}
+.optionset li.b-top {border-top:1px solid #666;}
+.optionset li.b-lft {border-left:1px solid #666;}
+.optionset li.b-rgt {border-right:1px solid #666;}
+
+#Repeat_Alert_Message {background: #fff3a7;padding:2px 4px;border-top:1px solid #d3af22;border-bottom:1px solid #d3af22;}

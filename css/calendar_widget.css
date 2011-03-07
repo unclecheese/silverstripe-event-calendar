@@ -1,0 +1,166 @@
+#calendar-widget {min-height:180px;position:relative;}
+#calendar-widget img {position:absolute;top:50%;left:50%;margin:-16px 0 0 -16px;}
+/* widget positioning */
+div.dp-popup {
+	margin:10px auto;
+}
+
+/* calendar colors */
+div.dp-popup {
+	background: #fff;
+	color:#333;
+}
+div.dp-popup h2 {
+	background:#666;
+	color:#fff;
+}
+div.dp-popup a {
+	color: #000;
+}
+div.dp-popup a.disabled {
+	color: #aaa;
+}
+table.jCalendar {
+	background: #fff;
+}
+table.jCalendar th {
+	background: #444;
+	color: #fff;
+	border-spacing: 4px 4px 0;
+}
+table.jCalendar td {
+	background: #eee;
+	color: #333;
+}
+table.jCalendar td.other-month {
+	background: #ddd;
+	color: #aaa;
+}
+table.jCalendar td.today {
+	background: #666;
+	color: #fff;
+}
+table.jCalendar td.selected {
+	background: #9bd;
+	color: #333;
+}
+table.jCalendar td.selected:hover {
+	background: #6ad;
+	color: #fff;
+}
+table.jCalendar td:hover, table.jCalendar td.dp-hover {
+	background: #ccdddd;
+	color: #333;
+}
+table.jCalendar td.disabled, table.jCalendar td.disabled:hover {
+	background: #eee;
+	color: #888;
+}
+/* end colors */
+
+
+/* table borders, font and padding */
+table.jCalendar {
+	border:0;
+    border-collapse: separate;
+    border-spacing: 3px;
+    margin:2px auto;
+
+}
+table.jCalendar th {
+	font-weight: bold;
+	padding: 3px 5px;
+	border:0;
+}
+table.jCalendar td {
+	padding: 3px 5px;
+	text-align: center;
+	border:0;
+}
+
+/* For the popup */
+
+/* NOTE - you will probably want to style a.dp-choose-date - see how I did it in demo.css */
+
+div.dp-popup {
+	position: relative;
+	font-size: 11px;
+	font-family: arial, sans-serif;
+	padding: 0;
+	width:210px;
+	line-height: 1.2em;
+}
+div#dp-popup {
+	position: absolute;
+	z-index: 199;
+}
+div.dp-popup h2 {
+	font-size: 12px;
+	text-align: center;
+	margin: 0;
+	padding: 4px 0;
+}
+a#dp-close {
+	font-size: 11px;
+	padding: 4px 0;
+	text-align: center;
+	display: block;
+}
+a#dp-close:hover {
+	text-decoration: underline;
+}
+div.dp-popup a {
+	text-decoration: none;
+	padding: 3px 2px 0;
+}
+div.dp-popup div.dp-nav-prev {
+	position: absolute;
+	top: 2px;
+	left: 4px;
+	width: 20px;
+}
+
+
+a.dp-nav-prev-year,
+a.dp-nav-next-year {
+display:none;
+}
+div.dp-popup div.dp-nav-prev a {
+	float: left;
+}
+/* Opera needs the rules to be this specific otherwise it doesn't change the cursor back to pointer after you have disabled and re-enabled a link */
+div.dp-popup div.dp-nav-prev a, div.dp-popup div.dp-nav-next a {
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: bold;
+	color:#fff; 
+}
+
+div.dp-popup div.dp-nav-prev a:hover, div.dp-popup div.dp-nav-next a:hover {color:#dedede;}
+
+div.dp-popup div.dp-nav-prev a.disabled, div.dp-popup div.dp-nav-next a.disabled {
+	cursor: default;
+}
+div.dp-popup div.dp-nav-next {
+	position: absolute;
+	top: 2px;
+	right: 4px;
+	width: 20px;
+}
+div.dp-popup div.dp-nav-next a {
+	float: right;
+}
+div.dp-popup a.disabled {
+	cursor: default;
+}
+div.dp-popup td {
+	cursor: pointer;
+}
+div.dp-popup td.disabled {
+	cursor: default;
+}
+
+/*Month Heading Style JT*/
+#calendar-widget h2 {font-size: 14px; text-decoration: underline; padding: 8px 0;}
+div.dp-calendar{padding-bottom: 2px;}
+
