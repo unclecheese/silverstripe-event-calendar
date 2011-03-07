@@ -210,7 +210,7 @@ class CalendarEvent extends Page
 			'Exceptions', 
 			'RecurringException', 
 			array('ExceptionDate' => _t('CalendarEvent.DATE','Date')), 
-			array('ExceptionDate' => 'DatePickerField'), 
+			array('ExceptionDate' => 'DateField'), 
 			null, 
 			"CalendarEventID = $this->ID"
 		);

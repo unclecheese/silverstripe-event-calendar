@@ -104,30 +104,37 @@ class CalendarDateTime extends DataObject
 	{
 		$f = new FieldSet();
 		$f->push(new TextField('Title',_t('CalendarDateTime.TITLE','Title')));
-		$f->push(new DatePickerField('StartDate',_t('CalendarDateTime.STARTDATE','Start Date')));
+		$f->push($start = new DateField('StartDate',_t('CalendarDateTime.STARTDATE','Start Date')));
 		$f->push(new TimeField('StartTime',_t('CalendarDateTime.STARTTIME','Start Time')));
-		$f->push(new DatePickerField('EndDate',_t('CalendarDateTime.ENDDATE','EndDate')));
+		$f->push($end = new DateField('EndDate',_t('CalendarDateTime.ENDDATE','EndDate')));
 		$f->push(new TimeField('EndTime',_t('CalendarDateTime.ENDTIME','End Time')));
 		$f->push(new CheckboxField('is_all_day',_t('CalendarDateTime.ALLDAY','All Day')));
 		$f->push(new TextareaField('Content',_t('CalendarDateTime.CONTENT','Content')));
-		
+
+		$start->setConfig('showcalendar', true);
+		$end->setConfig('showcalendar', true);
+
 		return $f;
 	}
 	
 	public function getDateTimePopup()
 	{
 		$f = new FieldSet();
-		if(isset($this->table_fields['StartDate'])) $f->push(new DatePickerField('StartDate',_t('CalendarDateTime.STARTDATE','Start Date')));
+		if(isset($this->table_fields['StartDate'])) $f->push($start = new DateField('StartDate',_t('CalendarDateTime.STARTDATE','Start Date')));
 		if(isset($this->table_fields['StartTime'])) $f->push(new TimeField('StartTime',_t('CalendarDateTime.STARTTIME','Start Time')));
-		if(isset($this->table_fields['EndDate'])) $f->push(new DatePickerField('EndDate',_t('CalendarDateTime.ENDDATE','EndDate')));
+		if(isset($this->table_fields['EndDate'])) $f->push($end = new DateField('EndDate',_t('CalendarDateTime.ENDDATE','EndDate')));
 		if(isset($this->table_fields['EndTime'])) $f->push(new TimeField('EndTime',_t('CalendarDateTime.ENDTIME','End Time')));
 		if(isset($this->table_fields['is_all_day'])) $f->push(new CheckboxField('is_all_day',_t('CalendarDateTime.ALLDAY','All Day')));
+
+		$start->setConfig('showcalendar', true);
+		$end->setConfig('showcalendar', true);
+
 		return $f;
 	}
 
 	protected $table_fields = array(
-		'StartDate' => 'DatePickerField',
-		'EndDate' => 'DatePickerField',
+		'StartDate' => 'DateField',
+		'EndDate' => 'DateField',
 		'StartTime' => 'TimeField',
 		'EndTime' => 'TimeField',
 		'is_all_day' => 'CheckboxField'	
@@ -205,25 +212,31 @@ class CalendarDateTime extends DataObject
 	protected function initPopupFields() 
 	{
 		$this->popup_table_fields = array(
-			new DatePickerField('StartDate',_t('CalendarEvent.STARTDATE','Start Date')),
-			new DatePickerField('EndDate', _t('CalendarEvent.ENDDATE','End Date')),
+			$start = new DateField('StartDate',_t('CalendarEvent.STARTDATE','Start Date')),
+			$end = new DateField('EndDate', _t('CalendarEvent.ENDDATE','End Date')),
 			new TimeField('StartTime',_t('CalendarEvent.STARTTIME','Start Time')),
 			new TimeField('EndTime', _t('CalendarEvent.ENDTIME','End Time (blank if none)')),
 			new CheckboxField('is_all_day',_t('CalendarEvent.ALLDAY','All Day'))
 		);
+
+		$start->setConfig('showcalendar', true);
+		$end->setConfig('showcalendar', true);
 	}
 
 	private function initAnnouncementFields() 
 	{
 		$this->announcement_table_fields = array(
 			new TextField('Title'),
-			new DatePickerField('StartDate',_t('CalendarEvent.STARTDATE','Start Date')),
+			$start = new DateField('StartDate',_t('CalendarEvent.STARTDATE','Start Date')),
 			new TimeField('StartTime',_t('CalendarEvent.STARTTIME','Start Time')),
-			new DatePickerField('EndDate',_t('CalendarEvent.ENDDATE','EndDate')),
+			$end = new DateField('EndDate',_t('CalendarEvent.ENDDATE','EndDate')),
 			new TimeField('EndTime',_t('CalendarEvent.ENDTIME','End Time')),
 			new CheckboxField('is_all_day',_t('CalendarEvent.ALLDAY','All Day')),
 			new TextareaField('Content',_t('CalendarEvent.CONTENT','Content')),
 		);
+
+		$start->setConfig('showcalendar', true);
+		$end->setConfig('showcalendar', true);
 	}
 
 	
