@@ -362,6 +362,10 @@ class CalendarEvent extends Page
 class CalendarEvent_Controller extends Page_Controller
 {
 
+	public static $allowed_actions = array(
+		'view'
+	);
+
 	public function init()
 	{
 		RSSFeed::linkToFeed($this->Parent()->Link() . "rss", _t("CalendarEvent.RSSFEED","RSS Feed of this calendar"));		
