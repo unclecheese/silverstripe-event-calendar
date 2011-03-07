@@ -388,7 +388,23 @@ class CalendarDateTime extends DataObject
 		return $this->announcement_titles;
 	}
 
-		
+	public function validate() {
+		$result = parent::validate();
+		$start  = $this->getStartTimestamp();
+		$end    = $this->getEndTimestamp();
+
+		// Ensure that an event cannot have its start time set after its end
+		// time.
+		if ($start && $end && $start > $end) {
+			$result->error(_t(
+				'CalendarDateTime.STARTENDCONFLICT',
+				'You cannot set an event\'s end time before its start time.'
+			));
+		}
+
+		return $result;
+	}
+
 	public function Announcement()
 	{
 		return $this->CalendarID > 0;
