@@ -162,6 +162,7 @@ class CalendarDateTime extends DataObject
 			'"CalendarDateTime"."EventID" = ' . $eventID);
 		$table->setAddTitle(_t("CalendarDateTime.ADATE" , "a Date"));
 
+		$this->extend('updateDateTimeTable', $table);
 		return $table;
 	}
 	
@@ -177,6 +178,7 @@ class CalendarDateTime extends DataObject
 		$table->setAddTitle("Announcement");
 		$table->setParentClass("Calendar");		
 
+		$this->extend('updateAnnouncementTable', $table);
 		return $table;
 	
 	}
