@@ -1,0 +1,114 @@
+#calendar-main {width:68%;float:left;}
+#calendar-sidebar {width:30%; float:right; padding-top: 0;}
+
+/* [YYYY]-[MM]-[DD]T[hh]:[mm]-[hh] */
+
+/*Button styling
+===============================*/
+
+a.btn { display:block; padding:4px; color:#fff; background:#225eaf; border:1px solid #dedede; font-size:9px; 
+text-transform:uppercase; text-align:center; text-decoration:none; }
+a.btn:hover { color:#fff; background:#6a6a6a; border:1px solid #dedede; }
+
+a.add { width:16px; height:16px; background:transparent url(../images/calendar__plus.png) 0 0 no-repeat; padding:0; border:0; text-indent:-9999em; }
+a.add:hover { background:transparent url(../images/calendar__plus.png) 0 0 no-repeat; border:0; }
+
+/*Top Heading
+===============================*/
+#topHeading { border-bottom:3px solid #6a6a6a; padding:12px 0 4px 0; }
+#topHeading h2 {clear:both;}
+#topHeading span { display:block; margin-top:12px;float:left; }
+#topHeading span.feed { padding:3px 0 3px 20px;float:right; background:transparent url('../images/feed.png') left top no-repeat; }
+
+/*Date Heading*/
+#dateHeader {text-align:center; margin:8px 0 ; padding: 18px 0 16px 0; border-top:3px double #D4D4D4; border-bottom:3px double #D4D4D4;}
+#dateHeader h3 {line-height: 0; margin: 0; padding:0;}
+
+/*Month Navs
+==============================*/ 
+#monthNav { text-align:center; background: #dedede; padding:8px 0; margin:10px 0 22px; }
+#monthNav a { width:20px;}
+#monthNav h2 {cursor:pointer;}
+#monthNav h2:hover {color:#aaa;}
+#monthNav a:hover { }
+#monthNav a.prev { float:left; }
+#monthNav a.next { float:right; }
+#monthNav h3 { padding:0; margin:0; font-size:18px; }
+
+#monthSelect { background:#dedede; border:2px solid #c4c4c4; text-align:center; padding:10px; margin-top:10px; }
+#monthSelect select { width:100%; }
+
+/*Sort and View Type
+==============================*/ 
+#calView { border-bottom: 2px solid #dedede; }
+#calView ul { display:inline; float:left; margin:8px 0 0 140px; }
+#calView ul li { display:inline; margin:0; }
+#calView ul li span { float:left; margin-right:8px; padding-bottom:6px; }
+
+#calView ul li a { float:left; padding-bottom:3px; margin-left:5px; text-decoration:none; }
+#calView ul li a:hover, #calView ul li a.active { border-bottom:3px solid #666; text-decoration:none; }
+#calView ul li a:hover { border-color:#aaa; }
+
+#calView ul li.more a, #calView ul li.less a { display:block; text-decoration:none; padding:0 0 3px; margin:0 5px 0 0; }
+#calView ul li.more a.open, #calView ul li.less a.open { border-bottom:3px solid #666; }
+#calView ul li span {font-weight:700;}
+#calView h5 {float:right; display: inline; margin:7px 8px 0 0; padding: 0;}
+
+/*Event Summary (single date)
+==============================*/
+.vevent { border-bottom: 1px solid #dedede; padding:10px 0; }
+
+.vevent div.dates, .vevent div.details { float:left; }
+.vevent ul.utility { float:right; } 
+.vevent div.dates { width:20%; margin-right:15px; }
+.vevent div.details { width:54%; margin-right:0; padding-left:15px; border-left:1px solid #dedede; }
+.vevent ul.utility { width:100px; margin:0; list-style:none; }
+.vevent ul.utility li { list-style:none; margin:0 0 5px; }
+
+.vevent dl.more-dates { margin:10px 0 0; }
+.vevent dl.more-dates dt { font-weight:700; }
+
+.vevent .summary { margin:0 0 5px; }
+.vevent .location { text-transform:uppercase; font-size:11px; }
+.vevent .description { margin:5px 0; clear:both; }
+
+.vevent .dtstart { display:inline; font-weight:700; text-transform:uppercase; border:0; margin:0 0 10px; }
+.vevent .dtend { display:inline; font-weight:700; border:0; }
+.vevent h5 span.dtstart, .vevent h5 span.dtend {display: inline;}
+
+.vevent dt span.dtstart, .vevent dt span.dtend { display:inline; }
+
+.vevent dl, .vevent dt, .vevent dd { margin:0; }
+.vevent dt { font-weight:700; clear:both; float:left; margin-bottom:4px; }
+.vevent dd { float:left; }
+.vevent h4.dates { font-size:12px; margin:5px 0; border-bottom:1px solid #ccc; width:30%; }
+
+.vevent #eventImage img { float:right; }
+
+/* Event Detail with Image*/
+#eventImage { padding:5px; }
+
+#Form_CalendarFilterForm {padding:0 10px;}
+#Form_CalendarFilterForm fieldset {border:0;}
+#Form_CalendarFilterForm div.field {padding:5px 0;}
+#Form_CalendarFilterForm div.middleColumn {background:none;margin:0;padding:0;}
+#Form_CalendarFilterForm label {display:block;margin:0;}
+#Form_CalendarFilterForm div.field {width:216px;text-align:left;}
+#Form_CalendarFilterForm select {width:auto;clear:both;}
+#Form_CalendarFilterForm option {width:auto;padding:0 5px;}
+#Form_CalendarFilterForm div.Actions {margin:0;text-align:left;}
+#Form_CalendarFilterForm div.fieldgroup select {font-size:12px;font-weight:normal;}
+
+#StartMonthStartDayStartYear div.fieldgroupField,
+#StartDayStartMonthStartYear div.fieldgroupField {display:inline;}
+#EndMonthEndDayEndYear div.fieldgroupField,
+#EndDayEndMonthEndYear div.fieldgroupField {display:inline;}
+#Form_CalendarFilterForm div.fieldgroup label {display:block;width:200px;border-bottom:1px solid #aaa;margin-bottom:5px;}
+
+/* clearfix */
+.clearfix:after {content: "."; display: block; height: 0; clear: both; visibility: hidden;}
+.clearfix {display: inline-block;}
+/* Hides from IE-mac \*/
+* html .clearfix {height: 1%;}
+.clearfix {display: block;}
+/* End hide from IE-mac */
