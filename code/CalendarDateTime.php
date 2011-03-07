@@ -2,8 +2,8 @@
 
 class CalendarDateTime extends DataObject
 {
-	static $db = array (
-		'Title' => 'Text',
+	public static $db = array (
+		'Title' => 'Varchar(255)',
 		'StartDate' => 'Date',
 		'StartTime' => 'Time',
 		'EndDate' => 'Date',
@@ -12,13 +12,16 @@ class CalendarDateTime extends DataObject
 		'is_all_day' => 'Boolean',
 		'is_single' => 'Boolean'
 	);
-	
 	static $has_one = array (
 		'Event' => 'CalendarEvent',
 		'Calendar' => 'Calendar'
 	);
-	
-	
+
+	public static $field_labels = array(
+		'is_all_day' => 'All day'
+	);
+
+
 	static $offset;
 	static $date_delimiter;
 	static $date_format = "mdy";
@@ -99,40 +102,36 @@ class CalendarDateTime extends DataObject
 		$this->event_object = new $class;
 		return $this->event_object;
 	}
-	
-	public function getAnnouncementPopup()
-	{
-		$f = new FieldSet();
-		$f->push(new TextField('Title',_t('CalendarDateTime.TITLE','Title')));
-		$f->push(new DatePickerField('StartDate',_t('CalendarDateTime.STARTDATE','Start Date')));
-		$f->push(new TimeField('StartTime',_t('CalendarDateTime.STARTTIME','Start Time')));
-		$f->push(new DatePickerField('EndDate',_t('CalendarDateTime.ENDDATE','EndDate')));
-		$f->push(new TimeField('EndTime',_t('CalendarDateTime.ENDTIME','End Time')));
-		$f->push(new CheckboxField('is_all_day',_t('CalendarDateTime.ALLDAY','All Day')));
-		$f->push(new TextareaField('Content',_t('CalendarDateTime.CONTENT','Content')));
-		
-		return $f;
-	}
-	
-	public function getDateTimePopup()
-	{
-		$f = new FieldSet();
-		if(isset($this->table_fields['StartDate'])) $f->push(new DatePickerField('StartDate',_t('CalendarDateTime.STARTDATE','Start Date')));
-		if(isset($this->table_fields['StartTime'])) $f->push(new TimeField('StartTime',_t('CalendarDateTime.STARTTIME','Start Time')));
-		if(isset($this->table_fields['EndDate'])) $f->push(new DatePickerField('EndDate',_t('CalendarDateTime.ENDDATE','EndDate')));
-		if(isset($this->table_fields['EndTime'])) $f->push(new TimeField('EndTime',_t('CalendarDateTime.ENDTIME','End Time')));
-		if(isset($this->table_fields['is_all_day'])) $f->push(new CheckboxField('is_all_day',_t('CalendarDateTime.ALLDAY','All Day')));
-		return $f;
+
+	/**
+	 * @return FieldSet
+	 */
+	public function getCMSFields() {
+		$fields = parent::getCMSFields();
+
+		$fields->removeByName('CalendarID');
+		$fields->removeByName('is_single');
+
+		$fields->dataFieldByName('StartDate')->setConfig('showcalendar', true);
+		$fields->dataFieldByName('EndDate')->setConfig('showcalendar', true);
+
+		return $fields;
 	}
 
-	protected $table_fields = array(
-		'StartDate' => 'DatePickerField',
-		'EndDate' => 'DatePickerField',
-		'StartTime' => 'TimeField',
-		'EndTime' => 'TimeField',
-		'is_all_day' => 'CheckboxField'	
-	);
-	
+	/**
+	 * @return FieldSet
+	 */
+	public function getDateTimeCMSFields() {
+		$fields = $this->getCMSFields();
+
+		$fields->removeByName('Title');
+		$fields->removeByName('Content');
+
+		$this->extend('updateDateTimeCMSFields', $fields);
+		return $fields;
+	}
+
+
 	protected $table_titles = array (
 		'FormattedStartDate' => 'Start Date',
 		'FormattedEndDate' => 'End Date',
@@ -148,47 +147,38 @@ class CalendarDateTime extends DataObject
 		'EndTime' => 'End Time'
 	);
 
-	
-	// This gets populated with objects, which is not allowed by default.
-	// We'll use initPopupFields() to saturate this when needed.
-	protected $popup_table_fields = null;
-	
-	protected $announcement_table_fields = null;
-	
 	protected $complex = true;
-
-	// Meant to be overloaded by subclasses.
-	function extendTable() {return;}	
-	function extendAnnouncement() {return;}
 	
 	public function getDateTimeTable($eventID)
 	{
-		$this->initPopupFields();
-		$this->extendTable();
-		$name = 'DateTimes';
-		$titles = $this->getTableTitles();
-		$filter = "`CalendarDateTime`.EventID = {$eventID}";
-		$fields = $this->getPopupFields();			
-		$fields->push(new HiddenField('EventID','',$eventID));
-		$table = new DataObjectManager($this->getEventObject(), $name, get_class($this), $titles, $fields, $filter);
-		$table->setAddTitle(_t("CalendarDateTime.ADATE","a Date"));
+		$tableClass = class_exists('DataObjectManager') ? 'DataObjectManager' : 'ComplexTableField';
 
+		$table = new $tableClass(
+			$this->getEventObject(),
+			'DateTimes',
+			$this->class,
+			$this->getTableTitles(),
+			'getDateTimeCMSFields',
+			'"CalendarDateTime"."EventID" = ' . $eventID);
+		$table->setAddTitle(_t("CalendarDateTime.ADATE" , "a Date"));
+
+		$this->extend('updateDateTimeTable', $table);
 		return $table;
 	}
 	
 	public function getAnnouncementTable($calendarID)
 	{
-		$this->extendAnnouncement();
-		$table = new DataObjectManager(
+		$tableClass = class_exists('DataObjectManager') ? 'DataObjectManager' : 'ComplexTableField';
+		$table = new $tableClass(
 			$this->getEventObject()->Parent(),
 			'Announcements',
 			$this->class,
-			$this->getAnnouncementTitles(),
-			$this->getAnnouncementFields()
+			$this->getAnnouncementTitles()
 		);
 		$table->setAddTitle("Announcement");
 		$table->setParentClass("Calendar");		
 
+		$this->extend('updateAnnouncementTable', $table);
 		return $table;
 	
 	}
@@ -197,67 +187,53 @@ class CalendarDateTime extends DataObject
 	{
 		$this->table_fields[$name] = $type;
 	}
-	
-	protected function initPopupFields() 
-	{
-		$this->popup_table_fields = array(
-			new DatePickerField('StartDate',_t('CalendarEvent.STARTDATE','Start Date')),
-			new DatePickerField('EndDate', _t('CalendarEvent.ENDDATE','End Date')),
-			new TimeField('StartTime',_t('CalendarEvent.STARTTIME','Start Time')),
-			new TimeField('EndTime', _t('CalendarEvent.ENDTIME','End Time (blank if none)')),
-			new CheckboxField('is_all_day',_t('CalendarEvent.ALLDAY','All Day'))
-		);
-	}
 
-	private function initAnnouncementFields() 
-	{
-		$this->announcement_table_fields = array(
-			new TextField('Title'),
-			new DatePickerField('StartDate',_t('CalendarEvent.STARTDATE','Start Date')),
-			new TimeField('StartTime',_t('CalendarEvent.STARTTIME','Start Time')),
-			new DatePickerField('EndDate',_t('CalendarEvent.ENDDATE','EndDate')),
-			new TimeField('EndTime',_t('CalendarEvent.ENDTIME','End Time')),
-			new CheckboxField('is_all_day',_t('CalendarEvent.ALLDAY','All Day')),
-			new TextareaField('Content',_t('CalendarEvent.CONTENT','Content')),
-		);
-	}
-
-	
 	protected function getPopupFields() 
 	{
-		if($this->popup_table_fields === null) $this->initPopupFields();
-		$fields = new FieldSet();
-		foreach($this->popup_table_fields as $field)
-			$fields->push($field);
-		$customized = true;
-		$this->extend('updateCMSFields', $fields, $customized);
+		$fields = parent::getCMSFields();
+		
+		$fields->removeByName('Title');
+		$fields->removeByName('Content');
+		$fields->removeByName('is_single');
+
+		if ($this->popup_table_fields) {
+			foreach($this->popup_table_fields as $field) {
+				$fields->push($field);
+			}
+		}
+
+		$fields->dataFieldByName('StartDate')->setConfig('showcalendar', true);
+		$fields->dataFieldByName('EndDate')->setConfig('showcalendar', true);
+
 		return $fields;
 	}
 
 	protected function getAnnouncementFields() 
 	{
-		if($this->announcement_table_fields === null) $this->initAnnouncementFields();
-		$this->extendAnnouncement();	
-		$fields = new FieldSet();
-		foreach($this->announcement_table_fields as $field) {
-			$fields->push($field);
+		$fields = parent::getCMSFields();
+		$fields->removeByName('is_single');
+
+		if ($this->announcement_table_fields) {
+			foreach($this->announcement_table_fields as $field) {
+				$fields->push($field);
+			}
 		}
-		$customized = true;
-		$this->extend('updateCMSFields', $fields, $customized);
+
+		$fields->dataFieldByName('StartDate')->setConfig('showcalendar', true);
+		$fields->dataFieldByName('EndDate')->setConfig('showcalendar', true);
+
 		return $fields;
 	}
 
 	
 	public function addPopupField($field)
 	{
-		if($this->popup_table_fields === null) $this->initPopupFields();
 		if(!$this->isComplex()) $this->setComplex(true);
 		$this->popup_table_fields[] = $field;
 	}
 
 	public function addAnnouncementField($field)
 	{
-		if($this->announcement_table_fields === null) $this->initAnnouncementFields();
 		if(!$this->isComplex()) $this->setComplex(true);
 		$this->announcement_table_fields[] = $field;
 	}
@@ -412,7 +388,23 @@ class CalendarDateTime extends DataObject
 		return $this->announcement_titles;
 	}
 
-		
+	public function validate() {
+		$result = parent::validate();
+		$start  = $this->getStartTimestamp();
+		$end    = $this->getEndTimestamp();
+
+		// Ensure that an event cannot have its start time set after its end
+		// time.
+		if ($start && $end && $start > $end) {
+			$result->error(_t(
+				'CalendarDateTime.STARTENDCONFLICT',
+				'You cannot set an event\'s end time before its start time.'
+			));
+		}
+
+		return $result;
+	}
+
 	public function Announcement()
 	{
 		return $this->CalendarID > 0;
@@ -517,7 +509,33 @@ class CalendarDateTime extends DataObject
 			$this->Event()->Calendar()->DefaultEventDisplay
 		);
 	}
-	
+
+	/**
+	 * @return int
+	 */
+	public function getStartTimestamp() {
+		$date = $this->StartDate;
+		$time = !$this->AllDay() && $this->StartTime ? $this->StartTime : '00:00:00';
+
+		return strtotime("$date $time");
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getEndTimestamp() {
+		if (!$this->EndDate && $this->AllDay()) {
+			$date = $this->StartDate;
+			$time = '23:59:59';
+		} else {
+			$date = $this->EndDate ? $this->EndDate : $this->StartDate;
+			$time = $this->EndTime ? $this->EndTime : ($this->StartTime ? $this->StartTime : '23:59:59');
+		}
+
+		return strtotime("$date $time");
+	}
+
+
 	protected function MicroformatStart($offset = true)
 	{
 		if(!$this->StartDate)
@@ -573,6 +591,3 @@ class CalendarDateTime extends DataObject
 
 	
 }
-
-
-?>
