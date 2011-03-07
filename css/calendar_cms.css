@@ -33,9 +33,13 @@ div#RecurringDaysOfWeek .optionset li {border-bottom:1px solid #666;}
 div#RecurringDaysOfMonth .optionset li.selected,
 div#RecurringDaysOfWeek .optionset li.selected {background:#aaa;}
 
-.optionset li.b-btm {border-bottom:1px solid #666;}
-.optionset li.b-top {border-top:1px solid #666;}
-.optionset li.b-lft {border-left:1px solid #666;}
-.optionset li.b-rgt {border-right:1px solid #666;}
+#RecurringDaysOfMonth .optionset li.b-btm,
+#RecurringDaysOfWeek .optionset li.b-btm {border-bottom:1px solid #666;}
+#RecurringDaysOfMonth .optionset li.b-top,
+#RecurringDaysOfWeek .optionset li.b-top {border-top:1px solid #666;}
+#RecurringDaysOfMonth .optionset li.b-lft,
+#RecurringDaysOfWeek .optionset li.b-lft {border-left:1px solid #666;}
+#RecurringDaysOfMonth .optionset li.b-rgt,
+#RecurringDaysOfWeek .optionset li.b-rgt {border-right:1px solid #666;}
 
 #Repeat_Alert_Message {background: #fff3a7;padding:2px 4px;border-top:1px solid #d3af22;border-bottom:1px solid #d3af22;}
