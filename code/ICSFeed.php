@@ -19,6 +19,3 @@ class ICSFeed extends DataObject
 		);
 	}
 }
-
-
-?>
