@@ -6,8 +6,7 @@ class Calendar extends Page
 	static $db = array(
  		'DefaultEventDisplay' => 'Int',
 		'DefaultDateHeader' => 'Varchar(50)',
-		'OtherDatesCount' => 'Int',
-		'RSSTitle' => 'Varchar(100)'
+		'OtherDatesCount' => 'Int'
 	);
 	
 	static $has_many = array (
@@ -118,8 +117,7 @@ class Calendar extends Page
 		$f->addFieldsToTab("Root.Content.$configuration", array(
 			new NumericField('DefaultEventDisplay', _t('Calendar.NUMBEROFEVENTS','Number of events to display on default view.')),
 			new TextField('DefaultDateHeader', _t('Calendar.DEFAULTDATEHEADER','Default date header (displays when no date range has been selected)')),
-			new NumericField('OtherDatesCount', _t('Calendar.NUMBERFUTUREDATES','Number of future dates to show for repeating events')),
-			new TextField('RSSTitle', _t('Calendar.RSSTITLE','RSS Feed Title'))
+			new NumericField('OtherDatesCount', _t('Calendar.NUMBERFUTUREDATES','Number of future dates to show for repeating events'))
 		));
 		
 		$table = $this->getEventDateTimeObject()->getAnnouncementTable($this->ID);
@@ -430,13 +428,13 @@ class Calendar extends Page
 	{
 		$start_date = new sfDate();
 		$end_date = new sfDate();
-		$l = ($limit === null) ? $this->DefaultEventDisplay : $limit;
+		$l = ($limit === null) ? "9999" : $limit;
 		$events = $this->Events(
 			$filter, 
 			$start_date->subtractMonth(Calendar::$defaultFutureMonths), 
 			$end_date->yesterday(), 
-			true, 
-			null,
+			false, 
+			$l,
 			$announcement_filter
 		);
 		$events->sort('StartDate','DESC');
@@ -754,8 +752,7 @@ class Calendar_Controller extends Page_Controller
 			$event->Title = strip_tags($event->_Dates()) . " : " . $event->EventTitle();
 			$event->Description = $event->EventContent();
 		}
-		$rss_title = $this->RSSTitle ? $this->RSSTitle : sprintf(_t("Calendar.UPCOMINGEVENTSFOR","Upcoming Events for %s"),$this->Title);
-		$rss = new RSSFeed($events, $this->Link(), $rss_title, "", "Title", "Description");
+		$rss = new RSSFeed($events, $this->Link(), sprintf(_t("Calendar.UPCOMINGEVENTSFOR","Upcoming Events for %s"),$this->Title), "", "Title", "Description");
 
 		if(is_int($rss->lastModified)) {
 			HTTP::register_modification_timestamp($rss->lastModified);
