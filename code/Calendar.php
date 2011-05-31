@@ -6,7 +6,8 @@ class Calendar extends Page
 	static $db = array(
  		'DefaultEventDisplay' => 'Int',
 		'DefaultDateHeader' => 'Varchar(50)',
-		'OtherDatesCount' => 'Int'
+		'OtherDatesCount' => 'Int',
+		'RSSTitle' => 'Varchar(255)'
 	);
 	
 	static $has_many = array (
@@ -147,6 +148,8 @@ class Calendar extends Page
 				));
 			}
 		}
+		
+		$f->addFieldToTab("Root.Content.Main", new TextField('RSSTitle', _t('Calendar.RSSTITLE','Title of RSS Feed')),'Content');
 		$this->extend('updateCalendarFields',$f);
 		return $f;	
 	}
@@ -752,7 +755,8 @@ class Calendar_Controller extends Page_Controller
 			$event->Title = strip_tags($event->_Dates()) . " : " . $event->EventTitle();
 			$event->Description = $event->EventContent();
 		}
-		$rss = new RSSFeed($events, $this->Link(), sprintf(_t("Calendar.UPCOMINGEVENTSFOR","Upcoming Events for %s"),$this->Title), "", "Title", "Description");
+		$rss_title = $this->RSSTitle ? $this->RSSTitle : sprintf(_t("Calendar.UPCOMINGEVENTSFOR","Upcoming Events for %s"),$this->Title);
+		$rss = new RSSFeed($events, $this->Link(), $rss_title, "", "Title", "Description");
 
 		if(is_int($rss->lastModified)) {
 			HTTP::register_modification_timestamp($rss->lastModified);
