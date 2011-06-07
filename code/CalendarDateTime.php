@@ -588,6 +588,25 @@ class CalendarDateTime extends DataObject
 		$ret .= $this->EndTime ? " &mdash; " . $this->obj('EndTime')->$func() : "";
 		return $ret;
 	}
+	
+	
+       
+	public function canEdit($member = null) {
+	       return $this->Event()->canEdit($member);
+	}
+	
+	public function canCreate($member = null) {
+	       return $this->Event()->canCreate($member);
+	}
+	
+	public function canDelete($member = null) {
+	       return $this->Event()->canDelete($member);
+	}
+	
+	public function canView($member = null) {
+	       return $this->Event()->canView($member);
+	}
+ 	
 
 	
 }
