@@ -161,7 +161,7 @@ class LiveCalendarWidget extends ViewableData
   
   protected function getEventsFor($start, $end)
   {
-	  $events = $this->calendar->Events(null, $start, $end);
+	  $events = $this->calendar->data()->Events(null, $start, $end);
     $map = array();
 	  if($events) {
       foreach($events as $event) {
