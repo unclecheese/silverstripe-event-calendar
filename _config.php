@@ -18,8 +18,6 @@ CalendarDateTime::set_param('offset','-04:00');
 CalendarDateTime::set_date_format('dmy');
 CalendarDateTime::set_time_format('24');
 
-i18n::include_locale_file('event_calendar', 'en_US');
-
 // Override to specify custom date templates. Falls back on lang file.
 
 /**
