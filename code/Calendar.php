@@ -589,6 +589,7 @@ class Calendar_Controller extends Page_Controller
 		'view',
 		'rss',
 		'ics',
+		'ical',
 		'import',
 		'showevent',
 		'CalendarFilterForm'
@@ -676,7 +677,18 @@ class Calendar_Controller extends Page_Controller
 		
 	}
 
-
+	/**
+	 * Send ical file of multiple upcoming events using ICSWriter
+	 *
+	 * @todo Support recurring events.
+	 * @see ICSWriter
+	 * @author Alex Hayes <alex.hayes@dimension27.com>
+	 */
+	public function ical() {
+		$writer = new ICSWriter($this->data(), Director::absoluteURL('/'));
+		$writer->sendDownload();
+	}
+	
 	// TO-DO: Account for recurring events.
 	public function ics()
 	{
