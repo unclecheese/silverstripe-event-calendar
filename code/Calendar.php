@@ -315,6 +315,11 @@ class Calendar extends Page
 		return $dates;	
 	}
 	
+	/**
+	* Gets all (recurring) events from .ics feeds (enough to support recurring events from a Gcal feed
+	* SUPPORTS recurring events; RRULE, FREQ, INTERVAL, UNTIL (NOT supported: WKST, BYDAY/MONTH/ETC, COUNT, ETC)
+	* @TODO: fix duplicated code adding new event to $all_events (needed for correct dates to show)...
+	*/
 	protected function importFromFeeds($all_events, $start_date = null, $end_date = null)
 	{
 		foreach($this->Feeds() as $feed) {
@@ -335,23 +340,86 @@ class Calendar extends Page
 					if(isset($event[$dt_start]) && isset($event[$dt_end])) {
 						list($start_date, $end_date, $start_time, $end_time) = CalendarUtil::date_info_from_ics($event[$dt_start], $event[$dt_end]);
 						$t_start = strtotime($start_date);
+						var_dump($start_date."--".$event['SUMMARY']."--".$event[$dt_start]);
 						$t_end = strtotime($end_date);
-						if($t_start >= $this->start_date->get()) {
-							$c = $this->getEventDateTimeClass();
-							$new_date = new $c();
-							$new_date->StartDate = $start_date;
-							$new_date->StartTime = $start_time;
-							$new_date->EndDate = $end_date;
-							$new_date->EndTime = $end_time;
-							if(isset($event['DESCRIPTION']) && !empty($event['DESCRIPTION']))
-								$new_date->Content = $event['DESCRIPTION'];
-							if(isset($event['SUMMARY']) && !empty($event['SUMMARY']))
-								$new_date->Title = $event['SUMMARY'];
-							$new_date->CalendarID = $this->ID;
-							$new_date->ID = "feed" . self::$recurring_event_index;
-							$new_date->Feed = true;
-							self::$recurring_event_index++;
-							$all_events->push($new_date);
+						if($t_start >= $this->start_date->get() || array_key_exists("RRULE", $event) ) {
+							
+							if (array_key_exists("RRULE", $event)){
+								// Set recurring events;
+								//RRULE:FREQ=WEEKLY;BYDAY=TH
+								//RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=TH
+								//RRULE:FREQ=WEEKLY;COUNT=10;WKST=SU;BYDAY=TU,TH
+								//RRULE:FREQ=WEEKLY;BYDAY=TU,TH;UNTIL=20110426T151500Z
+								
+								$rrule = explode(';', $event["RRULE"]);
+								// build nice keyed array from rrule;
+								$rrule_arr = array();
+								foreach ($rrule as $part) {
+									$part = explode('=', $part);
+									$rrule_arr[$part[0]] = $part[1];
+								}
+								if( array_key_exists("INTERVAL", $rrule_arr) ){ 
+									$interval = (int) $rrule_arr["INTERVAL"];
+								} else { $interval = 1; }
+								if(array_key_exists("UNTIL", $rrule_arr)){
+									$until = explode("T", $rrule_arr["UNTIL"]);
+									$until = CalendarUtil::getDateFromString($until[0]);
+								} else { $until = date( "Y-m-d", $this->end_date->get() ); }
+								if (array_key_exists("FREQ", $rrule_arr)){
+									if($rrule_arr["FREQ"]=='DAILY') $freq = 'day';
+									if($rrule_arr["FREQ"]=='WEEKLY') $freq = 'week';
+									if($rrule_arr["FREQ"]=='MONTHLY') $freq = 'month';
+									if($rrule_arr["FREQ"]=='YEARLY') $freq = 'year';
+								}
+
+								for( $occur = $t_start; 
+									($occur<=$this->end_date->get() && $occur<=strtotime($until)); 
+									$occur = strtotime( date("Y-m-d", $occur)." +".$interval." $freq") ) {
+									
+									if( $occur >= $this->start_date->get() && $occur <= $this->end_date->get() ){
+										print date("Y-m-d", $this->end_date->get() ) ;
+										$c = $this->getEventDateTimeClass();
+										$new_date = new $c();
+										$new_date->StartDate = date("Y-m-d", $occur);
+										$new_date->EndDate = date("Y-m-d", $occur);
+										$new_date->StartTime = $start_time;
+										$new_date->EndTime = $end_time; 
+										if(isset($event['DESCRIPTION']) && !empty($event['DESCRIPTION']))
+											$new_date->Content = $event['DESCRIPTION'];
+										if(isset($event['SUMMARY']) && !empty($event['SUMMARY']))
+											$new_date->Title = $event['SUMMARY'];
+										$new_date->CalendarID = $this->ID;
+										$new_date->ID = "feed" . self::$recurring_event_index;
+										$new_date->Feed = true;
+										$new_date->WeeklyInterval = true;
+
+										$all_events->push($new_date);
+										self::$recurring_event_index++;
+									}
+								}
+									
+									
+							} else {
+								if( $t_end <= $this->end_date->get() ){
+									// place single (non-recurring) event in $all_events;
+									$c = $this->getEventDateTimeClass();
+									$new_date = new $c();
+									$new_date->StartDate = $start_date;
+									$new_date->StartTime = $start_time;
+									$new_date->EndDate = $end_date;
+									$new_date->EndTime = $end_time;
+									if(isset($event['DESCRIPTION']) && !empty($event['DESCRIPTION']))
+										$new_date->Content = $event['DESCRIPTION'];
+									if(isset($event['SUMMARY']) && !empty($event['SUMMARY']))
+										$new_date->Title = $event['SUMMARY'];
+									$new_date->CalendarID = $this->ID;
+									$new_date->ID = "feed" . self::$recurring_event_index;
+									$new_date->Feed = true;
+									$all_events->push($new_date);
+									self::$recurring_event_index++;
+								}
+							}
+							
 						}
 					}
 				}
