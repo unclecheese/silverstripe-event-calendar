@@ -340,7 +340,6 @@ class Calendar extends Page
 					if(isset($event[$dt_start]) && isset($event[$dt_end])) {
 						list($start_date, $end_date, $start_time, $end_time) = CalendarUtil::date_info_from_ics($event[$dt_start], $event[$dt_end]);
 						$t_start = strtotime($start_date);
-						var_dump($start_date."--".$event['SUMMARY']."--".$event[$dt_start]);
 						$t_end = strtotime($end_date);
 						if($t_start >= $this->start_date->get() || array_key_exists("RRULE", $event) ) {
 							
@@ -377,7 +376,6 @@ class Calendar extends Page
 									$occur = strtotime( date("Y-m-d", $occur)." +".$interval." $freq") ) {
 									
 									if( $occur >= $this->start_date->get() && $occur <= $this->end_date->get() ){
-										print date("Y-m-d", $this->end_date->get() ) ;
 										$c = $this->getEventDateTimeClass();
 										$new_date = new $c();
 										$new_date->StartDate = date("Y-m-d", $occur);
