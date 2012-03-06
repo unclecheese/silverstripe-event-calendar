@@ -122,5 +122,7 @@ $lang['de_DE']['CalendarEvent.ss']['SUBSCRIBE'] =
 	$lang['de_DE']['Calendar.ss']['SUBSCRIBE'];
 $lang['de_DE']['CalendarEvent.ss']['ADDITIONALDATES'] = 
 	'Zusätzliche Daten';
+$lang['de_DE']['CalendarEvent.ss']['ADD'] = 
+	$lang['de_DE']['Calendar.ss']['ADD'];
 
 $lang['de_DE']['CalendarWidget']['LOCALEFILE'] = 'date_de.js';
