@@ -37,7 +37,7 @@
 				<h3 class="summary">$Title</h3>
 				
 				<% control CurrentDate %>
-				<h4><a href="$ICSLink" title="Add to Calendar">$_Dates</a></h4>
+				<h4><a href="$ICSLink" title="<% _t('ADD','Add to Calendar') %>">$_Dates</a></h4>
 				
 				<% if StartTime %>
 				<ul id="times">
