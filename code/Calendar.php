@@ -507,7 +507,7 @@ class Calendar extends Page
 			$announcement_filter
 		);
 		$events->sort('StartDate','DESC');
-		return $events->getRange(0,$limit);
+		return $events->getRange(0,$l);
 	}
 	
 	public static function is_filtered()
