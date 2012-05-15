@@ -1,0 +1,12 @@
+table.calendar-widget-table td.calendar-day, 
+table.calendar-widget-table td.show-week {cursor: pointer;}
+table.calendar-widget-table td.calendar-day:hover, 
+table.calendar-widget-table td.show-week:hover {background-color:#ccc;}
+table.calendar-widget-table td.calendar-day.selected {background-color:#aaa;}
+
+table.calendar-widget-table td.out-of-month {color:#999;background-color::#999;}
+table.calendar-widget-table td.today {border-bottom: 2px solid rgb(158, 0, 0);}
+table.calendar-widget-table td.hasEvent {background-image:url(../images/dot.png);background-position:center;background-repeat: no-repeat;}
+
+table.calendar-widget-table thead th {text-align:center;}
+
