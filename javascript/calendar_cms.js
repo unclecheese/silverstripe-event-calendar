@@ -9,11 +9,12 @@ $(function() {
 	}).change();
 
 
-	$('#Recursion').livequery(function() {
+	$('#Recursion').entwine({
+		onmatch: function() {
 
 
-		var $tab = $(this).closest('.tab');
-		var $recursion = $(this);
+		var $tab = this.closest('.tab');
+		var $recursion = this;
 		var $customRecursionType = $tab.find('#CustomRecursionType').hide();
 		var $dailyInterval = $tab.find('.dailyinterval').hide();
 		var $weeklyInterval = $tab.find('.weeklyinterval').hide();
@@ -88,7 +89,7 @@ $(function() {
 
 	
 
-	});
+	}});
 
 
 

@@ -80,7 +80,6 @@ class Calendar extends Page {
 	public function getCMSFields()
 	{
 
-		Requirements::javascript(THIRDPARTY_DIR.'/jquery-livequery/jquery.livequery.js');
 		Requirements::javascript('event_calendar/javascript/calendar_cms.js');
 
 		$f = parent::getCMSFields();
@@ -116,7 +115,7 @@ class Calendar extends Page {
 				GridFieldConfig_RecordEditor::create()				
 			));
 
-		$otherCals = DataList::create("Calendar")->exclude("Calendar\".\"ID",$this->ID);
+		$otherCals = Calendar::get()->filter("ID:Negation",$this->ID);
 		if($otherCals->exists()) {				
 			$f->addFieldToTab("Root.$feeds", new CheckboxSetField(
 				'NestedCalendars', 

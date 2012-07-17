@@ -33,7 +33,6 @@ class CalendarEvent extends Page
 
 	public function getCMSFields()
 	{
-		Requirements::javascript(THIRDPARTY_DIR.'/jquery-livequery/jquery.livequery.js');
 		Requirements::javascript('event_calendar/javascript/calendar_cms.js');
 		$f = parent::getCMSFields();
 		$dt = _t('CalendarEvent.DATESANDTIMES','Dates and Times');
