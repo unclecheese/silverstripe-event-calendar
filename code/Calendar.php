@@ -171,7 +171,7 @@ class Calendar extends Page {
 		
 		foreach($this->getAllCalendars() as $calendar) {			
 			$announcements = DataList::create($this->getAnnouncementClass())
-				->filter('CalendarID', $calendar->ID)
+				->filter('CalendarAnnouncement.CalendarID', $calendar->ID)
 				->where("
 					(StartDate <= '$start' AND EndDate >= '$end') OR
 				    (StartDate BETWEEN '$start' AND '$end') OR
