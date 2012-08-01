@@ -1,4 +1,4 @@
-.calendar-view-more {display:block;}
+.calendar-view-more {display:block;text-indent:-9999em;}
 .calendar-view-more.loading {background:url(../images/loader.gif) no-repeat;text-indent:-9999em;}
 .calendar-quick-nav li {display:inline;}
 .calendar-quick-nav li a.current {background: #ddd};
