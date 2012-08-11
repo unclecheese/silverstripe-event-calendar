@@ -163,13 +163,11 @@ class Calendar extends Page {
 
 
 	public function getEventList($start, $end, $filter = null, $limit = null) {		
-		$eventList = new ArrayList();
-		if($events = $this->getStandardEvents($start, $end, $filter)) {
-			$eventList->merge($events);
-		}
-		
-		
-		foreach($this->getAllCalendars() as $calendar) {			
+		foreach($this->getAllCalendars() as $calendar) {
+			$eventList = new ArrayList();
+			if($events = $calendar->getStandardEvents($start, $end, $filter)) {
+				$eventList->merge($events);
+			}		
 			$announcements = DataList::create($this->getAnnouncementClass())
 				->filter('CalendarID', $calendar->ID)
 				->where("
@@ -178,7 +176,6 @@ class Calendar extends Page {
 				    (EndDate BETWEEN '$start' AND '$end')
 				");
 			if($filter) {
-				var_dump($filter);
 				$announcements->filter($filter);
 			}
 
@@ -188,17 +185,19 @@ class Calendar extends Page {
 				}
 
 			}	
+
+			if($recurring = $calendar->getRecurringEvents($filter)) {
+				$eventList = $calendar->addRecurringEvents($start, $end, $recurring, $eventList);
+			}
+
 		}
 
-		
-		if($recurring = $this->getRecurringEvents($filter)) {
-			$eventList = $this->addRecurringEvents($start, $end, $recurring, $eventList);
-		}
+		$eventList->sort("StartDate","ASC");				
 		
 		// if($this->Feeds()) {
 		// 	$event_list = $this->importFromFeeds($event_list);
 		// }
-		$eventList->sort("StartDate","ASC");		
+
 		return $eventList;
 	}
 
@@ -418,7 +417,7 @@ class Calendar_Controller extends Page_Controller {
 	public function init() {
 		parent::init();
 		RSSFeed::linkToFeed($this->Link() . "rss", $this->RSSTitle ? $this->RSSTitle : $this->Title);
-		Requirements::css('event_calendar/css/calendar.css');
+		Requirements::themedCSS('calendar.css');
 		Requirements::javascript(THIRDPARTY_DIR.'/jquery/jquery.js');
 		Requirements::javascript('event_calendar/javascript/calendar.js');
 	}
