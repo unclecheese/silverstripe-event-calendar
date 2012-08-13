@@ -63,7 +63,7 @@ class Calendar extends Page {
 	static $announcement_class = "CalendarAnnouncement";
 
 
-	static $timezone = "0:00 GMT";
+	static $timezone = "America/New_York";
 
 
 	static $language = "EN";
