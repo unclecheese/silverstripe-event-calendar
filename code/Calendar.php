@@ -341,12 +341,13 @@ class Calendar extends Page {
 
 
 	public function UpcomingEvents($limit = 5, $filter = null)  {				
-			return $this->getEventList(
-				sfDate::getInstance()->dump(),
-				sfDate::getInstance()->addMonth($this->DefaultFutureMonths)->dump(),
-				$filter,
-				$limit
-			);	
+		$all = $this->getEventList(
+			sfDate::getInstance()->dump(),
+			sfDate::getInstance()->addMonth($this->DefaultFutureMonths)->dump(),
+			$filter,
+			$limit
+		);
+		return $all->limit($limit);			
 	}
 
 
