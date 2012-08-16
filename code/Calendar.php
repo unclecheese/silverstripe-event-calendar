@@ -115,12 +115,12 @@ class Calendar extends Page {
 				GridFieldConfig_RecordEditor::create()				
 			));
 
-		$otherCals = Calendar::get()->filter("ID:Negation",$this->ID);
+		$otherCals = Calendar::get()->exclude(array("ID" => $this->ID));
 		if($otherCals->exists()) {				
 			$f->addFieldToTab("Root.$feeds", new CheckboxSetField(
 				'NestedCalendars', 
 				_t('Calendar.NESTEDCALENDARS','Include events from these calendars'),
-				$otherCals->map()
+				$otherCals->map('ID', 'Link')
 			));
 		}
 		
