@@ -4,4 +4,4 @@
 <% require javascript(event_calendar/javascript/calendar_core.js) %>
 <% require javascript(event_calendar/javascript/calendar_widget.js) %>
 <% require css(event_calendar/css/calendar_widget.css) %>
-<div id="calendar-widget"><img src="/sapphire/thirdparty/greybox/indicator.gif" alt="loading" /></div>
+<div><img src="/framework/thirdparty/greybox/indicator.gif" alt="loading" /></div>

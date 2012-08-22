@@ -19,16 +19,14 @@ $(function() {
 		})
 	});
 
-	/*
+
 	$(window).scroll(function() {
-		if($('.calendar-view-more').length && !fetching) {
-			var offset = $('.calendar-view-more').offset();
-			if($(window).scrollTop()+$(window).height() >= offset.top) {				
+		if ($(window).scrollTop() >= ($(document).height() - $(window).height())) {	
+			if ($('.calendar-view-more').length && !fetching) {      	
 				$('.calendar-view-more').click();
-			}			
+			}        
 		}
 	});
-	*/
 });
 
 })(jQuery);
