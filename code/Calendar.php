@@ -69,6 +69,7 @@ class Calendar extends Page {
 	static $language = "EN";
 
 
+
 	static $jquery_included = false;
 
 
@@ -173,7 +174,7 @@ class Calendar extends Page {
 
 
 
-	public function getEventList($start, $end, $filter = null, $limit = null, $announcement_filter = null) {		
+	public function getEventList($start, $end, $filter = null, $limit = null) {		
 		foreach($this->getAllCalendars() as $calendar) {
 			$eventList = new ArrayList();
 			if($events = $calendar->getStandardEvents($start, $end, $filter)) {
@@ -187,7 +188,7 @@ class Calendar extends Page {
 				    (EndDate BETWEEN '$start' AND '$end')
 				");
 			if($filter) {
-				$announcements->where($announcement_filter);
+				$announcements->filter($filter);
 			}
 
 			if($announcements) {
@@ -257,7 +258,7 @@ class Calendar extends Page {
 				->filter("ParentID", $this->ID)
 				->innerJoin($datetime_class, "\"{$datetime_class}\".{$relation} = \"SiteTree\".ID");			
 			if($filter) {
-				$events->where($filter);
+				$events->filter($filter);
 			}
 			return $events;
 		}
@@ -391,6 +392,7 @@ class Calendar extends Page {
 	 	return $calendar;
 	 }
 
+
 	 public function MonthJumpForm() {
 	 	$controller = Controller::curr();
 	 	if($controller->class == "Calendar_Controller" || is_subclass_of($controller, "Calendar_Controller")) {
@@ -439,10 +441,8 @@ class Calendar_Controller extends Page_Controller {
 	public function init() {
 		parent::init();
 		RSSFeed::linkToFeed($this->Link() . "rss", $this->RSSTitle ? $this->RSSTitle : $this->Title);
-		Requirements::themedCSS('calendar.css');
-		if(!Calendar::$jquery_included) {
-			Requirements::javascript(THIRDPARTY_DIR.'/jquery/jquery.js');
-		}
+		Requirements::themedCSS('calendar','event_calendar');
+		Requirements::javascript(THIRDPARTY_DIR.'/jquery/jquery.js');
 		Requirements::javascript('event_calendar/javascript/calendar.js');
 	}
 
@@ -543,7 +543,7 @@ class Calendar_Controller extends Page_Controller {
 	public function index(SS_HTTPRequest $r) {
 		switch($this->DefaultView) {
 			case "month":
-				return $this->redirect($this->Link('show/month'));
+				return Director::redirect($this->Link('show/month'));
 			break;
 
 			case "week":
@@ -754,7 +754,7 @@ class Calendar_Controller extends Page_Controller {
 			return $result;
 		}
 		else {
-			$this->redirectBack();
+			Director::redirectBack();
 		}
 	}
 
@@ -798,20 +798,9 @@ class Calendar_Controller extends Page_Controller {
 
 
 	public function Events() {
-		$event_filter = null;
-		$announcement_filter = null;
-		if($search = $this->getRequest()->getVar('s')) {
-			$s = Convert::raw2sql($search);
-			$event_filter = "\"SiteTree\".Title LIKE '%$s%' OR \"SiteTree\".Content LIKE '%$s%'";
-			$announcement_filter = "\"CalendarAnnouncement\".Title LIKE '%$s%' OR \"CalendarAnnouncement\".Content LIKE '%$s%'";
-			$this->SearchQuery = $search;
-		}
 		$all = $this->data()->getEventList(
 			$this->startDate->dump(),
-			$this->endDate->dump(),
-			$event_filter,
-			null,
-			$announcement_filter
+			$this->endDate->dump()
 		);		
 		$list = $all->limit($this->EventsPerPage, $this->getOffset());		
 		$next = $this->getOffset()+$this->EventsPerPage;
@@ -941,7 +930,7 @@ class Calendar_Controller extends Page_Controller {
 		$range = range(($dummy->subtractYear(3)->format('Y')), ($dummy->addYear(6)->format('Y')));
 		$year_map = array_combine($range, $range);
 		$f = new Form(
-			$this,
+			Controller::curr(),
 			"MonthJumpForm",
 			new FieldList (
 				$m = new DropdownField('Month','', CalendarUtil::get_months_map('%B')),
@@ -956,15 +945,11 @@ class Calendar_Controller extends Page_Controller {
 			$m->setValue($this->startDate->format('m'));
 			$y->setValue($this->startDate->format('Y'));
 		}
-		else {
-			$m->setValue(date('m'));
-			$y->setValue(date('Y'));
-		}
 		return $f;	
 	}
 	
 	public function doMonthJump($data, $form) {
-		return $this->redirect($this->Link('show').'/'.$data['Year'].$data['Month']);
+		return Director::redirect($this->Link('show').'/'.$data['Year'].$data['Month']);
 	}
 
 

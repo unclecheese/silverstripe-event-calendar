@@ -1,28 +1,18 @@
-<div id="calendar-main">
-	 <div id="topHeading" class="clearfix">
-		<span class="feed"><a href="$Link(rss)"><% _t('SUBSCRIBE','Subscribe to the Calendar') %></a></span>
-		<h2>$Title</h2>
-		$Content
-	</div>
-<div id="dateHeader">
-		<% if DateHeader %>
-			<h3>$DateHeader</h3>
-		<% end_if %>
+<h2>$Title</h2>
+<p class="feed"><a href="$Link(rss)"><% _t('SUBSCRIBE','Calendar RSS Feed') %></a></p>
+$Content
+
+<div class="event-calendar-controls">
+  $CalendarWidget
+  $MonthJumper
+  <% include QuickNav %>
 </div>
 
-$CalendarWidget
-
-
-$MonthJumper
-
-<% include QuickNav %>
-
-
+<h2>$DateHeader</h2>
 <% if Events %>
-<div id="events">
-	<% include EventList %>
+<div class="event-calendar-events">
+  <% include EventList %>
 </div>
 <% else %>
-	<% _t('NOEVENTS','There are no events') %>.
+  <p><% _t('NOEVENTS','There are no events') %>.</p>
 <% end_if %>
-</div>
