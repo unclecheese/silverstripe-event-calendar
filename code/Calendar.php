@@ -240,7 +240,7 @@ class Calendar extends Page {
 				(EndDate BETWEEN '$start' AND '$end')
 		");
 		$list->filter(array($relation => $ids));
-		$list->innerJoin($event_class, $relation = "\"{$event_class}\".ID");
+		$list->innerJoin($event_class, "$relation = \"{$event_class}\".ID");
 		return $list;
 	}
 
