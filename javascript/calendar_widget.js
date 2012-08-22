@@ -146,9 +146,15 @@
 			var monthName = this.settings.calMonthsLabels[this.month]			
 			var html = '<table class="calendar-widget-table">';
 			html += '<thead>';
+<<<<<<< HEAD
 			html += '<tr><th colspan="8"><a class="prev" href="javascript:void(0);"> &laquo; </a>';
 			html +=  '<a href="javascript:void(0);" class="show-month">'+monthName + "&nbsp;" + this.year + '</a>';
 			html += '<a class="next" href="javascript:void(0);"> &raquo; </a></th></tr>';
+=======
+			html += '<tr><th colspan="8"><a class="prev" href="javascript:void(0);"> << </a>';
+			html +=  '<a href="javascript:void(0);" class="show-month">'+monthName + "&nbsp;" + this.year + '</a>';
+			html += '<a class="next" href="javascript:void(0);"> >> </a></th></tr>';
+>>>>>>> bidstuff
 			html += '</thead>';
 			html += '<tbody>';
 			html += '<tr class="calendar-header">';
@@ -204,7 +210,11 @@
 					cell++;
 					
 				}
+<<<<<<< HEAD
 				html += "<td class='show-week'>&laquo;</td>";
+=======
+				html += "<td class='show-week'>&lt;&lt;</td>";
+>>>>>>> bidstuff
 				html += '</tr><tr>';
 			}
 			html += '</tr></tbody></table>';

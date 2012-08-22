@@ -1,4 +1,3 @@
-
 <ul>
 <% loop Events %>
 <li class="vevent clearfix">
@@ -26,4 +25,3 @@
 <% if MoreEvents %>
 <a href="$MoreLink" class="calendar-view-more"><% _t('Calendar.VIEWMOREEVENTS','View more...') %></a>
 <% end_if %>
-

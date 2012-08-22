@@ -1,3 +1,4 @@
+
 .event-calendar-events ul, .event-calendar-events ul li { list-style:none; margin:0; padding:0; }
 
 .event-calendar-events > ul { border-top:1px solid #ccc; }
@@ -9,3 +10,4 @@
 .event-calendar-other-dates h4 { margin:0; }
 
 .vevent .dates { font-weight:700; }
+

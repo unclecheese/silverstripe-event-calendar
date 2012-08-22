@@ -1,3 +1,4 @@
+
 <h2>$Title</h2>
 <p class="feed"><a href="$Link(rss)"><% _t('SUBSCRIBE','Calendar RSS Feed') %></a></p>
 $Content
