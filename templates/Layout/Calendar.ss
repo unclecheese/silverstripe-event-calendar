@@ -11,7 +11,7 @@ $Content
 
 <h2>$DateHeader</h2>
 <% if Events %>
-<div class="event-calendar-events">
+<div id="event-calendar-events">
   <% include EventList %>
 </div>
 <% else %>

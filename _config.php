@@ -6,14 +6,14 @@ $customDateTemplates = array(
  You can modify the date display by assigning new date templates to any of the following
    date scenarios. Use the above date format keys.
    
-'OneDay' 			=> '$StartMonth%{sMonShort}. %{sDayNumShort}, %{sYearFull}'
-'SameMonthSameYear' => '%{sMonShort}. %{sDayNumShort} - %{eDayNumShort}, %{eYearFull}'
-'DiffMonthSameYear' => '%{sMonShort}. %{sDayNumShort} - %{eMonShort}. %{eDayNumShort}, %{eYearFull}'
-'DiffMonthDiffYear' => '%{sMonShort}. %{sDayNumShort}, %{sYearFull} - %{eMonShort} %{eDayNumShort}, %{eYearFull}'
+'OneDay' 			=> '$StartMonthNameShort. $StartDayNumberShort, $StartYearFull'
+'SameMonthSameYear' => '$StartMonthNameShort. $StartDayNumberShort - $EndDatNumberShort, $EndYearFull'
+'DiffMonthSameYear' => '$StartMonthNameShort. $StartDayNumberShort - $EndMonthNameShort. $EndDayNumberShort, $EndYearFull'
+'DiffMonthDiffYear' => '$StartMonthNameShort. $StartDayNumberShort, $StartYearFull - $EndMonthNameShort $EndDayNumberShort, $EndYearFull'
 
-'OneDayHeader' 			=> '%{sMonFull} %{sDayNumShort}%{sDaySuffix}, %{sYearFull}'
-'MonthHeader' 			=> '%{sMonFull}, %{sYearFull}'
-'YearHeader' 				=> '%{sYearFull}'
+'OneDayHeader' 			=> '$StartMonthNameFull $StartDayNumberShort$StartDaySuffix, $StartYearFull'
+'MonthHeader' 			=> '$StartMonthNameFull, $StartYearFull'
+'YearHeader' 				=> '$StartYearFull'
 
 */
 );

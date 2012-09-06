@@ -23,5 +23,5 @@
 <% end_loop %>
 </ul>
 <% if MoreEvents %>
-<a href="$MoreLink" class="calendar-view-more"><% _t('Calendar.VIEWMOREEVENTS','View more...') %></a>
+<a href="$MoreLink" class="calendar-view-more"><% _t('Calendar.VIEWMOREEVENTS','View more events...') %></a>
 <% end_if %>

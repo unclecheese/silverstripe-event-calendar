@@ -12,7 +12,7 @@ $(function() {
 			url: $t.attr('href'),
 			success: function(data) {
 				$t.remove();
-				$('#events').append(data);
+				$('#event-calendar-events').append(data);
 				fetching = false;
 			}
 
