@@ -175,6 +175,7 @@ class Calendar extends Page {
 	public function getEventList($start, $end, $filter = null, $limit = null, $announcement_filter = null) {		
 
 		foreach($this->getAllCalendars() as $calendar) {
+
 			$eventList = new ArrayList();
 			if($events = $calendar->getStandardEvents($start, $end, $filter)) {
 				$eventList->merge($events);
@@ -187,7 +188,7 @@ class Calendar extends Page {
 				    (EndDate BETWEEN '$start' AND '$end')
 				");
 			if($filter) {
-				$announcements->where($announcement_filter);
+				$announcements = $announcements->where($announcement_filter);
 			}
 
 			if($announcements) {
@@ -233,14 +234,14 @@ class Calendar extends Page {
 		$relation = $this->getDateToEventRelation();		
 		$event_class = $this->getEventClass();
 		$list = DataList::create($datetime_class);
-		$list->where("Recursion != 1");
-		$list->where("
+		$list = $list->where("Recursion != 1");
+		$list = $list->where("
 				(StartDate <= '$start' AND EndDate >= '$end') OR
 				(StartDate BETWEEN '$start' AND '$end') OR
 				(EndDate BETWEEN '$start' AND '$end')
 		");
-		$list->filter(array($relation => $ids));
-		$list->innerJoin($event_class, "$relation = \"{$event_class}\".ID");
+		$list = $list->filter(array($relation => $ids));		
+		$list = $list->innerJoin($event_class, "$relation = \"{$event_class}\".ID");
 		return $list;
 	}
 
@@ -257,7 +258,7 @@ class Calendar extends Page {
 				->filter("ParentID", $this->ID)
 				->innerJoin($datetime_class, "\"{$datetime_class}\".{$relation} = \"SiteTree\".ID");			
 			if($filter) {
-				$events->where($filter);
+				$events = $events->where($filter);
 			}
 			return $events;
 		}
