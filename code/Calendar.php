@@ -203,7 +203,7 @@ class Calendar extends Page {
 
 		}
 
-		$eventList->sort("StartDate","ASC");				
+		$eventList->sort(array("StartDate" => "ASC", "StartTime" => "ASC"));				
 		
 		// if($this->Feeds()) {
 		// 	$event_list = $this->importFromFeeds($event_list);
