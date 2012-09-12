@@ -173,10 +173,8 @@ class Calendar extends Page {
 
 
 	public function getEventList($start, $end, $filter = null, $limit = null, $announcement_filter = null) {		
-
+		$eventList = new ArrayList();
 		foreach($this->getAllCalendars() as $calendar) {
-
-			$eventList = new ArrayList();
 			if($events = $calendar->getStandardEvents($start, $end, $filter)) {
 				$eventList->merge($events);
 			}		
@@ -204,11 +202,9 @@ class Calendar extends Page {
 
 		}
 
-		$eventList->sort(array("StartDate" => "ASC", "StartTime" => "ASC"));				
-		
-		// if($this->Feeds()) {
-		// 	$event_list = $this->importFromFeeds($event_list);
-		// }
+
+		$eventList = $eventList->sort(array("StartDate" => "ASC", "StartTime" => "ASC"));						
+		$eventList = $eventList->limit($limit);
 
 		return $eventList;
 	}
