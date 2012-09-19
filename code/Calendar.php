@@ -177,7 +177,7 @@ class Calendar extends Page {
 		foreach($this->getAllCalendars() as $calendar) {
 			if($events = $calendar->getStandardEvents($start, $end, $filter)) {
 				$eventList->merge($events);
-			}		
+			}					
 			$announcements = DataList::create($this->getAnnouncementClass())
 				->filter('CalendarID', $calendar->ID)
 				->where("
@@ -211,21 +211,10 @@ class Calendar extends Page {
 
 
 
-	protected function getEventIds() {
-		$ids = array();
-		foreach($this->getAllCalendars() as $calendar) {
-			if($children = $calendar->AllChildren()) {
-				$ids = array_merge($ids, $children->column('ID'));
-			}
-		}
-		if(!empty($ids)) return $ids;
-		return false;
-	}
-
-
 
 	protected function getStandardEvents($start, $end, $filter = null) {
-		if(!$ids = $this->getEventIds()) return false;
+		if(!$children = $this->AllChildren()) return false;
+		$ids = $children->column('ID');
 		$datetime_class = $this->getDateTimeClass();
 		$relation = $this->getDateToEventRelation();		
 		$event_class = $this->getEventClass();
@@ -236,7 +225,7 @@ class Calendar extends Page {
 				(StartDate BETWEEN '$start' AND '$end') OR
 				(EndDate BETWEEN '$start' AND '$end')
 		");
-		$list = $list->filter(array($relation => $ids));		
+		$list = $list->filter(array($relation => $ids));				
 		$list = $list->innerJoin($event_class, "$relation = \"{$event_class}\".ID");
 		return $list;
 	}
@@ -291,7 +280,7 @@ class Calendar extends Page {
 
 
 
-	protected function addRecurringEvents($start_date, $end_date, $recurring_events,$all_events) {
+	protected function addRecurringEvents($start_date, $end_date, $recurring_events,$all_events) {		
 		$date_counter = sfDate::getInstance($start_date);
 		$end = sfDate::getInstance($end_date);
 		foreach($recurring_events as $recurring_event) {			
@@ -301,18 +290,17 @@ class Calendar extends Page {
 
 			if($recurring_event_datetime = $recurring_event->$relation()->first()) {				
 				while($date_counter->get() <= $end->get()){
-
 					// check the end date
 					if($recurring_event_datetime->EndDate) {
 						$end_stamp = strtotime($recurring_event_datetime->EndDate);
-						if($end_stamp > 0 && $end_stamp <= $date_counter->get()) {
+						if($end_stamp > 0 && $end_stamp <= $date_counter->get()) {							
 							break;
 						}
 					}
-					if($reader->recursionHappensOn($date_counter->get())) {
+					if($reader->recursionHappensOn($date_counter->get())) {						
 						$e = $this->newRecursionDateTime($recurring_event_datetime, $date_counter->date());
 						$all_events->push($e);	
-					}
+					}					
 					$date_counter->tomorrow();
 				}
 				$date_counter->reset();				
@@ -350,8 +338,8 @@ class Calendar extends Page {
 
 	public function UpcomingEvents($limit = 5, $filter = null)  {				
 		$all = $this->getEventList(
-			sfDate::getInstance()->dump(),
-			sfDate::getInstance()->addMonth($this->DefaultFutureMonths)->dump(),
+			sfDate::getInstance()->date(),
+			sfDate::getInstance()->addMonth($this->DefaultFutureMonths)->date(),
 			$filter,
 			$limit
 		);
@@ -365,8 +353,8 @@ class Calendar extends Page {
 		$end_date = sfDate::getInstance();
 		$l = ($limit === null) ? "9999" : $limit;
 		$events = $this->getEventList(
-			$start_date->subtractMonth($this->DefaultFutureMonths)->dump(),
-			$end_date->yesterday()->dump(), 
+			$start_date->subtractMonth($this->DefaultFutureMonths)->date(),
+			$end_date->yesterday()->date(), 
 			$filter,
 			$l
 		);
@@ -803,8 +791,8 @@ class Calendar_Controller extends Page_Controller {
 			$this->SearchQuery = $search;
 		}
 		$all = $this->data()->getEventList(
-			$this->startDate->dump(),
-			$this->endDate->dump(),
+			$this->startDate->date(),
+			$this->endDate->date(),
 			$event_filter,
 			null,
 			$announcement_filter
@@ -910,7 +898,7 @@ class Calendar_Controller extends Page_Controller {
 	public function IsSegment($segment) {
 	 	switch($segment) {
 	 		case "today":
-	 			return $this->startDate->dump() == $this->endDate->dump();
+	 			return $this->startDate->date() == $this->endDate->date();
 	 		case "week":
 	 			if(CalendarUtil::get_first_day_of_week() == sfTime::MONDAY) {
 	 				return ($this->startDate->format('w') == sfTime::MONDAY) && ($this->startDate->format('w') == sfTime::SUNDAY);
