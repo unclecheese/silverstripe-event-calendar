@@ -232,6 +232,16 @@ class CalendarDateTime extends DataObject
 		}
 		return $dates;
 	}
+	
+	
+	public function canCreate($member = null) { return Permission::check("CMS_ACCESS_CMSMain"); }
+
+	public function canEdit($member = null) { return Permission::check("CMS_ACCESS_CMSMain"); }
+
+	public function canDelete($member = null) { return Permission::check("CMS_ACCESS_CMSMain"); }
+
+	public function canView($member = null) { return Permission::check("CMS_ACCESS_CMSMain"); }
+	
 
 
 
