@@ -27,6 +27,7 @@ class CalendarEvent extends Page
 
 	static $icon = "event_calendar/images/event";	
 
+	static $description = "An individual event entry";
 
 	static $datetime_class = "CalendarDateTime";
 

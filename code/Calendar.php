@@ -57,6 +57,9 @@ class Calendar extends Page {
 	static $icon = "event_calendar/images/calendar";
 
 
+	static $description = "A collection of Calendar Events";
+
+
 	static $event_class = "CalendarEvent";
 
 
