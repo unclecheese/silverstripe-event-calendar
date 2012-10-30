@@ -230,6 +230,10 @@ class Calendar extends Page {
 		");
 		$list = $list->filter(array($relation => $ids));				
 		$list = $list->innerJoin($event_class, "$relation = \"{$event_class}\".ID");
+		$list = $list->innerJoin("SiteTree", "\"SiteTree\".ID = \"{$event_class}\".ID");
+		if($filter) {
+			$list = $list->where($filter);
+		}
 		return $list;
 	}
 
