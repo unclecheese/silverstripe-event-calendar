@@ -791,19 +791,22 @@ class Calendar_Controller extends Page_Controller {
 	public function Events() {
 		$event_filter = null;
 		$announcement_filter = null;
+		$endDate = $this->endDate;		
 		if($search = $this->getRequest()->getVar('s')) {
 			$s = Convert::raw2sql($search);
 			$event_filter = "\"SiteTree\".Title LIKE '%$s%' OR \"SiteTree\".Content LIKE '%$s%'";
 			$announcement_filter = "\"CalendarAnnouncement\".Title LIKE '%$s%' OR \"CalendarAnnouncement\".Content LIKE '%$s%'";
 			$this->SearchQuery = $search;
+			$endDate = sfDate::getInstance()->addMonth($this->DefaultFutureMonths);			
 		}
 		$all = $this->data()->getEventList(
 			$this->startDate->date(),
-			$this->endDate->date(),
+			$endDate->date(),
 			$event_filter,
 			null,
 			$announcement_filter
-		);		
+		);
+
 		$list = $all->limit($this->EventsPerPage, $this->getOffset());		
 		$next = $this->getOffset()+$this->EventsPerPage;
 		$this->MoreEvents = ($next < $all->count());
