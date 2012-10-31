@@ -501,9 +501,9 @@ class Calendar_Controller extends Page_Controller {
 
 
 	public function setMonthView() {
-		$this->view = "month";
+		$this->view = "month";		
 		$this->startDate = sfDate::getInstance()->firstDayOfMonth();
-		$this->endDate = sfDate::getInstance()->finalDayOfMonth();
+		$this->endDate = sfDate::getInstance($this->startDate)->finalDayOfMonth();
 	}
 
 
