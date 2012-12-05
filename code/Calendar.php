@@ -188,10 +188,9 @@ class Calendar extends Page {
 				    (StartDate BETWEEN '$start' AND '$end') OR
 				    (EndDate BETWEEN '$start' AND '$end')
 				");
-			if($filter) {
+			if($announcement_filter) {
 				$announcements = $announcements->where($announcement_filter);
-			}
-
+			}			
 			if($announcements) {
 				foreach($announcements as $announcement) {
 					$eventList->push($announcement);
@@ -343,14 +342,26 @@ class Calendar extends Page {
 
 
 
-	public function UpcomingEvents($limit = 5, $filter = null)  {				
+	public function UpcomingEvents($limit = 5, $filter = null, $announcement_filter = null)  {	
 		$all = $this->getEventList(
 			sfDate::getInstance()->date(),
 			sfDate::getInstance()->addMonth($this->DefaultFutureMonths)->date(),
 			$filter,
-			$limit
+			$limit,
+			$announcement_filter
 		);
 		return $all->limit($limit);			
+	}
+
+
+
+	public function UpcomingAnnouncements($limit = 5, $filter = null) {
+		return $this->Announcements()
+					->filter(array(
+						'StartDate:GreaterThan' => 'DATE(NOW())'
+					))
+					->where($filter)
+					->limit($limit);
 	}
 
 
