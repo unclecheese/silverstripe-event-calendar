@@ -471,7 +471,12 @@ class Calendar_Controller extends Page_Controller {
 	public function setDefaultView() {
 		$this->view = "default";
 		$this->startDate = sfDate::getInstance();
-		$this->endDate = sfDate::getInstance()->addMonth(6);				
+		if($this->DefaultFutureMonths!=null){
+			$mCount = $this->DefaultFutureMonths;
+		}else{
+			$mCount = 6;
+		}
+		$this->endDate = sfDate::getInstance()->addMonth($mCount);				
 	}
 
 
