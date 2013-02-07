@@ -18,5 +18,9 @@
 	},
 	"support": {
 		"issues": "https://github.com/unclecheese/EventCalendar/issues"
-	}
+	},
+    	"extra": {
+		"installer-name": "event_calendar"
+    	}
+	
 }
