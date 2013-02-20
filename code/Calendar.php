@@ -396,6 +396,16 @@ class Calendar extends Page {
 
 
 
+	public function UpcomingAnnouncements($limit = 5, $filter = null) {
+		return $this->Announcements()
+					->filter(array(
+						'StartDate:GreaterThan' => 'DATE(NOW())'
+					))
+					->where($filter)
+					->limit($limit);
+	}
+
+
 	public function RecentEvents($limit = null, $filter = null)  {
 		$start_date = sfDate::getInstance();
 		$end_date = sfDate::getInstance();
