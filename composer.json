@@ -1,0 +1,26 @@
+{
+  "name":"silverstripe/event-calendar",
+	"type": "silverstripe-module",
+	"description": "Event Calendar for the SilverStripe CMS",
+	"keywords": ["silverstripe", "events"],
+	"license": "BSD-3-Clause",
+	"authors":[
+		{
+			"name": "Aaron Carlino",
+			"homepage": "http://leftandmain.com"
+		}
+	],
+	"require": 
+	{
+		"php": ">=5.2",
+		"silverstripe/framework": "2.4.*",
+		"silverstripe/cms": "2.4.*"
+	},
+	"support": {
+		"issues": "https://github.com/unclecheese/EventCalendar/issues"
+	},
+    	"extra": {
+		"installer-name": "event_calendar"
+    	}
+	
+}
