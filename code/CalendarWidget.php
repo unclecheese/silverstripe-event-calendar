@@ -1,3 +1,4 @@
+
 <?php
 
 
@@ -54,9 +55,7 @@ class CalendarWidget extends ViewableData {
 
 
 	public function forTemplate() {
-		if(!Calendar::$jquery_included) {
-			Requirements::javascript(THIRDPARTY_DIR."/jquery/jquery.js");
-		}
+		Requirements::javascript(THIRDPARTY_DIR."/jquery/jquery.js");		
 		Requirements::javascript("event_calendar/javascript/calendar_widget.js");
 		$locale_file = _t('Calendar.DATEJSFILE','calendar_en.js');
 		Requirements::javascript("event_calendar/javascript/lang/{$locale_file}");

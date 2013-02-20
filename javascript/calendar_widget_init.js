@@ -2,23 +2,16 @@
 $(function() {
 
 var calendar_url = $('.calendar-widget').data('url');
-var loaded_months = {},
-    finish = 0;
+var loaded_months = {};
 
-function end(calendar) {  
-    if(finish==3) setSelection(calendar);
-}
-
-
-function loadMonthJson(month, year, callback) {
+function loadMonthJson(month, year) {
 	$.ajax({
 		url: calendar_url+"monthjson/"+year+month,
-		async: true,
+		async: false,
 		dataType: 'json',
 		success: function(data) {
 			json = data;
-			loaded_months[year+month] = data;	
-			if(callback) callback();		
+			loaded_months[year+month] = data;			
 		}
 	});	
 }
@@ -29,6 +22,7 @@ function applyMonthJson(month, year) {
 	for(date in json) {
 		if(json[date].events.length) {
 			$('[data-date="'+date+'"]').addClass('hasEvent').attr('title', json[date].events.join("\n"));
+
 		}
 	}			
 }
@@ -70,19 +64,14 @@ $('.calendar-widget').each(function() {
 			var json;
 			m = calendar.pad(month);		
 			if(!loaded_months[year+m]) {
-				loadMonthJson(m, year, function() {
-		                    applyMonthJson(m, year);
-		                    setSelection(calendar);
-		                });
+				loadMonthJson(m, year);
 			}
-			else {
-	           		applyMonthJson(m, year);
-			   	setSelection(calendar);
-			}
+			json = loaded_months[year+m];
+			applyMonthJson(m, year);
+			setSelection(calendar);
 		},
 
-		onInit: function(calendar) 
-		{
+		onInit: function(calendar) {
 			previous = calendar.getPrevMonthYear();		
 			next = calendar.getNextMonthYear();
 
@@ -93,23 +82,26 @@ $('.calendar-widget').each(function() {
 			prev_year = previous[1];
 			next_year = next[1];
 
-			loadMonthJson(this_month, this_year, function() {
-		        	applyMonthJson(this_month, this_year);
-		                finish++;
-		               	end(calendar);
-		      	});
-		      	
-		      	loadMonthJson(prev_month, prev_year, function() {
-		        	applyMonthJson(prev_month, prev_year);
-		                finish++;
-		               	end(calendar);
-		      	});
-		      	
-		      	loadMonthJson(next_month, next_year, function() {
-		        	applyMonthJson(next_month, next_year);
-		                finish++;
-		               	end(calendar);
-		      	});
+			loadMonthJson(
+				this_month,
+				this_year
+			);
+
+			loadMonthJson(
+				prev_month,
+				prev_year
+			);
+
+			loadMonthJson(
+				next_month,
+				next_year
+			);
+			applyMonthJson(this_month, this_year);
+			applyMonthJson(prev_month, prev_year);
+			applyMonthJson(next_month, next_year);
+
+			setSelection(calendar);
+			
 		}
 
 	};	
@@ -118,8 +110,9 @@ $('.calendar-widget').each(function() {
 		var parts = $(this).data('start').split('-');				
 		opts.month = Number(parts[1])-1;
 		opts.year = parts[0];
+
+		
 	}
-	
 	$(this).CalendarWidget(opts);
 	
 })

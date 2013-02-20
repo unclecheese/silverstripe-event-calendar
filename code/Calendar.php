@@ -76,16 +76,27 @@ class Calendar extends Page {
 
 
 
+	static $caching_enabled = false;
+
+
+
 	protected $eventClass_cache, 
 			  $announcementClass_cache, 
 			  $datetimeClass_cache, 
 			  $dateToEventRelation_cache,
-			  $announcementToCalendarRelation_cache;
+			  $announcementToCalendarRelation_cache,
+			  $EventList_cache;
 
 
 
 	public static function set_jquery_included($bool = true) {
 		self::$jquery_included = $bool;
+	}
+
+
+
+	public static function enable_caching() {
+		self::$caching_enabled = true;
 	}
 
 
@@ -175,7 +186,31 @@ class Calendar extends Page {
 
 
 
+
+	public function getCachedEventList($start, $end, $filter = null, $limit = null) {		
+		return CachedCalendarEntry::get()
+			->where("
+					((StartDate <= '$start' AND EndDate >= '$end') OR
+				    (StartDate BETWEEN '$start' AND '$end') OR
+				    (EndDate BETWEEN '$start' AND '$end'))
+				    AND
+				    CachedCalendarID = $this->ID
+			")
+			->sort(array(
+				"StartDate" => "ASC",
+				"StartTime" => "ASC"
+			))
+			->limit($limit);
+
+	}
+
+
+
+
 	public function getEventList($start, $end, $filter = null, $limit = null, $announcement_filter = null) {		
+		if(Config::inst()->get("Calendar","caching_enabled")) {
+			return $this->getCachedEventList($start, $end, $filter, $limit);
+		}
 		$eventList = new ArrayList();
 		foreach($this->getAllCalendars() as $calendar) {
 			if($events = $calendar->getStandardEvents($start, $end, $filter)) {
@@ -188,9 +223,10 @@ class Calendar extends Page {
 				    (StartDate BETWEEN '$start' AND '$end') OR
 				    (EndDate BETWEEN '$start' AND '$end')
 				");
-			if($announcement_filter) {
+			if($filter) {
 				$announcements = $announcements->where($announcement_filter);
-			}			
+			}
+
 			if($announcements) {
 				foreach($announcements as $announcement) {
 					$eventList->push($announcement);
@@ -208,15 +244,21 @@ class Calendar extends Page {
 		$eventList = $eventList->sort(array("StartDate" => "ASC", "StartTime" => "ASC"));						
 		$eventList = $eventList->limit($limit);
 
-		return $eventList;
+		return $this->EventList_cache = $eventList;
 	}
 
 
 
 
 	protected function getStandardEvents($start, $end, $filter = null) {
-		if(!$children = $this->AllChildren()) return false;
-		$ids = $children->column('ID');
+		$ids = array ();
+		$r = DB::query("SELECT ID FROM SiteTree_Live WHERE ClassName = 'CalendarEvent' AND ParentID = $this->ID");
+		if($r) {
+			while($rec = $r->nextRecord()) $ids[] = $rec['ID'];
+		}
+
+		// $children = $this->AllChildren();
+		// $ids = $children->column('ID');
 		$datetime_class = $this->getDateTimeClass();
 		$relation = $this->getDateToEventRelation();		
 		$event_class = $this->getEventClass();
@@ -342,26 +384,14 @@ class Calendar extends Page {
 
 
 
-	public function UpcomingEvents($limit = 5, $filter = null, $announcement_filter = null)  {	
+	public function UpcomingEvents($limit = 5, $filter = null)  {				
 		$all = $this->getEventList(
 			sfDate::getInstance()->date(),
 			sfDate::getInstance()->addMonth($this->DefaultFutureMonths)->date(),
 			$filter,
-			$limit,
-			$announcement_filter
+			$limit
 		);
 		return $all->limit($limit);			
-	}
-
-
-
-	public function UpcomingAnnouncements($limit = 5, $filter = null) {
-		return $this->Announcements()
-					->filter(array(
-						'StartDate:GreaterThan' => 'DATE(NOW())'
-					))
-					->where($filter)
-					->limit($limit);
 	}
 
 
@@ -471,12 +501,7 @@ class Calendar_Controller extends Page_Controller {
 	public function setDefaultView() {
 		$this->view = "default";
 		$this->startDate = sfDate::getInstance();
-		if($this->DefaultFutureMonths!=null){
-			$mCount = $this->DefaultFutureMonths;
-		}else{
-			$mCount = 6;
-		}
-		$this->endDate = sfDate::getInstance()->addMonth($mCount);				
+		$this->endDate = sfDate::getInstance()->addMonth(6);				
 	}
 
 
@@ -822,10 +847,10 @@ class Calendar_Controller extends Page_Controller {
 			null,
 			$announcement_filter
 		);
-
+		$all_events_count = $all->count();
 		$list = $all->limit($this->EventsPerPage, $this->getOffset());		
 		$next = $this->getOffset()+$this->EventsPerPage;
-		$this->MoreEvents = ($next < $all->count());
+		$this->MoreEvents = ($next < $all_events_count);
 		$this->MoreLink = HTTP::setGetVar("start", $next);
 		return $list;
 	}
