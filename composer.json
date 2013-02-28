@@ -1,5 +1,5 @@
 {
-  "name":"silverstripe/event-calendar",
+  	"name":"unclecheese/event-calendar",
 	"type": "silverstripe-module",
 	"description": "Event Calendar for the SilverStripe CMS",
 	"keywords": ["silverstripe", "events"],
@@ -21,6 +21,7 @@
 	},
     	"extra": {
 		"installer-name": "event_calendar"
-    	}
+    	},
+	"replace": {"silverstripe/event-calendar": "*"}    	
 	
 }
