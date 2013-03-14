@@ -1,4 +1,4 @@
-de_DE:
+nl:
   Calendar:
     OneDay: '%{sDayNumShort}. %{sMonShort}. %{sYearFull}'
     SameMonthSameYear: '%{sDayNumShort}. - %{eDayNumShort}. %{sMonShort}. %{eYearFull}'
