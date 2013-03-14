@@ -1,0 +1,50 @@
+de_DE:
+  Calendar:
+    OneDay: '%{sDayNumShort}. %{sMonShort}. %{sYearFull}'
+    SameMonthSameYear: '%{sDayNumShort}. - %{eDayNumShort}. %{sMonShort}. %{eYearFull}'
+    DiffMonthSameYear: '%{sDayNumShort}. %{sMonShort}. - %{eDayNumShort}. %{eMonShort}. %{eYearFull}'
+    DiffMonthDiffYear: '%{sDayNumShort}. %{sMonShort}. %{sYearFull} - %{eDayNumShort}. %{eMonShort}. %{eYearFull}'
+    OneDayHeader: '%{sDayNumShort}. %{sMonFull} %{sYearFull}'
+    MonthHeader: '%{sMonFull} %{sYearFull}'
+    YearHeader: '%{sYearFull}'
+    NUMBEROFEVENTS: 'Anzahl anzuzeigender Anlässe (Standard-Ansicht).'
+    DEFAULTDATEHEADER: 'Standard-Titel (wird angezeigt wenn kein Datum selektiert worden ist).'
+    NUMBERFUTUREDATES: 'Maximal anzuzeigende Daten bei sich wiederholenden Anlässen'
+    UPCOMINGEVENTSFOR: 'Kommende Anlässe für %s'
+    FILTER: Filtern
+  CalendarDateTime:
+    INVALIDFORMAT: 'Ungültiges Datums-Format. Gültig sind "dmy" oder "mdy".'
+  CalendarEvent:
+    REPEATEVENT: 'Wiederhole diesen Anlass'
+    DESCRIBEINTERVAL: 'Definiere den Zeitraum in dem dieser Anlass wieder auftritt:'
+    EVERY: 'Jede(n) '
+    DAYS: ' Tag'
+    WEEKS: ' Woche'
+    ONFOLLOWINGDAYS: 'On the following day(s)...'
+    MONTHS: ' Monat'
+    ONTHESEDATES: 'An diesen Daten...'
+    ONTHE: 'Am ...'
+    OFTHEMONTH: ' des Monats.'
+    ANYEXCEPTIONS: 'Gibt es Ausnahmen bei den sich wiederholenden Anlässen? Wenn ja, allfällige Ausnahmen unten eintragen.'
+    DATE: Datum
+    RSSFEED: 'RSS-Feed dieses Kalenders'
+  Calendar.ss:
+    BROWSECALENDAR: 'Durchsuche den Kalender'
+    USECALENDAR: 'Kalender benutzen um Anlässe zu finden.'
+    SUBSCRIBE: 'Diesen Kalender abonnieren.'
+    ALLDAY: 'Den ganzen Tag'
+    TIME: Zeit
+    MORE: mehr...
+    SEEALSO: 'Siehe auch'
+    ADD: 'Zu meinem Kalender hinzufügen'
+    NOEVENTS: 'Es wurden keine Anlässe gefunden.'
+  CalendarEvent.ss:
+    BROWSECALENDAR: 'Durchsuche den Kalender'
+    USECALENDAR: 'Kalender benutzen um Anlässe zu finden.'
+    FILTERCALENDAR: 'Kalender filtrieren'
+    BACKTO: 'Zurück zu'
+    SUBSCRIBE: 'Diesen Kalender abonnieren.'
+    ADDITIONALDATES: 'Zusätzliche Daten'
+    ADD: 'Zu meinem Kalender hinzufügen'
+  CalendarWidget:
+    LOCALEFILE: date_de.js
