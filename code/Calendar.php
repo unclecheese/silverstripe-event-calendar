@@ -773,15 +773,15 @@ class Calendar_Controller extends Page_Controller {
 				$URL = "";
 			}
 			$TITLE = $feed ? $_REQUEST['title'] : $event->Title;
-			header("Cache-Control: private");
-			header("Content-Description: File Transfer");
-			header("Content-Type: text/calendar");
-			header("Content-Transfer-Encoding: binary");
+			$this->getResponse()->addHeader('Cache-Control','private');
+			$this->getResponse()->addHeader('Content-Description','File Transfer');
+			$this->getResponse()->addHeader('Content-Type','text/calendar');
+			$this->getResponse()->addHeader('Content-Transfer-Encoding','binary');
 	  		if(stristr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
- 				header("Content-disposition: filename=".$FILENAME."; attachment;");
+ 				$this->getResponse()->addHeader("Content-disposition","filename=".$FILENAME."; attachment;");
  			}
  			else {
- 				header("Content-disposition: attachment; filename=".$FILENAME);
+ 				$this->getResponse()->addHeader("Content-disposition","attachment; filename=".$FILENAME);
  			}
 			$result = trim(strip_tags($this->customise(array(
 				'HOST' => $HOST,
