@@ -2,17 +2,14 @@
 
 class CalendarAnnouncement extends CalendarDateTime {
 
-
-	static $db = array (
+	private static $db = array (
 		'Title' => 'Varchar(255)',
 		'Content' => 'Text'
 	);
 
-
-	static $has_one = array (
+	private static $has_one = array (
 		'Calendar' => 'Calendar'
 	);
-
 
 	public function getCMSFields() {
 		$f = parent::getCMSFields();
@@ -23,16 +20,12 @@ class CalendarAnnouncement extends CalendarDateTime {
 		return $f;
 	}
 
-
 	public function getTitle() {
 		return $this->getField('Title');
 	}
 
-
 	public function getContent() {
 		return $this->getField('Content');
 	}
-
-
 
 }

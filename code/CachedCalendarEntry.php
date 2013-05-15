@@ -1,11 +1,8 @@
 <?php
 
-
 class CachedCalendarEntry extends DataObject {
 
-
-
-	 static $db = array (		
+	 private static $db = array (		
 		'StartDate' => 'Date',
 		'StartTime' => 'Time',
 		'EndDate' => 'Date',
@@ -18,29 +15,20 @@ class CachedCalendarEntry extends DataObject {
 		'Title' => 'Varchar(255)',
 		'Content' => 'HTMLText'
 	);
-	
 
-	static $has_one = array (
+	private static $has_one = array (
 		'CachedCalendar' => 'Calendar',
 		'Calendar' => 'Calendar',
 		'Event' => 'CalendarEvent'
 	);
-
-
 	
-	static $default_sort = "StartDate ASC, StartTime ASC";
-
-
-
-
+	private static $default_sort = "StartDate ASC, StartTime ASC";
 
 	public static function create_from_datetime(CalendarDateTime $dt, Calendar $calendar) {
 		$cached = CachedCalendarEntry::create();
 		$cached->hydrate($dt, $calendar);
 		return $cached;
 	}
-
-
 
 	public static function create_from_announcement(CalendarAnnouncement $dt, Calendar $calendar) {
 		$cached = CachedCalendarEntry::create();
@@ -49,9 +37,6 @@ class CachedCalendarEntry extends DataObject {
 		$cached->Announcement = 1;
 		return $cached;
 	}
-
-
-
 
 	public function OtherDates() {
 		if($this->Announcement) {
@@ -81,7 +66,5 @@ class CachedCalendarEntry extends DataObject {
 		$this->Content = $dt->getContent();
 		return $this;
 	}
-
-
 
 }

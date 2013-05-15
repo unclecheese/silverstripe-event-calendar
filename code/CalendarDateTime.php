@@ -1,10 +1,8 @@
 <?php
 
-class CalendarDateTime extends DataObject
-{
+class CalendarDateTime extends DataObject {
 	
-
-	 static $db = array (		
+	private static $db = array (		
 		'StartDate' => 'Date',
 		'StartTime' => 'Time',
 		'EndDate' => 'Date',
@@ -12,23 +10,17 @@ class CalendarDateTime extends DataObject
 		'AllDay' => 'Boolean'		
 	);
 	
-
-	static $has_one = array (
+	private static $has_one = array (
 		'Event' => 'CalendarEvent'
 	);
 
+	private static $date_format_override;
 
-	static $date_format_override;
+	private static $time_format_override;
 
+	private static $default_sort = "StartDate ASC, StartTime ASC";
 
-	static $time_format_override;
-
-
-	static $default_sort = "StartDate ASC, StartTime ASC";
-
-
-	static $offset = "0:00";
-
+	private static $offset = "0:00";
 
 	public function getCMSFields() {
 		DateField::set_default_config('showcalendar', true);
@@ -45,8 +37,6 @@ class CalendarDateTime extends DataObject
 		return $f;
 	}
 
-
-
 	public function summaryFields() {
 		return array (
 			'FormattedStartDate' => _t('Calendar.STARTDATE','Start date'),
@@ -57,12 +47,9 @@ class CalendarDateTime extends DataObject
 		);
 	}
 
-
 	public function Link() {
 		return Controller::join_links($this->Event()->Link(),"?date=".$this->StartDate);
 	}
-
-
 
 	public function DateRange() {		
 		list($strStartDate,$strEndDate) = CalendarUtil::get_date_string($this->StartDate,$this->EndDate);		
@@ -75,8 +62,6 @@ class CalendarDateTime extends DataObject
 		return $html;
 	}
 	
-
-
 	public function TimeRange() {
 		$func = CalendarUtil::get_time_format() == "24" ? "Nice24" : "Nice";
 		$ret = $this->obj('StartTime')->$func();
@@ -84,12 +69,9 @@ class CalendarDateTime extends DataObject
 		return $ret;
 	}
 
-
 	public function Announcement() {
 		return $this->ClassName == "CalendarAnnouncement";
 	}
-
-
 
 	public function OtherDates() {
 		if($this->Announcement()) {
@@ -106,9 +88,6 @@ class CalendarDateTime extends DataObject
 			->limit($this->Event()->Parent()->DefaultEventDisplay);
 	}
 
-
-
-
 	public function MicroformatStart($offset = true) {
 		if(!$this->StartDate)
 			return "";
@@ -122,8 +101,6 @@ class CalendarDateTime extends DataObject
 	
 		return CalendarUtil::microformat($date, $time, self::$offset);
 	}
-	
-
 
 	public function MicroformatEnd($offset = true) {
 		if($this->AllDay && $this->StartDate) {
@@ -139,8 +116,6 @@ class CalendarDateTime extends DataObject
 
 		return CalendarUtil::microformat($date, $time, self::$offset);
 	}
-
-
 
 	public function ICSLink() {
 		$ics_start = $this->obj('StartDate')->Format('Ymd')."T".$this->obj('StartTime')->Format('His');
@@ -174,53 +149,37 @@ class CalendarDateTime extends DataObject
 		);
 	}
 
-
-
-
 	public function getFormattedStartDate() {
 	   if(!$this->StartDate) return "--";
 	   return CalendarUtil::get_date_format() == "mdy" ? $this->obj('StartDate')->Format('m-d-Y') : $this->obj('StartDate')->Format('d-m-Y');
 	}
 	
-
-
 	public function getFormattedEndDate() {
 	   if(!$this->EndDate) return "--";
 	   return CalendarUtil::get_date_format() == "mdy" ? $this->obj('EndDate')->Format('m-d-Y') : $this->obj('EndDate')->Format('d-m-Y');
 	}
-		
-
 
 	public function getFormattedStartTime() {
 	   if(!$this->StartTime) return "--";
 	   return CalendarUtil::get_time_format() == "12" ? $this->obj('StartTime')->Nice() : $this->obj('StartTime')->Nice24();
 	}
-	
-
 
 	public function getFormattedEndTime() {
 	   if(!$this->EndTime) return "--";
 	   return CalendarUtil::get_time_format() == "12" ? $this->obj('EndTime')->Nice() : $this->obj('EndTime')->Nice24();
 	}
-	
-
 
 	public function getFormattedAllDay() {
 	   return $this->AllDay == 1 ? _t('YES','Yes') : _t('NO','No');
 	}
-	
-
 
 	public function getTitle() {
 		return $this->Event()->Title;
 	}
 
-
 	public function getContent() {
 		return $this->Event()->Content;
 	}
-
-
 
 	public function getAllDatesInRange() {
 		$start = sfDate::getInstance($this->StartDate);
@@ -233,16 +192,20 @@ class CalendarDateTime extends DataObject
 		return $dates;
 	}
 	
-	
-	public function canCreate($member = null) { return Permission::check("CMS_ACCESS_CMSMain"); }
+	public function canCreate($member = null) {
+		return Permission::check("CMS_ACCESS_CMSMain");
+	}
 
-	public function canEdit($member = null) { return Permission::check("CMS_ACCESS_CMSMain"); }
+	public function canEdit($member = null) {
+		return Permission::check("CMS_ACCESS_CMSMain");
+	}
 
-	public function canDelete($member = null) { return Permission::check("CMS_ACCESS_CMSMain"); }
+	public function canDelete($member = null) {
+		return Permission::check("CMS_ACCESS_CMSMain");
+	}
 
-	public function canView($member = null) { return Permission::check("CMS_ACCESS_CMSMain"); }
-	
-
-
+	public function canView($member = null) {
+		return Permission::check("CMS_ACCESS_CMSMain");
+	}
 
 }

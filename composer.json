@@ -1,5 +1,5 @@
 {
-  	"name":"unclecheese/event-calendar",
+	"name":"unclecheese/event-calendar",
 	"type": "silverstripe-module",
 	"description": "Event Calendar for the SilverStripe CMS",
 	"keywords": ["silverstripe", "events"],
@@ -10,19 +10,18 @@
 			"homepage": "http://leftandmain.com"
 		}
 	],
-	"require":
-	{
+	"require": {
 		"php": ">=5.3.2",
-		"silverstripe/framework": "3.*",
-		"silverstripe/cms": "3.*",
-		"sheadawson/silverstripe-timepickerfield": "dev-master"
+		"silverstripe/framework": ">=3.1",
+		"silverstripe/cms": ">=3.1"
 	},
 	"support": {
 		"issues": "https://github.com/unclecheese/EventCalendar/issues"
 	},
-    	"extra": {
+	"extra": {
 		"installer-name": "event_calendar"
-    	},
-	"replace": {"silverstripe/event-calendar": "*"}
-
+	},
+	"replace": {
+		"silverstripe/event-calendar": "*"
+	}
 }

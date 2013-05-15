@@ -1,7 +1,7 @@
 <?php
 
-class CalendarTimeField extends TimeField
-{
+class CalendarTimeField extends TimeField {
+	
 	function Field() {
 		$attributes = array(
 			'type' => 'text',

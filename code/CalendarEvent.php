@@ -1,8 +1,8 @@
 <?php
 
-class CalendarEvent extends Page
-{
-	static $db = array (
+class CalendarEvent extends Page{
+	
+	private static $db = array (
 		'Recursion' => 'Boolean',
 		'CustomRecursionType' => 'Int',
 		'DailyInterval' => 'Int',
@@ -14,26 +14,23 @@ class CalendarEvent extends Page
 		'MonthlyDayOfWeek' => 'Int'
 	);
 	
-	static $has_many = array (
+	private static $has_many = array (
 		'DateTimes' => 'CalendarDateTime',
 		'Exceptions' => 'RecurringException'
 	);
 	
-	
-	static $many_many = array (
+	private static $many_many = array (
 		'RecurringDaysOfWeek' => 'RecurringDayOfWeek',
 		'RecurringDaysOfMonth' => 'RecurringDayOfMonth'
 	);
 
-	static $icon = "event_calendar/images/event";	
+	private static $icon = "event_calendar/images/event";	
 
-	static $description = "An individual event entry";
+	private static $description = "An individual event entry";
 
-	static $datetime_class = "CalendarDateTime";
+	private static $datetime_class = "CalendarDateTime";
 
-
-	public function getCMSFields()
-	{
+	public function getCMSFields() {
 		Requirements::javascript('event_calendar/javascript/calendar_cms.js');
 		$f = parent::getCMSFields();
 		$dt = _t('CalendarEvent.DATESANDTIMES','Dates and Times');
@@ -120,23 +117,17 @@ class CalendarEvent extends Page
 	
 	}
 
-
 	public function getRecursionReader() {
 		return new RecursionReader($this);
 	}
-
-
-
 
 	public function getDateTimeClass() {
 		return $this->stat('datetime_class');
 	}
 
-
 	public function CalendarWidget() {
 		return $this->Parent()->CalendarWidget();
 	}
-
 
 }
 
@@ -237,6 +228,5 @@ class CalendarEvent_Controller extends Page_Controller {
 			return $result;			
 		}
 	}
-
 
 }

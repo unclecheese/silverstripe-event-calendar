@@ -4,33 +4,22 @@
 
 class CalendarWidget extends ViewableData {
 	
-
 	protected $calendar;
-
 
 	protected $selectionStart;
 
-
 	protected $selectionEnd;
 
-	protected $options = array (
-
-
-	);
-
+	protected $options = array ();
 
 	public function __construct(Calendar $calendar) {
 		$this->calendar = $calendar;
 	}
 
-
-
 	public function setOption($k, $v) {
 		$this->options[$k] = $v;
 	}
-
-
-
+	
 	public function getDataAttributes() {
 		$attributes = "";
 		$this->options['url'] = $this->calendar->Link();
@@ -41,18 +30,13 @@ class CalendarWidget extends ViewableData {
 		return $attributes;
 	}
 
-
-
 	public function setSelectionStart($date) {
 		$this->selectionStart = $date;
 	}
 
-
-
 	public function setSelectionEnd($date) {
 		$this->selectionEnd = $date;
 	}
-
 
 	public function forTemplate() {
 		Requirements::javascript(THIRDPARTY_DIR."/jquery/jquery.js");		
