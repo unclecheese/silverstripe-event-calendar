@@ -4,27 +4,19 @@ class CalendarUtil {
 
 	const ONE_DAY = "OneDay";
 
-
 	const SAME_MONTH_SAME_YEAR = "SameMonthSameYear";
-
 
 	const DIFF_MONTH_SAME_YEAR = "DiffMonthSameYear";
 
-
 	const DIFF_MONTH_DIFF_YEAR = "DiffMonthDiffYear";
-	
 
 	const ONE_DAY_HEADER = "OneDayHeader";
 
-
 	const MONTH_HEADER = "MonthHeader";
-
 
 	const YEAR_HEADER = "YearHeader";
 
-
-
-	static $format_character_placeholders = array(
+	private static $format_character_placeholders = array(
 		'$StartDayNameShort',
 		'$StartDayNameLong',
 		'$StartDayNumberShort',
@@ -48,8 +40,6 @@ class CalendarUtil {
 		'$EndYearShort',
 		'$EndYearLong'
 	);
-
-
 
 	public static function format_character_replacements($start, $end) {
 		return array(
@@ -79,9 +69,7 @@ class CalendarUtil {
 
 		);	
 	}
-
-
-
+	
 	public static function localize($start, $end, $key) {
 		global $customDateTemplates;
 		if(is_array($customDateTemplates) && isset($customDateTemplates[$key]))
@@ -92,8 +80,6 @@ class CalendarUtil {
 		
 		return str_replace(self::$format_character_placeholders, self::format_character_replacements($start,$end), $template);		
 	}	
-
-
 
 	public static function get_date_from_string($str) {
 		$str = str_replace('-','',$str);
@@ -108,8 +94,6 @@ class CalendarUtil {
 			return date('Y-m-d');
 		}
 	}
-
-
 
 	static function get_date_string($start_date,$end_date) {
 		$strStartDate = null;
@@ -151,8 +135,6 @@ class CalendarUtil {
 		return array($date_string, "");
 	}
 
-
-
 	public static function microformat($date, $time, $offset = true) {
 		if(!$date)
 			return "";
@@ -165,8 +147,6 @@ class CalendarUtil {
 		$ret = date('Ymd', $ts) . "T" . date('His',$ts);
 		return $offset ? $ret . $offset : $ret;
 	}
-
-
 
 	public static function get_months_map($key = '%b') {
     	return array (
@@ -185,15 +165,12 @@ class CalendarUtil {
 	   );	
 	}
 
-
 	public static function get_date_format() {
 		if(CalendarDateTime::$date_format_override) {
 			return CalendarDateTime::$date_format_override;
 		}
 		return _t('CalendarDateTime.DATEFORMAT','mdy');
 	}
-
-
 
 	public static function get_time_format() {
 		if(CalendarDateTime::$time_format_override) {
@@ -202,14 +179,10 @@ class CalendarUtil {
 		return _t('CalendarDateTime.TIMEFORMAT','24');
 	}
 
-
-
 	public static function get_first_day_of_week() {
 		$result = strtolower(_t('CalendarDateTime.FIRSTDAYOFWEEK','monday'));
 		return ($result == "monday") ? sfTime::MONDAY : sfTime::SUNDAY;
 	}
-
-
 
 	public static function date_sort(&$data) {
 			uasort($data, array("CalendarUtil","date_sort_callback"));
@@ -233,9 +206,5 @@ class CalendarUtil {
 			return -1;
 		
 	}
-
-
-
-
 
 }

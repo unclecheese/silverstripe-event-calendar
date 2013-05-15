@@ -1,19 +1,15 @@
 <?php
 
-class ICSFeed extends DataObject
-{
-	static $db = array (
+class ICSFeed extends DataObject {
+	
+	private static $db = array (
 		'Title' => 'Varchar(100)',
 		'URL' => 'Varchar(255)'
 	);
 
-
-	
-	static $has_one = array (
+	private static $has_one = array (
 		'Calendar' => 'Calendar'
 	);
-	
-	
 
 	public function getCMSFields() {
 		$f = new FieldList (

@@ -1,18 +1,15 @@
 <?php
 
-class RecurringException extends DataObject
-{
-	static $db = array (
+class RecurringException extends DataObject {
+	
+	private static $db = array (
 		'ExceptionDate' => 'Date'
 	);
-
-
 	
-	static $has_one = array (
+	private static $has_one = array (
 		'CalendarEvent' => 'CalendarEvent'
 	);
 
-
-	static $default_sort = "ExceptionDate ASC";
+	private static $default_sort = "ExceptionDate ASC";
 	
 }

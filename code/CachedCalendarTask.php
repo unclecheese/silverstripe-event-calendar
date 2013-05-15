@@ -1,6 +1,5 @@
 <?php
 
-
 class CachedCalendarTask extends HourlyTask {
 
 	public function process() {

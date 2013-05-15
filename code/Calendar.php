@@ -1,9 +1,8 @@
 <?php
 
 class Calendar extends Page {
-	
 
-	static $db = array(
+	private static $db = array(
 		'DefaultDateHeader' => 'Varchar(50)',
 		'OtherDatesCount' => 'Int',
 		'RSSTitle' => 'Varchar(255)',
@@ -11,36 +10,26 @@ class Calendar extends Page {
 		'EventsPerPage' => 'Int',
 		'DefaultView' => "Enum('today,week,,month,weekend,upcoming','upcoming')"
 	);
-
-
 	
-	static $has_many = array (
+	private static $has_many = array (
 		'Announcements' => 'CalendarAnnouncement',
 		'CalendarEvents' => 'CalendarEvent',
 		'Feeds' => 'ICSFeed'
 	);
-	
-	
 
-	static $many_many = array (
+	private static $many_many = array (
 		'NestedCalendars' => 'Calendar'
 	);
-	
-	
 
-	static $belongs_many_many = array (
+	private static $belongs_many_many = array (
 		'ParentCalendars' => 'Calendar'
 	);
-	
-	
 
-	static $allowed_children = array (
+	private static $allowed_children = array (
 		'CalendarEvent'
 	);
 	
-	
-
-	static $defaults = array (
+	private static $defaults = array (
 		'DefaultEventDisplay' => '10',
 		'DefaultDateHeader' => 'Upcoming Events',
 		'OtherDatesCount' => '3',
@@ -49,36 +38,23 @@ class Calendar extends Page {
 		'DefaultView' => 'upcoming'
 	);
 	
-	
+	private static $reccurring_event_index = 0;
 
-	static $reccurring_event_index = 0;
+	private static $icon = "event_calendar/images/calendar";
 
+	private static $description = "A collection of Calendar Events";
 
-	static $icon = "event_calendar/images/calendar";
+	private static $event_class = "CalendarEvent";
 
+	private static $announcement_class = "CalendarAnnouncement";
 
-	static $description = "A collection of Calendar Events";
+	private static $timezone = "America/New_York";
 
+	private static $language = "EN";
 
-	static $event_class = "CalendarEvent";
+	private static $jquery_included = false;
 
-
-	static $announcement_class = "CalendarAnnouncement";
-
-
-	static $timezone = "America/New_York";
-
-
-	static $language = "EN";
-
-
-	static $jquery_included = false;
-
-
-
-	static $caching_enabled = false;
-
-
+	private static $caching_enabled = false;
 
 	protected $eventClass_cache, 
 			  $announcementClass_cache, 
@@ -87,22 +63,15 @@ class Calendar extends Page {
 			  $announcementToCalendarRelation_cache,
 			  $EventList_cache;
 
-
-
 	public static function set_jquery_included($bool = true) {
 		self::$jquery_included = $bool;
 	}
-
-
 
 	public static function enable_caching() {
 		self::$caching_enabled = true;
 	}
 
-
-	
-	public function getCMSFields()
-	{
+	public function getCMSFields() {
 
 		Requirements::javascript('event_calendar/javascript/calendar_cms.js');
 
@@ -153,14 +122,11 @@ class Calendar extends Page {
 		return $f;
 	}
 
-
 	public function getEventClass() {
 		if($this->eventClass_cache) return $this->eventClass_cache;
 		$this->eventClass_cache = $this->stat('event_class');
 		return $this->eventClass_cache;
 	}
-
-
 
 	public function getAnnouncementClass() {
 		if($this->announcementClass_cache) return $this->announcementClass_cache;
@@ -168,24 +134,17 @@ class Calendar extends Page {
 		return $this->announcementClass_cache;
 	}
 
-
-
 	public function getDateTimeClass() {
 		if($this->datetimeClass_cache) return $this->datetimeClass_cache;
 		$this->datetimeClass_cache = singleton($this->getEventClass())->stat('datetime_class');
 		return $this->datetimeClass_cache;		
 	}
 
-
-
 	public function getDateToEventRelation() {
 		if($this->dateToEventRelation_cache) return $this->dateToEventRelation_cache;
 		$this->dateToEventRelation_cache = singleton($this->getDateTimeClass())->getReverseAssociation($this->getEventClass())."ID";
 		return $this->dateToEventRelation_cache;
 	}
-
-
-
 
 	public function getCachedEventList($start, $end, $filter = null, $limit = null) {		
 		return CachedCalendarEntry::get()
@@ -203,9 +162,6 @@ class Calendar extends Page {
 			->limit($limit);
 
 	}
-
-
-
 
 	public function getEventList($start, $end, $filter = null, $limit = null, $announcement_filter = null) {		
 		if(Config::inst()->get("Calendar","caching_enabled")) {
@@ -247,9 +203,6 @@ class Calendar extends Page {
 		return $this->EventList_cache = $eventList;
 	}
 
-
-
-
 	protected function getStandardEvents($start, $end, $filter = null) {
 		$ids = array ();
 		$r = DB::query("SELECT ID FROM SiteTree_Live WHERE ClassName = 'CalendarEvent' AND ParentID = $this->ID");
@@ -278,9 +231,6 @@ class Calendar extends Page {
 		return $list;
 	}
 
-
-
-
 	protected function getRecurringEvents($filter = null) {
 		$event_class = $this->getEventClass();
 		$datetime_class = $this->getDateTimeClass();
@@ -297,9 +247,6 @@ class Calendar extends Page {
 		}
 		return false;
 	}
-
-
-
 
 	public function getNextRecurringEvents($event_obj, $datetime_obj, $limit = null) {
 		$counter = sfDate::getInstance($datetime_obj->StartDate);
@@ -324,9 +271,6 @@ class Calendar extends Page {
 		}
 		return $dates;	
 	}
-
-
-
 
 	protected function addRecurringEvents($start_date, $end_date, $recurring_events,$all_events) {		
 		$date_counter = sfDate::getInstance($start_date);
@@ -357,7 +301,6 @@ class Calendar extends Page {
 		return $all_events;
 	}
 
-
 	public function newRecursionDateTime($recurring_event_datetime, $start_date) {
 		$c = $this->getDateTimeClass();
 		$relation = $this->getDateToEventRelation();		
@@ -373,16 +316,12 @@ class Calendar extends Page {
 		return $e;
 	}
 
-
 	public function getAllCalendars() {
 		$calendars = new ArrayList();
 		$calendars->push($this);
 		$calendars->merge($this->NestedCalendars());
 		return $calendars;
 	}
-
-
-
 
 	public function UpcomingEvents($limit = 5, $filter = null)  {				
 		$all = $this->getEventList(
@@ -394,18 +333,15 @@ class Calendar extends Page {
 		return $all->limit($limit);			
 	}
 
-
-
 	public function UpcomingAnnouncements($limit = 5, $filter = null) {
 		return $this->Announcements()
-					->filter(array(
-						'StartDate:GreaterThan' => 'DATE(NOW())'
-					))
-					->where($filter)
-					->limit($limit);
+			->filter(array(
+				'StartDate:GreaterThan' => 'DATE(NOW())'
+			))
+			->where($filter)
+			->limit($limit);
 	}
-
-
+	
 	public function RecentEvents($limit = null, $filter = null)  {
 		$start_date = sfDate::getInstance();
 		$end_date = sfDate::getInstance();
@@ -420,9 +356,7 @@ class Calendar extends Page {
 		return $events->getRange(0,$limit);
 	}
 
-
-
-	 public function CalendarWidget() {
+	public function CalendarWidget() {
 	 	$calendar = new CalendarWidget($this);
 	 	$controller = Controller::curr();
 	 	if($controller->class == "Calendar_Controller" || is_subclass_of($controller, "Calendar_Controller")) {
@@ -430,29 +364,24 @@ class Calendar extends Page {
 	 			$calendar->setOption('start', $controller->getStartDate()->format('Y-m-d'));
 	 			$calendar->setOption('end', $controller->getEndDate()->format('Y-m-d'));
 	 		}
-	 	}
-	 	return $calendar;
-	 }
+		}
+		return $calendar;
+	}
 
-
-	 public function MonthJumpForm() {
+	public function MonthJumpForm() {
 	 	$controller = Controller::curr();
 	 	if($controller->class == "Calendar_Controller" || is_subclass_of($controller, "Calendar_Controller")) {
 	 		return Controller::curr()->MonthJumpForm();
 	 	}
 	 	$c = new Calendar_Controller($this);
 	 	return $c->MonthJumpForm();
-	 }
-
-
+	}
+	
 }
-
-
 
 class Calendar_Controller extends Page_Controller {
 	
-
-	static $allowed_actions = array (
+	private static $allowed_actions = array (
 		'show',
 		'month',
 		'year',
@@ -466,17 +395,11 @@ class Calendar_Controller extends Page_Controller {
 		'MonthJumpForm'
 	);
 
-
-
 	protected $view;
-
 
 	protected $startDate;
 
-
 	protected $endDate;
-
-
 
 	public function init() {
 		parent::init();
@@ -488,25 +411,17 @@ class Calendar_Controller extends Page_Controller {
 		Requirements::javascript('event_calendar/javascript/calendar.js');
 	}
 
-
-
 	public function getStartDate() {
 		return $this->startDate;
 	}
-
-
 
 	public function getEndDate() {
 		return $this->endDate;
 	}
 
-
-
 	public function getView() {
 		return $this->view;
 	}
-
-
 
 	public function setDefaultView() {
 		$this->view = "default";
@@ -514,15 +429,11 @@ class Calendar_Controller extends Page_Controller {
 		$this->endDate = sfDate::getInstance()->addMonth(6);				
 	}
 
-
-
 	public function setTodayView() {
 		$this->view = "day";
 		$this->startDate = sfDate::getInstance();
 		$this->endDate = sfDate::getInstance();
 	}
-
-
 
 	public function setWeekView() {
 		$this->view = "week";
@@ -533,8 +444,6 @@ class Calendar_Controller extends Page_Controller {
 			$this->endDate->tomorrow();
 		}
 	}
-
-
 
 	public function setWeekendView() {
  		$this->view = "weekend";
@@ -549,15 +458,11 @@ class Calendar_Controller extends Page_Controller {
 		$this->endDate = sfDate::getInstance($start)->nextDay(sfTime::SUNDAY);
 	}
 
-
-
 	public function setMonthView() {
 		$this->view = "month";		
 		$this->startDate = sfDate::getInstance()->firstDayOfMonth();
 		$this->endDate = sfDate::getInstance($this->startDate)->finalDayOfMonth();
 	}
-
-
 
 	public function getOffset() {
 		if(!isset($_REQUEST['start'])) {
@@ -566,13 +471,9 @@ class Calendar_Controller extends Page_Controller {
 		return $_REQUEST['start'];
 	}
 
-
-
 	protected function getRangeLink(sfDate $start, sfDate $end) {
 		return Controller::join_links($this->Link(), "show", $start->format('Ymd'), $end->format('Ymd'));
 	}
-
-
 
 	public function respond() {
 		if(Director::is_ajax()) {
@@ -580,7 +481,6 @@ class Calendar_Controller extends Page_Controller {
 		}
 		return array();
 	}
-
 
 	public function index(SS_HTTPRequest $r) {
 		switch($this->DefaultView) {
@@ -626,21 +526,15 @@ class Calendar_Controller extends Page_Controller {
 		}
 	}
 
-
-
 	public function today(SS_HTTPRequest $r) {		
 		$this->setTodayView();
 		return $this->respond();
 	}
 
-
-
 	public function week(SS_HTTPRequest $r) {
 		$this->setWeekView();
 		return $this->respond();
 	}
-
-
 
 	public function weekend(SS_HTTPRequest $r) {
 		$this->setWeekendView();
@@ -648,21 +542,15 @@ class Calendar_Controller extends Page_Controller {
 	}
 
 
-
-
 	public function month(SS_HTTPReqest $r) {
 		$this->setMonthView();
 		return $this->respond();
 	}
 
-
-
 	public function show(SS_HTTPRequest $r) {
 		$this->parseURL($r);
 		return $this->respond();
 	}
-
-
 
 	public function rss() {
 		$this->setDefaultView();
@@ -689,8 +577,6 @@ class Calendar_Controller extends Page_Controller {
 		echo $xml;
 	}
 
-
-
 	public function monthjson(SS_HTTPRequest $r) {
 		if(!$r->param('ID')) return false;
 		$this->startDate = sfDate::getInstance(CalendarUtil::get_date_from_string($r->param('ID')));
@@ -716,8 +602,6 @@ class Calendar_Controller extends Page_Controller {
 		return Convert::array2json($json);
 	}
 
-
-
 	/**
 	 * Send ical file of multiple upcoming events using ICSWriter
 	 *
@@ -729,8 +613,6 @@ class Calendar_Controller extends Page_Controller {
 		$writer = new ICSWriter($this->data(), Director::absoluteURL('/'));
 		$writer->sendDownload();
 	}
-
-
 
 	public function ics(SS_HTTPRequest $r) {		
 		$feed = false;
@@ -800,10 +682,6 @@ class Calendar_Controller extends Page_Controller {
 		}
 	}
 
-
-
-
-
 	public function parseURL(SS_HTTPRequest $r) {
 		if(!$r->param('ID')) return;
 		$this->startDate = sfDate::getInstance(CalendarUtil::get_date_from_string($r->param('ID')));
@@ -837,8 +715,6 @@ class Calendar_Controller extends Page_Controller {
 		}
 	}
 
-
-
 	public function Events() {
 		$event_filter = null;
 		$announcement_filter = null;
@@ -864,8 +740,6 @@ class Calendar_Controller extends Page_Controller {
 		$this->MoreLink = HTTP::setGetVar("start", $next);
 		return $list;
 	}
-
-
 
 	public function DateHeader() {
 		switch($this->view) {
@@ -893,27 +767,21 @@ class Calendar_Controller extends Page_Controller {
 				return $this->DefaultDateHeader;
 			break;
 		}
-	 }
-
+	}
 
 	public function CurrentAction($a) {
 	 	return $this->getAction() == $a;
 	}
-
 
 	public function PreviousDayLink() {
 	 	$s = sfDate::getInstance($this->startDate)->yesterday();
 	 	return $this->getRangeLink($s, $s);
 	}
 
-
-
 	public function NextDayLink() {
 	 	$s = sfDate::getInstance($this->startDate)->tomorrow();
 	 	return $this->getRangeLink($s, $s);
 	}
-
-
 
 	public function PreviousWeekLink() {
 	 	$s = sfDate::getInstance($this->startDate)->subtractWeek();
@@ -921,15 +789,11 @@ class Calendar_Controller extends Page_Controller {
 	 	return $this->getRangeLink($s, $e);
 	}
 
-
-
 	public function NextWeekLink() {
 	 	$s = sfDate::getInstance($this->startDate)->addWeek();
 	 	$e = sfDate::getInstance($this->endDate)->addWeek();
 	 	return $this->getRangeLink($s, $e);
 	}
-
-
 
 	public function NextMonthLink() {
 	 	$s = sfDate::getInstance($this->startDate)->addMonth();
@@ -937,24 +801,19 @@ class Calendar_Controller extends Page_Controller {
 	 	return $this->getRangeLink($s, $e);
 	}
 
-
-
 	public function PreviousMonthLink() {
 	 	$s = sfDate::getInstance($this->startDate)->subtractMonth();
 	 	$e = sfDate::getInstance($s)->finalDayOfMonth();
 	 	return $this->getRangeLink($s, $e);
 	}
 
-
 	public function NextWeekendLink() {
 	 	return $this->NextWeekLink();
 	}
 
-
 	public function PreviousWeekendLink() {
 	 	return $this->PreviousWeekLink();
 	}
-
 
 	public function IsSegment($segment) {
 	 	switch($segment) {
@@ -973,13 +832,10 @@ class Calendar_Controller extends Page_Controller {
 	 	}
 	}
 
-
 	public function MonthJumper() {
 		return $this->renderWith('MonthJumper');
 	}
 	
-
-
 	public function MonthJumpForm() {
 		$this->parseURL($this->getRequest());
 		$dummy = sfDate::getInstance($this->startDate);
@@ -1012,6 +868,5 @@ class Calendar_Controller extends Page_Controller {
 	public function doMonthJump($data, $form) {
 		return $this->redirect($this->Link('show').'/'.$data['Year'].$data['Month']);
 	}
-
 
 }

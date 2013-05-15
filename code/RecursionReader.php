@@ -4,26 +4,19 @@ class RecursionReader extends Object {
 	
 	const DAY = 86400;
 
-
 	const WEEK = 604800;
-
 
 	protected $event, $datetimeClass, $eventClass, $ts;
 
-	
 	protected $allowedDaysOfWeek = array ();
-
 	
 	protected $allowedDaysOfMonth = array ();
 
-
 	protected $exceptions = array ();
-
 
 	public static function difference_in_months($dateObj1,$dateObj2) {
 		return (($dateObj1->format('Y') * 12) + $dateObj1->format('n')) - (($dateObj2->format('Y') * 12) + $dateObj2->format('n'));
 	}
-
 
 	public function __construct(CalendarEvent $event) {
 		$this->event = $event;
@@ -110,8 +103,5 @@ class RecursionReader extends Object {
 				return false;
 		}
 	}
-
-
-
 
 }
