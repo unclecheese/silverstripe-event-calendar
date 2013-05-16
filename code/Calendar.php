@@ -8,7 +8,7 @@ class Calendar extends Page {
 		'RSSTitle' => 'Varchar(255)',
 		'DefaultFutureMonths' => 'Int',
 		'EventsPerPage' => 'Int',
-		'DefaultView' => "Enum('today,week,,month,weekend,upcoming','upcoming')"
+		'DefaultView' => "Enum('today,week,month,weekend,upcoming','upcoming')"
 	);
 	
 	private static $has_many = array (
