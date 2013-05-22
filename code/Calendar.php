@@ -238,6 +238,10 @@ class Calendar extends Page {
 				$eventList = $calendar->addRecurringEvents($start, $end, $recurring, $eventList);
 			}
 
+			if($feedevents = $calendar->getFeedEvents()) {
+				$eventList->push($feedevents);
+			}
+
 		}
 
 
@@ -347,7 +351,7 @@ class Calendar extends Page {
 					}
 					if($reader->recursionHappensOn($date_counter->get())) {						
 						$e = $this->newRecursionDateTime($recurring_event_datetime, $date_counter->date());
-						$all_events->push($e);	
+						$all_events->push($e);
 					}					
 					$date_counter->tomorrow();
 				}
@@ -371,6 +375,19 @@ class Calendar extends Page {
 		$e->ID = "recurring" . self::$reccurring_event_index;
 		self::$reccurring_event_index++;
 		return $e;
+	}
+
+	public function getFeedEvents() {
+		$feeds = $this->Feeds();
+		$feedevents = new ArrayList();
+		foreach( $feeds as $feed ) {
+			$feedreader = new ICSReader( $feed->URL );
+			$events = $feedreader->getEvents();
+			foreach ( $events as $event ) {
+				// translate iCal schema into CalendarEvent/CalendarDateTime schema
+			}
+		}
+		//return $feedevents;
 	}
 
 
