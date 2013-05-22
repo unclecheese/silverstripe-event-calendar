@@ -44,10 +44,8 @@ class ICSReader
     function ICSReader($source)
     {
         $source = file_get_contents($source);
-        $source = preg_split('/\n[A-Z]+:/', $source, -1, PREG_SPLIT_DELIM_CAPTURE);
-        die(print_r($source));
-        
-        $source = explode('+++',$source);
+        $source = preg_split('/\n/', $source, -1, PREG_SPLIT_DELIM_CAPTURE);
+
         $this->_source = array_map('trim', $source);
 
         $this->_data['meta'] = $this->_parseMeta();
@@ -96,7 +94,7 @@ class ICSReader
         $i++;
         while (isset($this->_source[$i])) {
             $line = $this->_source[$i];
-            list($key, $value) = explode(':', $line, 2);
+            @list($key, $value) = explode(':', $line, 2);
 
             // Meta information
             $meta[$key] = $value;
@@ -128,7 +126,7 @@ class ICSReader
         // Iterate source
         while (isset($this->_source[$i])) {
             $line = $this->_source[$i];
-            list($key, $value) = explode(':', $line, 2);
+            @list($key, $value) = explode(':', $line, 2);
 
             // Event information
             $events[$j++] = $this->_parseEvent();
@@ -162,7 +160,7 @@ class ICSReader
         $i++;
         while (isset($this->_source[$i])) {
             $line = $this->_source[$i];
-            echo "line is $line <br />";
+            //echo "line is $line <br />";
             @list($key, $value) = explode(':', $line, 2);
 
             // Event information
