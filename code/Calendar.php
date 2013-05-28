@@ -341,7 +341,7 @@ class Calendar extends Page {
 					// check the end date
 					if($recurring_event_datetime->EndDate) {
 						$end_stamp = strtotime($recurring_event_datetime->EndDate);
-						if($end_stamp > 0 && $end_stamp <= $date_counter->get()) {							
+						if($end_stamp > 0 && $end_stamp < $date_counter->get()) {							
 							break;
 						}
 					}
