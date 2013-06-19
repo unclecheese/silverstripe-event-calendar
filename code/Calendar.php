@@ -8,12 +8,11 @@ class Calendar extends Page {
 		'RSSTitle' => 'Varchar(255)',
 		'DefaultFutureMonths' => 'Int',
 		'EventsPerPage' => 'Int',
-		'DefaultView' => "Enum('today,week,,month,weekend,upcoming','upcoming')"
+		'DefaultView' => "Enum('today,week,month,weekend,upcoming','upcoming')"
 	);
 	
 	private static $has_many = array (
 		'Announcements' => 'CalendarAnnouncement',
-		'CalendarEvents' => 'CalendarEvent',
 		'Feeds' => 'ICSFeed'
 	);
 
@@ -30,7 +29,6 @@ class Calendar extends Page {
 	);
 	
 	private static $defaults = array (
-		'DefaultEventDisplay' => '10',
 		'DefaultDateHeader' => 'Upcoming Events',
 		'OtherDatesCount' => '3',
 		'DefaultFutureMonths' => '6',
@@ -52,7 +50,7 @@ class Calendar extends Page {
 
 	private static $language = "EN";
 
-	private static $jquery_included = false;
+	public static $jquery_included = false;
 
 	private static $caching_enabled = false;
 
@@ -68,7 +66,7 @@ class Calendar extends Page {
 	}
 
 	public static function enable_caching() {
-		self::$caching_enabled = true;
+		self::config()->caching_enabled = true;
 	}
 
 	public function getCMSFields() {
@@ -92,21 +90,25 @@ class Calendar extends Page {
 			new NumericField('OtherDatesCount', _t('Calendar.NUMBERFUTUREDATES','Number of future dates to show for repeating events'))			
 		));
 		
+		// Announcements
 		$announcements = _t('Calendar.Announcements','Announcements');
-		$f->addFieldToTab("Root.$announcements", GridField::create(
+		$f->addFieldToTab("Root.$announcements", $announcementsField = GridField::create(
 				"Announcements",
-				_t('Calendar.ANNOUNCEMENTDESCRIPTION','Announcements are simple entries you can add to your calendar that do not have detail pages, e.g. "Office closed"'),
+				"Announcements",
 				$this->Announcements(),
 				GridFieldConfig_RecordEditor::create()				
 			));
+		$announcementsField->setDescription(_t('Calendar.ANNOUNCEMENTDESCRIPTION','Announcements are simple entries you can add to your calendar that do not have detail pages, e.g. "Office closed"'));
 		
+		// Feeds
 		$feeds = _t('Calendar.FEEDS','Feeds');
-		$f->addFieldToTab("Root.$feeds", GridField::create(
-				"Feeds",
-				_t('Calendar.ICSFEEDDESCRIPTION','Add ICS feeds to your calendar to include events from external sources, e.g. a Google Calendar'),
-				$this->Feeds(),
-				GridFieldConfig_RecordEditor::create()				
-			));
+		$f->addFieldToTab("Root.$feeds", $feedsField = GridField::create(
+			"Feeds",
+			"Feeds",
+			$this->Feeds(),
+			GridFieldConfig_RecordEditor::create()
+		));
+		$feedsField->setDescription(_t('Calendar.ICSFEEDDESCRIPTION','Add ICS feeds to your calendar to include events from external sources, e.g. a Google Calendar'));
 
 		$otherCals = Calendar::get()->exclude(array("ID" => $this->ID));
 		if($otherCals->exists()) {				
@@ -148,13 +150,11 @@ class Calendar extends Page {
 
 	public function getCachedEventList($start, $end, $filter = null, $limit = null) {		
 		return CachedCalendarEntry::get()
-			->where("
-					((StartDate <= '$start' AND EndDate >= '$end') OR
-				    (StartDate BETWEEN '$start' AND '$end') OR
-				    (EndDate BETWEEN '$start' AND '$end'))
-				    AND
-				    CachedCalendarID = $this->ID
-			")
+			->filter(array(
+				"StartDate:GreaterThan:Not" => $end,
+				"EndDate:LessThan:Not" => $start,
+				"CachedCalendarID" => $this->ID
+			))
 			->sort(array(
 				"StartDate" => "ASC",
 				"StartTime" => "ASC"
@@ -164,22 +164,21 @@ class Calendar extends Page {
 	}
 
 	public function getEventList($start, $end, $filter = null, $limit = null, $announcement_filter = null) {		
-		if(Config::inst()->get("Calendar","caching_enabled")) {
+		if(Config::inst()->get("Calendar", "caching_enabled")) {
 			return $this->getCachedEventList($start, $end, $filter, $limit);
 		}
 		$eventList = new ArrayList();
 		foreach($this->getAllCalendars() as $calendar) {
 			if($events = $calendar->getStandardEvents($start, $end, $filter)) {
 				$eventList->merge($events);
-			}					
+			}
 			$announcements = DataList::create($this->getAnnouncementClass())
-				->filter('CalendarID', $calendar->ID)
-				->where("
-					(StartDate <= '$start' AND EndDate >= '$end') OR
-				    (StartDate BETWEEN '$start' AND '$end') OR
-				    (EndDate BETWEEN '$start' AND '$end')
-				");
-			if($filter) {
+				->filter(array(
+					"StartDate:GreaterThan:Not" => $end,
+					"EndDate:LessThan:Not" => $start,
+					"CalendarID" => $calendar->ID
+				));
+			if($announcement_filter) {
 				$announcements = $announcements->where($announcement_filter);
 			}
 
@@ -187,15 +186,13 @@ class Calendar extends Page {
 				foreach($announcements as $announcement) {
 					$eventList->push($announcement);
 				}
-
-			}	
+			}
 
 			if($recurring = $calendar->getRecurringEvents($filter)) {
 				$eventList = $calendar->addRecurringEvents($start, $end, $recurring, $eventList);
 			}
 
 		}
-
 
 		$eventList = $eventList->sort(array("StartDate" => "ASC", "StartTime" => "ASC"));						
 		$eventList = $eventList->limit($limit);
@@ -204,27 +201,20 @@ class Calendar extends Page {
 	}
 
 	protected function getStandardEvents($start, $end, $filter = null) {
-		$ids = array ();
-		$r = DB::query("SELECT ID FROM SiteTree_Live WHERE ClassName = 'CalendarEvent' AND ParentID = $this->ID");
-		if($r) {
-			while($rec = $r->nextRecord()) $ids[] = $rec['ID'];
-		}
-
-		// $children = $this->AllChildren();
-		// $ids = $children->column('ID');
-		$datetime_class = $this->getDateTimeClass();
+		$children = $this->AllChildren();
+		$ids = $children->column('ID');
+		$datetimeClass = $this->getDateTimeClass();
 		$relation = $this->getDateToEventRelation();		
-		$event_class = $this->getEventClass();
-		$list = DataList::create($datetime_class);
-		$list = $list->where("Recursion != 1");
-		$list = $list->where("
-				(StartDate <= '$start' AND EndDate >= '$end') OR
-				(StartDate BETWEEN '$start' AND '$end') OR
-				(EndDate BETWEEN '$start' AND '$end')
-		");
-		$list = $list->filter(array($relation => $ids));				
-		$list = $list->innerJoin($event_class, "$relation = \"{$event_class}\".ID");
-		$list = $list->innerJoin("SiteTree", "\"SiteTree\".ID = \"{$event_class}\".ID");
+		$eventClass = $this->getEventClass();
+		$list = DataList::create($datetimeClass)
+			->filter(array(
+				"StartDate:GreaterThan:Not" => $end,
+				"EndDate:LessThan:Not" => $start,
+				$relation => $ids
+			))
+			->innerJoin($eventClass, "$relation = \"{$eventClass}\".\"ID\"")
+			->where("\"Recursion\" != 1")
+			->innerJoin("SiteTree", "\"SiteTree\".\"ID\" = \"{$eventClass}\".\"ID\"");
 		if($filter) {
 			$list = $list->where($filter);
 		}
@@ -234,7 +224,6 @@ class Calendar extends Page {
 	protected function getRecurringEvents($filter = null) {
 		$event_class = $this->getEventClass();
 		$datetime_class = $this->getDateTimeClass();
-		$SNG = singleton($datetime_class);
 		if($relation = $this->getDateToEventRelation()) {
 			$events = DataList::create($event_class)
 				->filter("Recursion", "1")
@@ -357,13 +346,17 @@ class Calendar extends Page {
 	}
 
 	public function CalendarWidget() {
-	 	$calendar = new CalendarWidget($this);
+	 	$calendar = CalendarWidget::create($this);
 	 	$controller = Controller::curr();
 	 	if($controller->class == "Calendar_Controller" || is_subclass_of($controller, "Calendar_Controller")) {
 	 		if($controller->getView() != "default") {	 			
-	 			$calendar->setOption('start', $controller->getStartDate()->format('Y-m-d'));
-	 			$calendar->setOption('end', $controller->getEndDate()->format('Y-m-d'));
-	 		}
+				if($startDate = $controller->getStartDate()) {
+					$calendar->setOption('start', $startDate->format('Y-m-d'));
+				}
+				if($endDate = $controller->getEndDate()) {
+					$calendar->setOption('end', $endDate->format('Y-m-d'));
+				}
+			}
 		}
 		return $calendar;
 	}
@@ -642,8 +635,8 @@ class Calendar_Controller extends Page_Controller {
 
 			$FILENAME .= ".ics";
 			$HOST = $_SERVER['HTTP_HOST'];
-			$TIMEZONE = Calendar::$timezone;
-			$LANGUAGE = Calendar::$language;
+			$TIMEZONE = Calendar::config()->timezone;
+			$LANGUAGE = Calendar::config()->language;
 			$CALSCALE = "GREGORIAN";
 			$parts = explode('-',$oid);
 			$START_TIMESTAMP = $parts[0];
@@ -721,14 +714,14 @@ class Calendar_Controller extends Page_Controller {
 		$endDate = $this->endDate;		
 		if($search = $this->getRequest()->getVar('s')) {
 			$s = Convert::raw2sql($search);
-			$event_filter = "\"SiteTree\".Title LIKE '%$s%' OR \"SiteTree\".Content LIKE '%$s%'";
-			$announcement_filter = "\"CalendarAnnouncement\".Title LIKE '%$s%' OR \"CalendarAnnouncement\".Content LIKE '%$s%'";
+			$event_filter = "\"SiteTree\".\"Title\" LIKE '%$s%' OR \"SiteTree\".\"Content\" LIKE '%$s%'";
+			$announcement_filter = "\"CalendarAnnouncement\".\"Title\" LIKE '%$s%' OR \"CalendarAnnouncement\".\"Content\" LIKE '%$s%'";
 			$this->SearchQuery = $search;
 			$endDate = sfDate::getInstance()->addMonth($this->DefaultFutureMonths);			
 		}
 		$all = $this->data()->getEventList(
-			$this->startDate->date(),
-			$endDate->date(),
+			$this->startDate ? $this->startDate->date() : null,
+			$endDate ? $endDate->date() : null,
 			$event_filter,
 			null,
 			$announcement_filter
@@ -754,8 +747,7 @@ class Calendar_Controller extends Page_Controller {
 			case "year":
 				return CalendarUtil::localize($this->startDate->get(), null, CalendarUtil::YEAR_HEADER);
 			break;
-
-			
+		
 			case "range":
 			case "week":
 			case "weekend":
@@ -824,7 +816,6 @@ class Calendar_Controller extends Page_Controller {
 	 				return ($this->startDate->format('w') == sfTime::MONDAY) && ($this->startDate->format('w') == sfTime::SUNDAY);
 	 			}	 			
 	 			return ($this->startDate->format('w') == sfTime::SUNDAY) && ($this->endDate->format('w') == sfTime::SATURDAY);
-
 	 		case "month":
 	 			return ($this->startDate->format('j') == 1) && (sfDate::getInstance($this->startDate)->finalDayOfMonth()->format('j') == $this->endDate->format('j'));
 	 		case "weekend":
@@ -843,7 +834,6 @@ class Calendar_Controller extends Page_Controller {
 		$year_map = array_combine($range, $range);
 		$f = new Form(
 			$this,
-
 			"MonthJumpForm",
 			new FieldList (
 				$m = new DropdownField('Month','', CalendarUtil::get_months_map('%B')),

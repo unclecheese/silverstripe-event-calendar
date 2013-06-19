@@ -44,9 +44,11 @@ class CachedCalendarEntry extends DataObject {
 		}
 		
 		return CachedCalendarEntry::get()
-			->where("EventID = {$this->EventID}")
-			->where("StartDate != '{$this->StartDate}'")
-			->limit($this->CachedCalendar()->DefaultEventDisplay);
+			->filter(array(
+				"EventID" => $this->EventID,
+				"StartDate:ExactMatch:Not" => $this->StartDate
+			))
+			->limit($this->CachedCalendar()->OtherDatesCount);
 	}
 
 
