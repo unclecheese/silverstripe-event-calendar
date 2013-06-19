@@ -52,7 +52,7 @@ class CalendarDateTime extends DataObject {
 	}
 
 	public function DateRange() {		
-		list($strStartDate,$strEndDate) = CalendarUtil::get_date_string($this->StartDate,$this->EndDate);		
+		list($strStartDate,$strEndDate) = CalendarUtil::get_date_string($this->StartDate,$this->EndDate);
 		$html =   "<span class='dtstart' title='".$this->MicroformatStart()."'>" . $strStartDate . "</span>"; 
 		$html .=	($strEndDate != "") ? "-" : "";
 		$html .= "<span class='dtend' title='" .$this->MicroformatEnd() ."'>";
@@ -85,7 +85,7 @@ class CalendarDateTime extends DataObject {
 		return DataList::create($this->class)
 			->where("EventID = {$this->EventID}")
 			->where("StartDate != '{$this->StartDate}'")
-			->limit($this->Event()->Parent()->DefaultEventDisplay);
+			->limit($this->Event()->Parent()->OtherDatesCount);
 	}
 
 	public function MicroformatStart($offset = true) {
@@ -99,7 +99,7 @@ class CalendarDateTime extends DataObject {
 		else
 			$time = $this->StartTime ? $this->StartTime : "00:00:00";
 	
-		return CalendarUtil::microformat($date, $time, self::$offset);
+		return CalendarUtil::microformat($date, $time, self::config()->offset);
 	}
 
 	public function MicroformatEnd($offset = true) {
@@ -114,7 +114,7 @@ class CalendarDateTime extends DataObject {
 			$time = $this->EndTime && $this->StartTime ? $this->EndTime : (!$this->EndTime && $this->StartTime ? $this->StartTime : "00:00:00");
 		}
 
-		return CalendarUtil::microformat($date, $time, self::$offset);
+		return CalendarUtil::microformat($date, $time, self::config()->offset);
 	}
 
 	public function ICSLink() {

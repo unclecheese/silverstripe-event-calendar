@@ -166,15 +166,15 @@ class CalendarUtil {
 	}
 
 	public static function get_date_format() {
-		if(CalendarDateTime::$date_format_override) {
-			return CalendarDateTime::$date_format_override;
+		if($dateFormat = CalendarDateTime::config()->date_format_override) {
+			return $dateFormat;
 		}
 		return _t('CalendarDateTime.DATEFORMAT','mdy');
 	}
 
 	public static function get_time_format() {
-		if(CalendarDateTime::$time_format_override) {
-			return CalendarDateTime::$time_format_override;
+		if($timeFormat = CalendarDateTime::config()->time_format_override) {
+			return $timeFormat;
 		}
 		return _t('CalendarDateTime.TIMEFORMAT','24');
 	}
