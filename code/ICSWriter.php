@@ -157,9 +157,9 @@ class ICSWriter
     protected function addDateTime( CalendarDateTime $dateTime ) {
     	$this->addLine('BEGIN:VEVENT');
 		$this->addLine('UID:' . $this->getUID($dateTime) );
-		$this->addLine('DTSTAMP;TZID=' . Calendar::$timezone . ':' . $this->getFormatedDateTime());
-		$this->addLine('DTSTART;TZID=' . Calendar::$timezone . ':' . $this->getFormatedDateTime($dateTime->StartDate, $dateTime->StartTime));
-		$this->addLine('DTEND;TZID='   . Calendar::$timezone . ':' . $this->getFormatedDateTime($dateTime->StartDate, $dateTime->StartTime));
+		$this->addLine('DTSTAMP;TZID=' . Calendar::config()->timezone . ':' . $this->getFormatedDateTime());
+		$this->addLine('DTSTART;TZID=' . Calendar::config()->timezone . ':' . $this->getFormatedDateTime($dateTime->StartDate, $dateTime->StartTime));
+		$this->addLine('DTEND;TZID='   . Calendar::config()->timezone . ':' . $this->getFormatedDateTime($dateTime->StartDate, $dateTime->StartTime));
 		$this->addLine('URL:' . Director::absoluteURL($dateTime->ICSLink()));
 		$this->addLine('SUMMARY:CHARSET=UTF-8:' . $dateTime->Event()->Title);
 		$this->addLine('END:VEVENT');

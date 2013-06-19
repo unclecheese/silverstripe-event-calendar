@@ -20,7 +20,14 @@ class CalendarDateTime extends DataObject {
 
 	private static $default_sort = "StartDate ASC, StartTime ASC";
 
-	private static $offset = "0:00";
+	/**
+	 * Set to the timezone offset (E.g. +12:00 for GMT+12). Must be in ISO 8601 format
+	 * 
+	 * @config
+	 * @see http://php.net/manual/en/function.date.php
+	 * @var string
+	 */
+	private static $offset = "+00:00";
 
 	public function getCMSFields() {
 		DateField::set_default_config('showcalendar', true);
@@ -52,7 +59,7 @@ class CalendarDateTime extends DataObject {
 	}
 
 	public function DateRange() {		
-		list($strStartDate,$strEndDate) = CalendarUtil::get_date_string($this->StartDate,$this->EndDate);		
+		list($strStartDate,$strEndDate) = CalendarUtil::get_date_string($this->StartDate,$this->EndDate);
 		$html =   "<span class='dtstart' title='".$this->MicroformatStart()."'>" . $strStartDate . "</span>"; 
 		$html .=	($strEndDate != "") ? "-" : "";
 		$html .= "<span class='dtend' title='" .$this->MicroformatEnd() ."'>";
@@ -85,7 +92,7 @@ class CalendarDateTime extends DataObject {
 		return DataList::create($this->class)
 			->where("EventID = {$this->EventID}")
 			->where("StartDate != '{$this->StartDate}'")
-			->limit($this->Event()->Parent()->DefaultEventDisplay);
+			->limit($this->Event()->Parent()->OtherDatesCount);
 	}
 
 	public function MicroformatStart($offset = true) {
@@ -99,7 +106,7 @@ class CalendarDateTime extends DataObject {
 		else
 			$time = $this->StartTime ? $this->StartTime : "00:00:00";
 	
-		return CalendarUtil::microformat($date, $time, self::$offset);
+		return CalendarUtil::microformat($date, $time, self::config()->offset);
 	}
 
 	public function MicroformatEnd($offset = true) {
@@ -114,7 +121,7 @@ class CalendarDateTime extends DataObject {
 			$time = $this->EndTime && $this->StartTime ? $this->EndTime : (!$this->EndTime && $this->StartTime ? $this->StartTime : "00:00:00");
 		}
 
-		return CalendarUtil::microformat($date, $time, self::$offset);
+		return CalendarUtil::microformat($date, $time, self::config()->offset);
 	}
 
 	public function ICSLink() {

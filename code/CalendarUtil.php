@@ -135,17 +135,22 @@ class CalendarUtil {
 		return array($date_string, "");
 	}
 
-	public static function microformat($date, $time, $offset = true) {
+	public static function microformat($date, $time, $offset = null) {
 		if(!$date)
 			return "";
-			
+		
 		$ts = strtotime($date . " " . $time);
 
 		if($ts < 1)
 			return "";
 			
-		$ret = date('Ymd', $ts) . "T" . date('His',$ts);
-		return $offset ? $ret . $offset : $ret;
+		$ret = date('c', $ts); // ISO 8601 datetime
+		
+		if($offset) {
+			// Swap out timezine with specified $offset
+			$ret = preg_replace('/((\+)|(-))[\d:]*$/', $offset, $ret);
+		}
+		return $ret;
 	}
 
 	public static function get_months_map($key = '%b') {
@@ -166,15 +171,15 @@ class CalendarUtil {
 	}
 
 	public static function get_date_format() {
-		if(CalendarDateTime::$date_format_override) {
-			return CalendarDateTime::$date_format_override;
+		if($dateFormat = CalendarDateTime::config()->date_format_override) {
+			return $dateFormat;
 		}
 		return _t('CalendarDateTime.DATEFORMAT','mdy');
 	}
 
 	public static function get_time_format() {
-		if(CalendarDateTime::$time_format_override) {
-			return CalendarDateTime::$time_format_override;
+		if($timeFormat = CalendarDateTime::config()->time_format_override) {
+			return $timeFormat;
 		}
 		return _t('CalendarDateTime.TIMEFORMAT','24');
 	}

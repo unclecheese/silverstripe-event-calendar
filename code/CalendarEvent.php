@@ -1,6 +1,6 @@
 <?php
 
-class CalendarEvent extends Page{
+class CalendarEvent extends Page {
 	
 	private static $db = array (
 		'Recursion' => 'Boolean',
@@ -29,6 +29,8 @@ class CalendarEvent extends Page{
 	private static $description = "An individual event entry";
 
 	private static $datetime_class = "CalendarDateTime";
+	
+	private static $can_be_root = false;
 
 	public function getCMSFields() {
 		Requirements::javascript('event_calendar/javascript/calendar_cms.js');
@@ -131,53 +133,39 @@ class CalendarEvent extends Page{
 
 }
 
-
-
-
-
 class CalendarEvent_Controller extends Page_Controller {
 
 	public function init() {
 		parent::init();
 		Requirements::themedCSS('calendar','event_calendar');
 	}
-
-
-
+	
 	public function MultipleDates() {
 		return DataList::create($this->data()->getDateTimeClass())
-			->where("EventID = $this->ID")
-			->sort("StartDate ASC")
+			->filter("EventID", $this->ID)
+			->sort("\"StartDate\" ASC")
 			->count() > 1;
 	}
-
-
 	
 	public function DateAndTime() {
 		return DataList::create($this->data()->getDateTimeClass())
-			->where("EventID = $this->ID")
-			->sort("StartDate ASC");
+			->filter("EventID", $this->ID)
+			->sort("\"StartDate\" ASC");
 	}
-
-
 	
 	public function UpcomingDates($limit = 3) {
 		return DataList::create($this->data()->getDateTimeClass())
-			->where("EventID = {$this->ID} AND StartDate >= DATE(NOW())")
-			->sort("StartDate ASC")
+			->filter("EventID", $this->ID)
+			->where("\"StartDate\" >= DATE(NOW())")
+			->sort("\"StartDate\" ASC")
 			->limit($limit);
 	}
 	
-	
-
 	public function OtherDates() {
 		if(!isset($_REQUEST['date'])) {
-			$date_obj =  DataList::create($this->data()->getDateTimeClass())
-				->where("EventID = {$this->ID}")
-				->sort("StartDate ASC")
-				->first();
+			$date_obj =  $this->DateAndTime()->first();
 			if(!$date_obj) return false;
-		  else $date = $date_obj->StartDate;
+			else $date = $date_obj->StartDate;
 		}
 		elseif(strtotime($_REQUEST['date']) > 0) {
 			$date = date('Y-m-d', strtotime($_REQUEST['date']));
@@ -191,7 +179,10 @@ class CalendarEvent_Controller extends Page_Controller {
 			}
 			else {
 				return DataList::create($this->data()->getDateTimeClass())
-					->where("EventID = {$this->ID} AND StartDate != '".$date."'")
+					->filter(array(
+						"EventID" => $this->ID,
+						"StartDate:ExactMatch:Not" => $date
+					))
 					->sort("StartDate ASC")
 					->limit($cal->OtherDatesCount);
 			}
@@ -202,30 +193,24 @@ class CalendarEvent_Controller extends Page_Controller {
 
 	
 	public function CurrentDate() {
+		$allDates = DataList::create($this->data()->getDateTimeClass())
+			->filter("EventID", $this->ID)
+			->sort("\"StartDate\" ASC");
 		if(!isset($_REQUEST['date'])) {
-			$obj = DataList::create($this->data()->getDateTimeClass())
-				->where("EventID = {$this->ID}")
-				->sort("StartDate ASC")
-				->first();
-			if($obj) {
-				$date = $obj->StartDate;
-			}
-		}
-		elseif(strtotime($_REQUEST['date']) > 0) {
+			// If no date filter specified, return the first one
+			return $allDates->first();
+		} elseif(strtotime($_REQUEST['date']) > 0) {
 			$date = date('Y-m-d', strtotime($_REQUEST['date']));
 			if($this->Recursion) {
-				$datetime = DataList::create($this->data()->getDateTimeClass())
-					->where("EventID = {$this->ID}")
-					->first();
+				$datetime = $allDates->first();
 				if($datetime) {
 					$datetime->StartDate = $date;
 					return $datetime;
 				}
-			}			
-			$result = DataList::create($this->data()->getDateTimeClass())
-					->where("EventID = {$this->ID} AND StartDate = '".$date."'")
-					->first();
-			return $result;			
+			}
+			return $allDates
+				->filter("StartDate", $date)
+				->first();
 		}
 	}
 
