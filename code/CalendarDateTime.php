@@ -20,7 +20,14 @@ class CalendarDateTime extends DataObject {
 
 	private static $default_sort = "StartDate ASC, StartTime ASC";
 
-	private static $offset = "0:00";
+	/**
+	 * Set to the timezone offset (E.g. +12:00 for GMT+12). Must be in ISO 8601 format
+	 * 
+	 * @config
+	 * @see http://php.net/manual/en/function.date.php
+	 * @var string
+	 */
+	private static $offset = "+00:00";
 
 	public function getCMSFields() {
 		DateField::set_default_config('showcalendar', true);
