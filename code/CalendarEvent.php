@@ -100,14 +100,14 @@ class CalendarEvent extends Page {
 				new DropdownField('MonthlyDayOfWeek','', DataList::create("RecurringDayOfWeek")->map("Value", "Title")),
 				new LabelField( $name = "ofthemonth", $title = _t("CalendarEvent.OFTHEMONTH"," of the month."))
 		));
-		// $f->addFieldToTab("Root.$recursion",
-		// 	GridField::create(
-		// 		"Exceptions",
-		// 		_t('CalendarEvent.ANYEXCEPTIONS','Any exceptions to this pattern? Add the dates below.'),
-		// 		$this->Exceptions(),
-		// 		GridFieldConfig_RecordEditor::create()
-		// 	)
-		// ));
+		$f->addFieldToTab("Root.$recursion",
+		 	GridField::create(
+		 		"Exceptions",
+		 		_t('CalendarEvent.ANYEXCEPTIONS','Any exceptions to this pattern? Add the dates below.'),
+		 		$this->Exceptions(),
+		 		GridFieldConfig_RecordEditor::create()
+		 	)
+		);
 		$dailyInterval->addExtraClass('dailyinterval');
 		$weeklyInterval->addExtraClass('weeklyinterval');
 		$monthlyInterval->addExtraClass('monthlyinterval');
