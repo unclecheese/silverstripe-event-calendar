@@ -14,9 +14,6 @@ class RecurringException extends DataObject {
 	private static $default_sort = "ExceptionDate ASC";
 	
 
-	static $default_sort = "ExceptionDate ASC";
-
-
     public function getCMSFields() {
             DateField::set_default_config('showcalendar', true);
             $f = new FieldList(
