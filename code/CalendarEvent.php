@@ -181,7 +181,7 @@ class CalendarEvent_Controller extends Page_Controller {
 				return DataList::create($this->data()->getDateTimeClass())
 					->filter(array(
 						"EventID" => $this->ID,
-						"StartDate:ExactMatch:Not" => $date
+						"StartDate:ExactMatch:not" => $date
 					))
 					->sort("StartDate ASC")
 					->limit($cal->OtherDatesCount);
