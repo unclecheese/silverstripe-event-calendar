@@ -16,7 +16,7 @@
 		"silverstripe/cms": ">=3.1"
 	},
 	"support": {
-		"issues": "https://github.com/unclecheese/EventCalendar/issues"
+		"issues": "https://github.com/unclecheese/silverstripe-event-calendar/issues"
 	},
 	"extra": {
 		"installer-name": "event_calendar"
