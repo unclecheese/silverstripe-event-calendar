@@ -3,7 +3,7 @@ $(function() {
 
 	var fetching = false;
 
-	$('.calendar-view-more').live("click",function(e) {
+	$('.calendar-view-more').on("click",function(e) {
 		fetching = true;
 		e.preventDefault();
 		$(this).addClass('loading');
