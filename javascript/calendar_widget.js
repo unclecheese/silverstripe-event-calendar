@@ -152,9 +152,13 @@
 			html += '</thead>';
 			html += '<tbody>';
 			html += '<tr class="calendar-header">';
-			for(var i = 0; i <= 6; i++ ){
+			for(var i = 1; i <= 7; i++ ){
 				html += '<td class="calendar-header-day">';
-				html += this.settings.calDaysLabels[i];
+				if (i != 7 ) {
+					html += this.settings.calDaysLabels[i];
+				} else {
+					html += this.settings.calDaysLabels[0];
+				}
 				html += '</td>';
 			}
 			html += "<td>&nbsp;</td>"
