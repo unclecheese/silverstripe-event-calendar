@@ -11,9 +11,9 @@
 				&nbsp;
 				<select id="live-calendar-widget-navigator">		
 				  <optgroup label="<% _t('JUMPTOMONTH','Jump to...') %>" />		    
-          <% control NavigationOptions %>
+          <% loop NavigationOptions %>
             <option value="$Link" $Selected>$Month</option>
-          <% end_control %>
+          <% end_loop %>
  				  <optgroup label="<% _t('QUICKLINKS','Quick Links') %>" />
  				  <option value="$QuickMonthLink">This month</option>
  				  <option value="$QuickWeekLink">This week</option>
@@ -36,18 +36,18 @@
 		</tr>
 	</thead>
 	<tbody>
-  <% control Weeks %>
+  <% loop Weeks %>
 		<tr>
-		<% control Days %>
+		<% loop Days %>
 			<td class="$Today $OutOfMonth $CurrentDay $HasEvent">
 			 <a href="$ShowDayLink">$Number</a>
 			</td>
-    <% end_control %>
+    <% end_loop %>
 			<td class="showWeek">
         <a title="<% _t('SHOWWEEK','Show week') %>" href="$ShowWeekLink">&laquo;</a>
 			</td>
 		</tr>
-  <% end_control %>
+  <% end_loop %>
 	</tbody>
 	<tfoot>
 	 <tr>
