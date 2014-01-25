@@ -167,11 +167,14 @@ class Calendar extends Page {
 		if(Config::inst()->get("Calendar", "caching_enabled")) {
 			return $this->getCachedEventList($start, $end, $filter, $limit);
 		}
+
 		$eventList = new ArrayList();
+		
 		foreach($this->getAllCalendars() as $calendar) {
 			if($events = $calendar->getStandardEvents($start, $end, $filter)) {
 				$eventList->merge($events);
 			}
+
 			$announcements = DataList::create($this->getAnnouncementClass())
 				->filter(array(
 					"StartDate:GreaterThan:Not" => $end,
@@ -209,18 +212,27 @@ class Calendar extends Page {
 		$datetimeClass = $this->getDateTimeClass();
 		$relation = $this->getDateToEventRelation();		
 		$eventClass = $this->getEventClass();
+
 		$list = DataList::create($datetimeClass)
 			->filter(array(
-				"StartDate:GreaterThan:Not" => $end,
-				"EndDate:LessThan:Not" => $start,
 				$relation => $ids
 			))
 			->innerJoin($eventClass, "$relation = \"{$eventClass}\".\"ID\"")
 			->where("\"Recursion\" != 1")
 			->innerJoin("SiteTree", "\"SiteTree\".\"ID\" = \"{$eventClass}\".\"ID\"");
+
+		if($start) {
+			$list->filter("StartDate:GreaterThan:Not", $start);
+		}
+
+		if($end) {
+			$list->filter("EndDate:LessThan:Not", $end);
+		}
+
 		if($filter) {
 			$list = $list->where($filter);
 		}
+
 		return $list;
 	}
 
@@ -764,6 +776,7 @@ class Calendar_Controller extends Page_Controller {
 		$event_filter = null;
 		$announcement_filter = null;
 		$endDate = $this->endDate;		
+
 		if($search = $this->getRequest()->getVar('s')) {
 			$s = Convert::raw2sql($search);
 			$event_filter = "\"SiteTree\".\"Title\" LIKE '%$s%' OR \"SiteTree\".\"Content\" LIKE '%$s%'";
@@ -771,6 +784,7 @@ class Calendar_Controller extends Page_Controller {
 			$this->SearchQuery = $search;
 			$endDate = sfDate::getInstance()->addMonth($this->DefaultFutureMonths);			
 		}
+
 		$all = $this->data()->getEventList(
 			$this->startDate ? $this->startDate->date() : null,
 			$endDate ? $endDate->date() : null,
@@ -778,6 +792,7 @@ class Calendar_Controller extends Page_Controller {
 			null,
 			$announcement_filter
 		);
+		
 		$all_events_count = $all->count();
 		$list = $all->limit($this->EventsPerPage, $this->getOffset());		
 		$next = $this->getOffset()+$this->EventsPerPage;
