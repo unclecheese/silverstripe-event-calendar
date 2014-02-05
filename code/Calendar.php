@@ -222,11 +222,11 @@ class Calendar extends Page {
 			->innerJoin("SiteTree", "\"SiteTree\".\"ID\" = \"{$eventClass}\".\"ID\"");
 
 		if($start) {
-			$list->filter("StartDate:GreaterThan:Not", $start);
+			$list = $list->filter("StartDate:GreaterThan:Not", $start);
 		}
 
 		if($end) {
-			$list->filter("EndDate:LessThan:Not", $end);
+			$list = $list->filter("EndDate:LessThan:Not", $end);
 		}
 
 		if($filter) {
