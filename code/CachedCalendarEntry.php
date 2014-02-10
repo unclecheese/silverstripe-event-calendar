@@ -45,8 +45,10 @@ class CachedCalendarEntry extends DataObject {
 		
 		return CachedCalendarEntry::get()
 			->filter(array(
-				"EventID" => $this->EventID,
-				"StartDate:ExactMatch:Not" => $this->StartDate
+				"EventID" => $this->EventID				
+			))
+			->exclude(array(
+				"StartDate" => $this->StartDate
 			))
 			->limit($this->CachedCalendar()->OtherDatesCount);
 	}

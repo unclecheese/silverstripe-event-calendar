@@ -151,9 +151,11 @@ class Calendar extends Page {
 	public function getCachedEventList($start, $end, $filter = null, $limit = null) {		
 		return CachedCalendarEntry::get()
 			->filter(array(
-				"StartDate:GreaterThan:Not" => $end,
-				"EndDate:LessThan:Not" => $start,
 				"CachedCalendarID" => $this->ID
+			))
+			->exclude(array(
+				"StartDate:LessThan" => $end,
+				"EndDate:GreaterThan" => $start,			
 			))
 			->sort(array(
 				"StartDate" => "ASC",
@@ -177,9 +179,11 @@ class Calendar extends Page {
 
 			$announcements = DataList::create($this->getAnnouncementClass())
 				->filter(array(
-					"StartDate:GreaterThan:Not" => $end,
-					"EndDate:LessThan:Not" => $start,
 					"CalendarID" => $calendar->ID
+				))
+				->exclude(array(				
+					"StartDate:LessThan" => $end,
+					"EndDate:GreaterThan" => $start,
 				));
 			if($announcement_filter) {
 				$announcements = $announcements->where($announcement_filter);
@@ -218,21 +222,27 @@ class Calendar extends Page {
 				$relation => $ids
 			))
 			->innerJoin($eventClass, "$relation = \"{$eventClass}\".\"ID\"")
-			->where("\"Recursion\" != 1")
-			->innerJoin("SiteTree", "\"SiteTree\".\"ID\" = \"{$eventClass}\".\"ID\"");
-
-		if($start) {
-			$list = $list->filter("StartDate:GreaterThan:Not", $start);
+			->innerJoin("SiteTree", "\"SiteTree\".\"ID\" = \"{$eventClass}\".\"ID\"")
+			->where("Recursion != 1");
+		if($start && $end) {
+			$list = $list->where("
+					(StartDate <= '$start' AND EndDate >= '$end') OR
+					(StartDate BETWEEN '$start' AND '$end') OR
+					(EndDate BETWEEN '$start' AND '$end')
+					");			
+		}
+		else if($start) {
+			$list = $list->where("(StartDate >= '$start' OR EndDate > '$start')");
 		}
 
-		if($end) {
-			$list = $list->filter("EndDate:LessThan:Not", $end);
+		else if($end) {
+			$list = $list->where("(EndDate <= '$end' OR StartDate < '$end')");
 		}
 
 		if($filter) {
 			$list = $list->where($filter);
 		}
-
+		
 		return $list;
 	}
 
