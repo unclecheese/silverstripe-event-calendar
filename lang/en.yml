@@ -11,3 +11,13 @@ en:
     DATEFORMAT: mdy
     TIMEFORMAT: 12
     FIRSTDAYOFWEEK: Sunday
+  AnnouncementCalendarWidget:
+    CMSTITLE: 'Calendar Announcement Widget'
+    DESCRIPTION: 'Show a calendar widget with links to announcements.'
+    FIELD_TITLE: 'Title'
+    FIELD_CALENDAR: 'Calendar'
+    FIELD_ANNOUNCEMENTCOUNT: 'Number off announcements'
+    PLURALNAME: 'Event Calendar Widgets'
+    SINGULARNAME: 'Kalender-Widget'
+    TITLE: 'Event Calendar Widgets'
+    
