@@ -94,7 +94,7 @@ class Calendar extends Page {
 		$announcements = _t('Calendar.Announcements','Announcements');
 		$f->addFieldToTab("Root.$announcements", $announcementsField = GridField::create(
 				"Announcements",
-				"Announcements",
+				$announcements,
 				$this->Announcements(),
 				GridFieldConfig_RecordEditor::create()				
 			));
@@ -104,7 +104,7 @@ class Calendar extends Page {
 		$feeds = _t('Calendar.FEEDS','Feeds');
 		$f->addFieldToTab("Root.$feeds", $feedsField = GridField::create(
 			"Feeds",
-			"Feeds",
+			$feeds,
 			$this->Feeds(),
 			GridFieldConfig_RecordEditor::create()
 		));
