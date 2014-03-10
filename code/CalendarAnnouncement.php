@@ -1,4 +1,3 @@
-
 <?php
 
 class CalendarAnnouncement extends CalendarDateTime {
