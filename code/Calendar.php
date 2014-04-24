@@ -182,8 +182,8 @@ class Calendar extends Page {
 					"CalendarID" => $calendar->ID
 				))
 				->exclude(array(				
-					"StartDate:LessThan" => $end,
-					"EndDate:GreaterThan" => $start,
+					"StartDate:LessThan" => $start,
+					"EndDate:GreaterThan" => $end,
 				));
 			if($announcement_filter) {
 				$announcements = $announcements->where($announcement_filter);
