@@ -294,7 +294,7 @@ class Calendar extends Page {
 			$relation = $recurring_event->getReverseAssociation($this->getDateTimeClass());
 			if(!$relation) continue;
 
-			if($recurring_event_datetime = $recurring_event->$relation()->first()) {				
+			foreach ($recurring_event->$relation() as $recurring_event_datetime) {
 				while($date_counter->get() <= $end->get()){
 					// check the end date
 					if($recurring_event_datetime->EndDate) {
