@@ -349,7 +349,9 @@ class Calendar extends Page {
 				// translate iCal schema into CalendarAnnouncement schema (datetime + title/content)
 				$feedevent = new CalendarAnnouncement;
 				$feedevent->Title = $event['SUMMARY'];
-				$feedevent->Content = $event['DESCRIPTION'];
+				if ( isset($event['DESCRIPTION']) ) {
+					$feedevent->Content = $event['DESCRIPTION'];
+				}
 
 				$startdatetime = $this->iCalDateToDateTime($event['DTSTART']);
 				$enddatetime = $this->iCalDateToDateTime($event['DTEND']);
