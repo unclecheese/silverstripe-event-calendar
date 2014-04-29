@@ -182,8 +182,8 @@ class Calendar extends Page {
 					"CalendarID" => $calendar->ID
 				))
 				->exclude(array(				
-					"StartDate:LessThan" => $end,
-					"EndDate:GreaterThan" => $start,
+					"StartDate:LessThan" => $start,
+					"EndDate:GreaterThan" => $end,
 				));
 			if($announcement_filter) {
 				$announcements = $announcements->where($announcement_filter);
@@ -294,12 +294,22 @@ class Calendar extends Page {
 			$relation = $recurring_event->getReverseAssociation($this->getDateTimeClass());
 			if(!$relation) continue;
 
-			if($recurring_event_datetime = $recurring_event->$relation()->first()) {				
+            $recurring_event_datetimes = $recurring_event->$relation()->filter(array(
+                'StartDate:LessThanOrEqual' => $end->date(),
+                'EndDate:GreaterThanOrEqual' => $date_counter->date(),
+            ));
+
+            foreach ($recurring_event_datetimes as $recurring_event_datetime) {
+                $date_counter = sfDate::getInstance($start_date);
+                $start = sfDate::getInstance($recurring_event_datetime->StartDate);
+                if ($start->get() > $date_counter->get()) {
+                    $date_counter = $start;
+                }
 				while($date_counter->get() <= $end->get()){
 					// check the end date
 					if($recurring_event_datetime->EndDate) {
 						$end_stamp = strtotime($recurring_event_datetime->EndDate);
-						if($end_stamp > 0 && $end_stamp < $date_counter->get()) {							
+						if($end_stamp > 0 && $end_stamp < $date_counter->get()) {
 							break;
 						}
 					}
