@@ -62,12 +62,16 @@ $('.calendar-widget').each(function() {
 
 		onMonthChange: function(month, year, calendar) {
 			var json;
-			m = calendar.pad(month);		
+			m = calendar.pad(month);
+			prev_month = calendar.pad(month+1);
+			next_month = calendar.pad(month-1);			
 			if(!loaded_months[year+m]) {
 				loadMonthJson(m, year);
 			}
 			json = loaded_months[year+m];
 			applyMonthJson(m, year);
+			applyMonthJson(prev_month, prev_year);
+			applyMonthJson(next_month, next_year);
 			setSelection(calendar);
 		},
 
