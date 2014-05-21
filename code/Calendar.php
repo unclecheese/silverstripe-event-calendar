@@ -562,6 +562,7 @@ class Calendar_Controller extends Page_Controller {
 	}
 
 	public function index(SS_HTTPRequest $r) {
+		$this->extend('index',$r);
 		switch($this->DefaultView) {
 			case "month":
 				return $this->redirect($this->Link('show/month'));
