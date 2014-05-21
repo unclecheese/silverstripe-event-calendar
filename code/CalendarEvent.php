@@ -170,24 +170,25 @@ class CalendarEvent_Controller extends Page_Controller {
 		elseif(strtotime($_REQUEST['date']) > 0) {
 			$date = date('Y-m-d', strtotime($_REQUEST['date']));
 			$cal = $this->Parent();
-			if($this->Recursion == 1) {
-				$datetime_obj = DataList::create($this->data()->getDateTimeClass())
-					->where("EventID = {$this->ID}")
-					->first();
-				$datetime_obj->StartDate = $date;
-				return $cal->getNextRecurringEvents($this, $datetime_obj);
-			}
-			else {
-				return DataList::create($this->data()->getDateTimeClass())
-					->filter(array(
-						"EventID" => $this->ID						
-					))
-					->exclude(array(
-						"StartDate" => $date					
-					))
-					->sort("StartDate ASC")
-					->limit($cal->OtherDatesCount);
-			}
+		}
+
+		if($this->Recursion == 1) {
+			$datetime_obj = DataList::create($this->data()->getDateTimeClass())
+				->where("EventID = {$this->ID}")
+				->first();
+			$datetime_obj->StartDate = $date;
+			return $cal->getNextRecurringEvents($this, $datetime_obj);
+		}
+		else {
+			return DataList::create($this->data()->getDateTimeClass())
+				->filter(array(
+					"EventID" => $this->ID
+				))
+				->exclude(array(
+					"StartDate" => $date
+				))
+				->sort("StartDate ASC")
+				->limit($cal->OtherDatesCount);
 		}
 		return false;
 	}
