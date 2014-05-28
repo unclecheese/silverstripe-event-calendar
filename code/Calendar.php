@@ -653,7 +653,7 @@ class Calendar_Controller extends Page_Controller {
 		$xml = preg_replace('/<!--(.|\s)*?-->/', '', $xml);
 		$xml = trim($xml);
 		HTTP::add_cache_headers();
-		header("Content-type: text/xml");
+		$this->getResponse()->addHeader('Content-Type', 'application/rss+xml');
 		echo $xml;
 	}
 
