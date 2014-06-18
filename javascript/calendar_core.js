@@ -7,7 +7,7 @@ function navigateToDate(date)
 	else 
 		query_string = "";
 	parts = loc.split(current_url_segment);
-	document.location = controller_url_segment+"view/"+date+query_string
+	document.location = controller_url_segment+"show/"+date+query_string
 }
 
 function zeroPad(num) {
