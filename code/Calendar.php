@@ -179,11 +179,9 @@ class Calendar extends Page {
 
 			$announcements = DataList::create($this->getAnnouncementClass())
 				->filter(array(
-					"CalendarID" => $calendar->ID
-				))
-				->exclude(array(				
-					"StartDate:LessThan" => $start,
-					"EndDate:GreaterThan" => $end,
+					"CalendarID" => $calendar->ID,				
+					"StartDate:LessThan:Not" => $start,
+					"EndDate:GreaterThan:Not" => $end,
 				));
 			if($announcement_filter) {
 				$announcements = $announcements->where($announcement_filter);
@@ -411,7 +409,7 @@ class Calendar extends Page {
 	public function UpcomingAnnouncements($limit = 5, $filter = null) {
 		return $this->Announcements()
 			->filter(array(
-				'StartDate:GreaterThan' => 'DATE(NOW())'
+				'StartDate:GreaterThan' => 'NOW'
 			))
 			->where($filter)
 			->limit($limit);
