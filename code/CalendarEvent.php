@@ -169,8 +169,9 @@ class CalendarEvent_Controller extends Page_Controller {
 		}
 		elseif(strtotime($_REQUEST['date']) > 0) {
 			$date = date('Y-m-d', strtotime($_REQUEST['date']));
-			$cal = $this->Parent();
 		}
+		
+		$cal = $this->Parent();
 
 		if($this->Recursion == 1) {
 			$datetime_obj = DataList::create($this->data()->getDateTimeClass())
