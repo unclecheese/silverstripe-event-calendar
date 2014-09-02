@@ -482,7 +482,7 @@ class Calendar_Controller extends Page_Controller {
 		parent::init();
 		RSSFeed::linkToFeed($this->Link() . "rss", $this->RSSTitle ? $this->RSSTitle : $this->Title);
 		Requirements::themedCSS('calendar','event_calendar');
-		if(!Calendar::$jquery_included) {
+		if(!Calendar::config()->jquery_included) {
 			Requirements::javascript(THIRDPARTY_DIR.'/jquery/jquery.js');
 		}
 		Requirements::javascript('event_calendar/javascript/calendar.js');
