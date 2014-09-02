@@ -4,15 +4,15 @@ The Event Calendar module for SilverStripe
 
 ## Features
 
- * *Calendar Page*
- * *Calendar Event Pages*
- * *Recurring events* - (and exceptions)
- * *Calendar Announcements* - calendar entries with no associated page.
- * *Add ICS feeds* to calendar
- * *ICS output* - download an ics file for easy importing into calendar apps.
- * *RSS feed of Events*
- * *Calendar Widget*
- * *Caching*
+ * **Calendar** - This Page is used to hold/present events and announcments.
+ * **Calendar Event** - This page represents an event, which can have many DateTimes.
+ * **Recurring Events** - Calendar Events can also be set up reoccur automatically.
+ * **Calendar Announcements** - Entries in a Calendar which don't have a page associated.
+ * **ICS feeds** - Add multiple ICS feeds to a Calendar to display these events in the feed.
+ * **ICS output** - Download an ics file for easy importing into calendar apps.
+ * **RSS feed** - RSS feed of calendar events
+ * **Calendar Widget** - Display a calendar view in a Widget.
+ * **Caching**
 
 ## Configuration Options
 
