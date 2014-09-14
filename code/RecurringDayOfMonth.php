@@ -13,7 +13,7 @@ class RecurringDayOfMonth extends DataObject {
 	private static $default_sort = "Value ASC";
 	
 	static function create_default_records() {
-		for($i = 1; $i <= 30; $i++) {
+		for($i = 1; $i <= 31; $i++) {
 			$record = new RecurringDayOfMonth();
 			$record->Value = $i;
 			$record->write();
@@ -26,7 +26,7 @@ class RecurringDayOfMonth extends DataObject {
 		if(!$records->exists()) {
 			self::create_default_records();
 		}
-		elseif($records->count() != 30) {
+		elseif($records->count() != 31) {
 			foreach($records as $record) {
 				$record->delete();
 			}
