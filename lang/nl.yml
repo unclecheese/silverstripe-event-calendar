@@ -1,20 +1,63 @@
 nl:
   Calendar:
-    OneDay: '%{sDayNumShort}. %{sMonShort}. %{sYearFull}'
-    SameMonthSameYear: '%{sDayNumShort}. - %{eDayNumShort}. %{sMonShort}. %{eYearFull}'
-    DiffMonthSameYear: '%{sDayNumShort}. %{sMonShort}. - %{eDayNumShort}. %{eMonShort}. %{eYearFull}'
-    DiffMonthDiffYear: '%{sDayNumShort}. %{sMonShort}. %{sYearFull} - %{eDayNumShort}. %{eMonShort}. %{eYearFull}'
-    OneDayHeader: '%{sDayNumShort}. %{sMonFull} %{sYearFull}'
-    MonthHeader: '%{sMonFull} %{sYearFull}'
-    YearHeader: '%{sYearFull}'
+    PLURALNAME: Kalenders
+    SINGULARNAME: Kalender
+    DESCRIPTION: Agenda met verzameling kalender items en aankondigingen
+    OneDay: '$StartDayNumberShort $StartMonthNameShort. $StartYearLong'
+    SameMonthSameYear: '$StartDayNumberShort - $EndDayNumberShort $EndMonthNameShort. $EndYearLong'
+    DiffMonthSameYear: '$StartDayNumberShort $StartMonthNameShort. - %EndDayNumberShort $EndMonthNameShort. $EndYearLong'
+    DiffMonthDiffYear: '$StartDayNumberShort $StartMonthNameShort. $StartYearLong - $EndDayNumberShort $EndMonthNameShort. $EndYearLong'
+    OneDayHeader: '$StartDayNumberLong $StartMonthLong $StartYearLong'
+    MonthHeader: '$StartMonthNameLong $StartYearLong'
+    YearHeader: '$StartYearLong'
     NUMBEROFEVENTS: 'Aantal events'
     DEFAULTDATEHEADER: 'Standaard hoofding.'
     NUMBERFUTUREDATES: 'Aantal toekomstige datums'
     UPCOMINGEVENTSFOR: 'Toekomstige evenst voor %s'
     FILTER: Filteren
+    Announcements: Aankondigingen
+    CONFIGURATION: Instellingen
+    STARTDATE: Startdatum
+    ENDDATE: Einddatum
+    STARTTIME: Starttijd
+    ENDTIME: Eindtijd
+    ALLDAY: Heledag
+    ANNOUNCEMENTDESCRIPTION: Aankodingingen zijn simpele items die je aan de kalender kan toevoegen zonder een detail pagina. Bijvoorbeeld 'Kantoor gesloten'
+    DEFAULTVIEW: Standaard overzicht
+    UPCOMINGVIEW: Toon een lijst van aankomende evenementen
+    MONTHVIEW: Toon alle evenementen van deze maand.
+    WEEKVIEW: Toon alle evenementen van deze week. Indien geen, val terug op maand.
+    TODAYVIEW: Toon alle evenementen van deze week. Indien geen, val terug op week.
+    WEEKENDVIEW: Toon alle evenementen voor dit weekend.
+    DEFAULTFUTUREMONTHS: Maximum aantal toekomstige maanden in het standaard overzicht
+    EVENTSPERPAGE: Evenementen per pagina
+    DEFAULTDATEHEADER: Standaard datum titel, als er geen is ingevuld
+    NUMBERFUTUREDATES: Aantal toekomstige data voor herhalende evenementen
+    FEEDS: ICS Feeds
+    ICSFEEDDESCRIPTION: Voeg een ICS feeds toe aan je kalender voor het importeren van een externe kalender, bijvoorbeeld Google Calendar
+    RSSTITLE: Titel van RSS Feed         
+  CalendarAnnouncement:
+    PLURALNAME: Aankondigingen
+    SINGULARNAME: Aankondiging
+    TITLE: Naam
+    CONTENT: Omschrijving
+  ICSFeed:
+    PLURALNAME: ICS Feeds
+    SINGULARNAME: ICS Feed
+    TITLE: Titel
+    TITLEOFFEED: Titel van Feed
+    URLLINK: URL
   CalendarDateTime:
     INVALIDFORMAT: 'Foutief datumformaat. Gebruik "dmy" of "mdy".'
+    STARTDATE: Startdatum
+    ENDDATE: Einddatum
+    STARTTIME: Starttijd
+    ENDTIME: Eindtijd
+    ALLDAY: Hele dag
   CalendarEvent:
+    PLURALNAME: Kalender items
+    SINGULARNAME: Kalender item
+    DESCRIPTION: Individueel kalender item
     REPEATEVENT: 'Herhaal dit event'
     DESCRIBEINTERVAL: 'Bepaal interval van dit event:'
     EVERY: 'Elke '

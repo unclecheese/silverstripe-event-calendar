@@ -21,4 +21,10 @@ class ICSFeed extends DataObject {
 
 		return $f;
 	}
+	
+	public function summaryFields() {
+		return array (
+				'Title' => _t('ICSFeed.TITLE','Title'),
+		);
+	}	
 }
