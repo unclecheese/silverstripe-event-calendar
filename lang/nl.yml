@@ -91,12 +91,3 @@ nl:
     ADD: 'Aan mijn kalender toevoegen'
   CalendarWidget:
     LOCALEFILE: date_nl.js
-  AnnouncementCalendarWidget:
-    CMSTITLE: 'Kalender aankondigingen Widget'
-    DESCRIPTION: 'Geeft de eerst volgende aankondigingen van de kalender weer.'
-    FIELD_TITLE: 'Titel'
-    FIELD_CALENDAR: 'Kalender'
-    FIELD_ANNOUNCEMENTCOUNT: 'Maximum aantal items'
-    PLURALNAME: 'Kalender-Widgets'
-    SINGULARNAME: 'Kalender-Widget'
-    TITLE: 'Kalender'
