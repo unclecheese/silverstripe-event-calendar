@@ -25,6 +25,7 @@
 			this.firstDay = new Date(this.year, this.month, 1);
 			this.startingDay = this.firstDay.getDay();
 			if($.CalendarWidget.settings.startOnMonday) {
+				if(this.startingDay === 0) this.startingDay=6; else 
 				this.startingDay--;
 			}			
 			this.monthLength = this.settings.calDaysInMonth[this.month];
@@ -162,7 +163,8 @@
 
 			var cell = 1;
 			var empties = 0;
-			var row_count = Math.ceil(this.monthLength/7);
+			var row_count = Math.ceil((this.monthLength+this.startingDay)/7);
+
 			for (var i = 0; i < row_count; i++) {
 				for (var j = 0; j <= 6; j++) {
 					date = "";

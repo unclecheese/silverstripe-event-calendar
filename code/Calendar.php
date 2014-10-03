@@ -179,11 +179,9 @@ class Calendar extends Page {
 
 			$announcements = DataList::create($this->getAnnouncementClass())
 				->filter(array(
-					"CalendarID" => $calendar->ID
-				))
-				->exclude(array(				
-					"StartDate:LessThan" => $end,
-					"EndDate:GreaterThan" => $start,
+					"CalendarID" => $calendar->ID,				
+					"StartDate:LessThan:Not" => $start,
+					"EndDate:GreaterThan:Not" => $end,
 				));
 			if($announcement_filter) {
 				$announcements = $announcements->where($announcement_filter);
@@ -294,12 +292,22 @@ class Calendar extends Page {
 			$relation = $recurring_event->getReverseAssociation($this->getDateTimeClass());
 			if(!$relation) continue;
 
-			if($recurring_event_datetime = $recurring_event->$relation()->first()) {				
+            $recurring_event_datetimes = $recurring_event->$relation()->filter(array(
+                'StartDate:LessThanOrEqual' => $end->date(),
+                'EndDate:GreaterThanOrEqual' => $date_counter->date(),
+            ));
+
+            foreach ($recurring_event_datetimes as $recurring_event_datetime) {
+                $date_counter = sfDate::getInstance($start_date);
+                $start = sfDate::getInstance($recurring_event_datetime->StartDate);
+                if ($start->get() > $date_counter->get()) {
+                    $date_counter = $start;
+                }
 				while($date_counter->get() <= $end->get()){
 					// check the end date
 					if($recurring_event_datetime->EndDate) {
 						$end_stamp = strtotime($recurring_event_datetime->EndDate);
-						if($end_stamp > 0 && $end_stamp < $date_counter->get()) {							
+						if($end_stamp > 0 && $end_stamp < $date_counter->get()) {
 							break;
 						}
 					}
@@ -349,7 +357,9 @@ class Calendar extends Page {
 				// translate iCal schema into CalendarAnnouncement schema (datetime + title/content)
 				$feedevent = new CalendarAnnouncement;
 				$feedevent->Title = $event['SUMMARY'];
-				$feedevent->Content = $event['DESCRIPTION'];
+				if ( isset($event['DESCRIPTION']) ) {
+					$feedevent->Content = $event['DESCRIPTION'];
+				}
 
 				$startdatetime = $this->iCalDateToDateTime($event['DTSTART']);
 				$enddatetime = $this->iCalDateToDateTime($event['DTEND']);
@@ -399,7 +409,7 @@ class Calendar extends Page {
 	public function UpcomingAnnouncements($limit = 5, $filter = null) {
 		return $this->Announcements()
 			->filter(array(
-				'StartDate:GreaterThan' => 'DATE(NOW())'
+				'StartDate:GreaterThan' => 'NOW'
 			))
 			->where($filter)
 			->limit($limit);
@@ -472,7 +482,7 @@ class Calendar_Controller extends Page_Controller {
 		parent::init();
 		RSSFeed::linkToFeed($this->Link() . "rss", $this->RSSTitle ? $this->RSSTitle : $this->Title);
 		Requirements::themedCSS('calendar','event_calendar');
-		if(!Calendar::$jquery_included) {
+		if(!Calendar::config()->jquery_included) {
 			Requirements::javascript(THIRDPARTY_DIR.'/jquery/jquery.js');
 		}
 		Requirements::javascript('event_calendar/javascript/calendar.js');
@@ -493,7 +503,7 @@ class Calendar_Controller extends Page_Controller {
 	public function setDefaultView() {
 		$this->view = "default";
 		$this->startDate = sfDate::getInstance();
-		$this->endDate = sfDate::getInstance()->addMonth(6);				
+		$this->endDate = sfDate::getInstance()->addMonth($this->DefaultFutureMonths);				
 	}
 
 	public function setTodayView() {
@@ -550,6 +560,7 @@ class Calendar_Controller extends Page_Controller {
 	}
 
 	public function index(SS_HTTPRequest $r) {
+		$this->extend('index',$r);
 		switch($this->DefaultView) {
 			case "month":
 				return $this->redirect($this->Link('show/month'));
@@ -640,7 +651,7 @@ class Calendar_Controller extends Page_Controller {
 		$xml = preg_replace('/<!--(.|\s)*?-->/', '', $xml);
 		$xml = trim($xml);
 		HTTP::add_cache_headers();
-		header("Content-type: text/xml");
+		$this->getResponse()->addHeader('Content-Type', 'application/rss+xml');
 		echo $xml;
 	}
 
