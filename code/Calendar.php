@@ -368,10 +368,10 @@ class Calendar extends Page {
 					// do nothing; dates outside range
 				} else {
 					$feedevent->StartDate = $startdatetime->format('Y-m-d');
-					$feedevent->StartTime = $startdatetime->format('G:i:s');
+					$feedevent->StartTime = $startdatetime->format('H:i:s');
 
 					$feedevent->EndDate = $enddatetime->format('Y-m-d');
-					$feedevent->EndTime = $enddatetime->format('G:i:s');
+					$feedevent->EndTime = $enddatetime->format('H:i:s');
 
 					$feedevents->push($feedevent);
 				}
@@ -381,9 +381,11 @@ class Calendar extends Page {
 	}
 
 	public function iCalDateToDateTime($date) {
+        date_default_timezone_set($this->stat('timezone'));
 		$date = str_replace('T', '', $date);//remove T
 		$date = str_replace('Z', '', $date);//remove Z
 		$date = strtotime($date);
+        $date = $date + date('Z');
 		return sfDate::getInstance($date);
 	}
 
