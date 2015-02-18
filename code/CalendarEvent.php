@@ -113,8 +113,6 @@ class CalendarEvent extends Page {
 		$monthlyInterval->addExtraClass('monthlyinterval');
 		$monthlyIndex->addExtraClass('monthlyindex');
 
-		$this->extend('updateCMSFields',$f);
-		
 		return $f;
 	
 	}
