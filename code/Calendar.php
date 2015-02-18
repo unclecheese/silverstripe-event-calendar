@@ -120,7 +120,6 @@ class Calendar extends Page {
 		}
 		
 		$f->addFieldToTab("Root.Main", new TextField('RSSTitle', _t('Calendar.RSSTITLE','Title of RSS Feed')),'Content');
-		$this->extend('updateCMSFields',$f);
 		return $f;
 	}
 
