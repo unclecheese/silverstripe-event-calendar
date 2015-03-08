@@ -1,0 +1,90 @@
+fi:
+  Calendar:
+    OneDay: '$StartDayNameLong, $StartDayNumberShort.$StartMonthNumberShort.$StartYearLong'
+    SameMonthSameYear: '$StartDayNumberShort.-$EndDayNumberShort.$StartMonthNumberShort.$EndYearLong'
+    DiffMonthSameYear: '$StartMonthNameShort. $StartDayNumberShort - $EndMonthNameShort. $EndDayNumberShort, $EndYearLong'
+    DiffMonthDiffYear: '$StartMonthNameShort. $StartDayNumberShort, $StartYearLong - $EndMonthNameShort. $EndDayNumberShort, $EndYearLong'
+    OneDayHeader: '$StartMonthNameLong $StartDayNumberShort$StartDaySuffix, $StartYearLong'
+    MonthHeader: '$StartMonthNameLong, $StartYearLong'
+    YearHeader: '$StartYearLong'
+    NUMBEROFEVENTS: 'Tapahtumien määärä'
+    DEFAULTDATEHEADER: 'Oletus päivämäärä otsikko'
+    NUMBERFUTUREDATES: 'Tulevien tapahtumien määrä'
+    UPCOMINGEVENTSFOR: 'Tulevat tapahtumat %s'
+    FILTER: 'Suodata'
+    JUMPTOMONTH: 'Siirry kuukauteen'
+    QUICKNAVTODAY: 'Tänään'
+    QUICKNAVWEEK: 'Tällä viikolla'
+    QUICKNAVMONTH: 'Tässä kuussa'
+    QUICKNAVWEEKEND: 'Nyt viikonloppuna'
+    SUBSCRIBE: 'Tilaa RSS'
+    ADD: 'Tallenna tapahtuma omaan kalenteriisi'
+    DATETIMEDESCRIPTION: 'Lisää päivämäärät tapahtumaan'
+    ALLDAY: 'Kokopäivä' 
+    PREVIOUSDAY: "Edellinen päivä"
+    NEXTDAY: "Seuraava päivä"
+    PREVIOUSWEEK: "Edellinen viikko"
+    NEXTWEEK: "Seuraava viikko"
+    PREVIOUSMONTH: "Edellinen kuukausi"
+    NEXTMONTH: "Seuraava kuukausi"
+    PREVIOUSWEEKEND: "Edellinen viikonloppu"
+    NEXTWEEKEND: "Seuraava viikonloppu"    
+  CalendarDateTime:
+    DATEFORMAT: DMy
+    TIMEFORMAT: 24
+    FIRSTDAYOFWEEK: Monday
+    INVALIDFORMAT: 'Epäkelpo formaatti.'
+  CalendarEvent:
+    REPEATEVENT: 'Toistuva tapahtuma'
+    DESCRIBEINTERVAL: 'Toistuvuus:'
+    EVERY: 'Joka '
+    DAYS: ' Päivät'
+    WEEKS: ' Viikot'
+    ONFOLLOWINGDAYS: 'Seuraavat päivät...'
+    MONTHS: 'Kuukaudet'
+    ONTHESEDATES: 'Nämä päivät'
+    ONTHE: 'On the...'
+    OFTHEMONTH: ' Of the Month.'
+    ANYEXCEPTIONS: 'Any Exceptions:'
+    DATE: Data
+    RSSFEED: 'RSS-styöte'
+    ADD: 'Lisää tapahtuma omaan kalenteriisi'
+    ADDITIONALDATES: 'Tapahtuman muut päivät'
+  Calendar.ss:
+    BROWSECALENDAR: 'Selaa kalenteria'
+    USECALENDAR: 'KÄytä kalenteria'
+    SUBSCRIBE: 'Tilaa RSS-syöte.'
+    ALLDAY: 'Koko päivä'
+    TIME: 'Aika'
+    MORE: 'Lisää...'
+    SEEALSO: 'Katso myös'
+    NOEVENTS: 'Ei tapahtumia'
+  CalendarEvent.ss:
+    BROWSECALENDAR: 'Selaa kalenteria'
+    USECALENDAR: 'Käytä kalentria'
+    FILTERCALENDAR: 'Suodata'
+    BACKTO: 'Takaisin'
+    SUBSCRIBE: 'Tilaa kalenteri.'
+    ADDITIONALDATES: 'Lisäpäivät'
+    ADD: 'Lisää kalenteriin'
+    LOCALEFILE: date_fi.js
+    ADDITIONALDATES: 'Tapahtuman muut päivät'
+  EventList.ss:
+    ADD: 'Lisää kalenteriin'
+    MORE: 'Lisää'
+    ALLDAY: 'Koko päivä'
+  EventList:
+    ADD: 'Lisää kalenteriisi'
+    MORE: 'Lue lisää tapahtumasta'
+    ALLDAY: 'Koko päivä'
+  QuickNav.ss:
+    PREVIOUSDAY: "Edellinen päivä"
+    NEXTDAY: "Seuraava päivä"
+    PREVIOUSWEEK: "Edellinen viikko"
+    NEXTWEEK: "Seuraava viikko"
+    PREVIOUSMONTH: "Edellinen kuukausi"
+    NEXTMONTH: "Seuraava kuukausi"
+    PREVIOUSWEEKEND: "Edellinen viikonloppu"
+    NEXTWEEKEND: "Seuraava viikonloppu"
+  CalendarWidget:
+    LOCALEFILE: 'date_fi.js'
