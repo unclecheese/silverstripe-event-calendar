@@ -1,10 +1,10 @@
 de:
   Calendar:
-    OneDay: '$StartDayNumberShort. $StartMonthNameShort. $StartYearLong' // e.g. 4. Okt. 2009
-    SameMonthSameYear: '$StartDayNumberShort. - $EndDayNumberShort. $StartMonthNameShort. $EndYearLong' // e.g. 4. - 6. Okt. 2009
-    DiffMonthSameYear: '$StartDayNumberShort. $StartMonthNameShort - $EndDayNumberShort. $EndMonthNameShort. $EndYearFull' // e.g. 4. Okt. - 6. Nov. 2009
-    DiffMonthDiffYear: '$StartDayNumberShort. $StartMonthNameShort. $StartYearLong - $EndDayNumberShort. $EndMonthNameShort. $EndYearLong' // e.g. 30. Dez. 2008 - 2. Jan. 2009
-    OneDayHeader: '$StartDayNumberShort. $StartMonthNameLong $StartYearLong' // "Headers" control the display when a date range is given to the calendar through the URL.
+    OneDay: '$StartDayNumberShort. $StartMonthNameShort. $StartYearLong' #e.g. 4. Okt. 2009
+    SameMonthSameYear: '$StartDayNumberShort. - $EndDayNumberShort. $StartMonthNameShort. $EndYearLong' #e.g. 4. - 6. Okt. 2009
+    DiffMonthSameYear: '$StartDayNumberShort. $StartMonthNameShort - $EndDayNumberShort. $EndMonthNameShort. $EndYearFull' #e.g. 4. Okt. - 6. Nov. 2009
+    DiffMonthDiffYear: '$StartDayNumberShort. $StartMonthNameShort. $StartYearLong - $EndDayNumberShort. $EndMonthNameShort. $EndYearLong' #e.g. 30. Dez. 2008 - 2. Jan. 2009
+    OneDayHeader: '$StartDayNumberShort. $StartMonthNameLong $StartYearLong' #"Headers" control the display when a date range is given to the calendar through the URL.
     MonthHeader: '$StartMonthNameLong $StartYearLong'
     YearHeader: '$StartYearLong'
   Calendar:
