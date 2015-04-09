@@ -32,7 +32,7 @@ class CalendarEvent extends Page {
 	
 	private static $can_be_root = false;
 
-	public function getCMSFields() {=
+	public function getCMSFields() {
 		
 		$self = $this;
 		
