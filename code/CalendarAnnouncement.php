@@ -12,11 +12,18 @@ class CalendarAnnouncement extends CalendarDateTime {
 	);
 
 	public function getCMSFields() {
-		$f = parent::getCMSFields();
-		$f->insertBefore(new TextField('Title', _t('CalendarAnnouncement.TITLE','Title of announcement')), "StartDate");
-		$f->insertBefore(new TextareaField('Content', _t('CalendarAnnouncement.CONTENT','Announcement content')), "StartDate");		
-		$this->extend('updateCMSFields', $f);
+		
+		$self = $this;
+		
+		$this->beforeUpdateCMSFields(function($f) use ($self) {
+			
+			$f->insertBefore(new TextField('Title', _t('CalendarAnnouncement.TITLE','Title of announcement')), "StartDate");
+			$f->insertBefore(new TextareaField('Content', _t('CalendarAnnouncement.CONTENT','Announcement content')), "StartDate");
 
+		});
+		
+		$f = parent::getCMSFields();
+		
 		return $f;
 	}
 
