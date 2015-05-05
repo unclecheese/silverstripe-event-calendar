@@ -336,6 +336,7 @@ class Calendar extends Page {
 		foreach($recurring_event_datetime->db() as $field => $type) {
 			$e->$field = $recurring_event_datetime->$field;
 		}
+		$e->DateTimeID = $recurring_event_datetime->ID;
 		$e->StartDate = $start_date;
 		$e->EndDate = $start_date;
 		$e->$relation = $recurring_event_datetime->$relation;
