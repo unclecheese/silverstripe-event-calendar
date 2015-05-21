@@ -44,7 +44,7 @@ class CalendarEvent extends Page {
 				TextField::create(
 					"Location",
 					_t('Calendar.LOCATIONDESCRIPTION','The location for this event'),
-				), 'Content')
+				), 'Content'
 			);
 			
 			$dt = _t('CalendarEvent.DATESANDTIMES','Dates and Times');
