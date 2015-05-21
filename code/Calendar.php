@@ -742,6 +742,8 @@ class Calendar_Controller extends Page_Controller {
 				$URL = "";
 			}
 			$TITLE = $feed ? $_REQUEST['title'] : $event->Title;
+			$CONTENT = $feed ? $_REQUEST['content'] : $event->Content;
+			$LOCATION = $feed ? $_REQUEST['location'] : $event->Location;
 			$this->getResponse()->addHeader('Cache-Control','private');
 			$this->getResponse()->addHeader('Content-Description','File Transfer');
 			$this->getResponse()->addHeader('Content-Type','text/calendar');
@@ -760,7 +762,9 @@ class Calendar_Controller extends Page_Controller {
 				'START_TIMESTAMP' => $START_TIMESTAMP,
 				'END_TIMESTAMP' => $END_TIMESTAMP,
 				'URL' => $URL,
-				'TITLE' => $TITLE
+				'TITLE' => $TITLE,
+				'CONTENT' => $CONTENT,
+				'LOCATION' => $LOCATION
 			))->renderWith(array('ics'))));
 			return $result;
 		}
