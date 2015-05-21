@@ -3,6 +3,7 @@
 class CalendarEvent extends Page {
 	
 	private static $db = array (
+		'Location' => 'Text',
 		'Recursion' => 'Boolean',
 		'CustomRecursionType' => 'Int',
 		'DailyInterval' => 'Int',
@@ -38,6 +39,13 @@ class CalendarEvent extends Page {
 		
 		$this->beforeUpdateCMSFields(function($f) use ($self) {
 			Requirements::javascript('event_calendar/javascript/calendar_cms.js');
+			
+			$f->addFieldToTab("Root.Main",
+				TextField::create(
+					"Location",
+					_t('Calendar.LOCATIONDESCRIPTION','The location for this event'),
+				), 'Content')
+			);
 			
 			$dt = _t('CalendarEvent.DATESANDTIMES','Dates and Times');
 			$recursion = _t('CalendarEvent.RECURSION','Recursion');
