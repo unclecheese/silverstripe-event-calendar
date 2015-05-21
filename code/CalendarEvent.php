@@ -43,7 +43,7 @@ class CalendarEvent extends Page {
 			$f->addFieldToTab("Root.Main",
 				TextField::create(
 					"Location",
-					_t('Calendar.LOCATIONDESCRIPTION','The location for this event'),
+					_t('Calendar.LOCATIONDESCRIPTION','The location for this event')
 				), 'Content'
 			);
 			
