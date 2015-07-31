@@ -38,7 +38,7 @@ nb:
     TIME: 'Tid'
     MORE: 'Les mer...'
     SEEALSO: 'Se også'
-    NOEVENTS: 'Vennligst kontakt oss for detaljert kursplan.'
+    NOEVENTS: 'Ingen hendelser ble funnet.'
   CalendarEvent.ss:
     BROWSECALENDAR: $lang['nb_NO']['Calendar.ss']['BROWSECALENDAR']
     USECALENDAR: $lang['nb_NO']['Calendar.ss']['USECALENDAR']
