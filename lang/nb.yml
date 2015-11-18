@@ -1,0 +1,72 @@
+nb:
+  Calendar:
+    OneDay: '$StartDayNumberShort. $StartMonthNameShort. $StartYearLong' #e.g. 4. Okt. 2009
+    SameMonthSameYear: '$StartDayNumberShort. - $EndDayNumberShort. $StartMonthNameShort. $EndYearLong' #e.g. 4. - 6. Okt. 2009
+    DiffMonthSameYear: '$StartDayNumberShort. $StartMonthNameShort - $EndDayNumberShort. $EndMonthNameShort. $EndYearLong' #e.g. 4. Okt. - 6. Nov. 2009
+    DiffMonthDiffYear: '$StartDayNumberShort. $StartMonthNameShort. $StartYearLong - $EndDayNumberShort. $EndMonthNameShort. $EndYearLong' #e.g. 30. Des. 2008 - 2. Jan. 2009
+    OneDayHeader: '$StartDayNumberShort. $StartMonthNameLong $StartYearLong' #"Headers" control the display when a date range is given to the calendar through the URL.
+    MonthHeader: '$StartMonthNameLong $StartYearLong'
+    YearHeader: '$StartYearLong'
+    NUMBEROFEVENTS: 'Antall viste begivenheter (standard visning).'
+    DEFAULTDATEHEADER: 'Standardtittel (vises hvis ingen dato er valgt).'
+    NUMBERFUTUREDATES: 'Maks datoer som skal vises i gjentatte begivenheter'
+    UPCOMINGEVENTSFOR: 'Kommende begivenheter for %s'
+    JUMPTOMONTH: 'Hopp til en måned'
+    JUMP: 'Hopp'
+    QUICKNAVTODAY: 'I dag'
+    QUICKNAVWEEK: 'Denne uken'
+    QUICKNAVMONTH: 'Denne måneden'
+    QUICKNAVWEEKEND: 'Denne helgen'
+    PREVIOUSDAY: 'Forrige dag'
+    PREVIOUSWEEK: 'Forrige uke'
+    PREVIOUSMONTH: 'Forrige måned'
+    PREVIOUSWEEKEND: 'Forrige helg'
+    NEXTDAY: 'Neste dag'
+    NEXTWEEK: 'Neste uke'
+    NEXTMONTH: 'Neste måned'
+    NEXTWEEKEND: 'Neste helg'
+    ALLDAY: 'Hele dagen'
+    ADD: 'Legg til i kalender'
+    MORE: 'Les mer&hellip;'
+    ADDITIONALDATES: 'Ytterligere datoer for denne begivenheten'
+    VIEWMOREEVENTS: 'Se flere begivenheter...'
+    DATEJSFILE: 'calendar_nb.js'
+  CalendarDateTime:
+    INVALIDFORMAT: 'Ugyldig datoformat. Gyldig: "dmy" eller "mdy".'
+  CalendarEvent:
+    REPEATEVENT: 'Gjenta begivenheten'
+    DESCRIBEINTERVAL: 'Definér intervallet:'
+    EVERY: 'Hver '
+    DAYS: ' dag(er)'
+    WEEKS: ' uker'
+    ONFOLLOWINGDAYS: 'På følgende dag(er)...'
+    MONTHS: ' måneder'
+    ONTHESEDATES: 'På disse datoene...'
+    ONTHE: 'På den ...'
+    OFTHEMONTH: ' i måneden.'
+    ANYEXCEPTIONS: 'Unntak'
+    DATE: 'Dato'
+    RSSFEED: 'RSS-feed for denne kalenderen'
+    ADD: 'Legg til i kalender'
+    ADDITIONALDATES: 'Flere datoer'
+  Calendar.ss:
+    BROWSECALENDAR: 'Bla i kalender'
+    USECALENDAR: 'Bruk kalenderen.'
+    SUBSCRIBE: 'Abonnér på denne kalenderen.'
+    ALLDAY: 'Hele dagen'
+    TIME: 'Tid'
+    MORE: 'Les mer...'
+    SEEALSO: 'Se også'
+    NOEVENTS: 'Ingen begivenheter funnet.'
+  CalendarEvent.ss:
+    BROWSECALENDAR: $lang['nb_NO']['Calendar.ss']['BROWSECALENDAR']
+    USECALENDAR: $lang['nb_NO']['Calendar.ss']['USECALENDAR']
+    FILTERCALENDAR: 'Filtrér kalenderen'
+    BACKTO: 'Tilbake til'
+    SUBSCRIBE: $lang['nb_NO']['Calendar.ss']['SUBSCRIBE']
+  CalendarDateTime:
+    DATEFORMAT: dmy
+    TIMEFORMAT: 24
+    FIRSTDAYOFWEEK: Mandag
+  CalendarWidget:
+    LOCALEFILE: 'date_nb.js'
