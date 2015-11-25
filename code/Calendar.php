@@ -742,7 +742,7 @@ class Calendar_Controller extends Page_Controller {
 				$URL = "";
 			}
 			$TITLE = $feed ? $_REQUEST['title'] : $event->Title;
-			$CONTENT = $feed ? $_REQUEST['content'] : $event->Content;
+			$CONTENT = $feed ? $_REQUEST['content'] : $event->obj('Content')->Summary();
 			$LOCATION = $feed ? $_REQUEST['location'] : $event->Location;
 			$this->getResponse()->addHeader('Cache-Control','private');
 			$this->getResponse()->addHeader('Content-Description','File Transfer');
