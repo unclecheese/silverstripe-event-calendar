@@ -629,7 +629,7 @@ class Calendar_Controller extends Page_Controller {
 	}
 
 
-	public function month(SS_HTTPReqest $r) {
+	public function month(SS_HTTPRequest $r) {
 		$this->setMonthView();
 		return $this->respond();
 	}
