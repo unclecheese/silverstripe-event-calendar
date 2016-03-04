@@ -347,10 +347,10 @@ class Calendar extends Page {
 
 
 	public function getFeedEvents($start_date, $end_date) {
-		$start = sfDate::getInstance($start_date);
+		$start = new DateTime($start_date);
 		// single day views don't pass end dates
 		if ($end_date) {
-			$end = sfDate::getInstance($end_date);
+			$end = new DateTime($end_date);
 		} else {
 			$end = $start;
 		}
@@ -358,8 +358,8 @@ class Calendar extends Page {
 		$feeds = $this->Feeds();
 		$feedevents = new ArrayList();
 		foreach( $feeds as $feed ) {
-			$feedreader = new ICSReader( $feed->URL );
-			$events = $feedreader->getEvents();
+			$feedreader = new ICal( $feed->URL );
+			$events = $feedreader->events();
 			foreach ( $events as $event ) {
 				// translate iCal schema into CalendarAnnouncement schema (datetime + title/content)
 				$feedevent = new CalendarAnnouncement;
@@ -367,11 +367,10 @@ class Calendar extends Page {
 				if ( isset($event['DESCRIPTION']) ) {
 					$feedevent->Content = $event['DESCRIPTION'];
 				}
-
-				$startdatetime = $this->iCalDateToDateTime($event['DTSTART']);
-				$enddatetime = $this->iCalDateToDateTime($event['DTEND']);
-				if ( ($startdatetime->get() < $start->get() && $enddatetime->get() < $start->get())
-					|| $startdatetime->get() > $end->get() && $enddatetime->get() > $end->get()) {
+				$startdatetime = $this->iCalDateToDateTime($event['DTSTART']);//->setTimezone(new DateTimeZone($this->stat('timezone')));
+				$enddatetime = $this->iCalDateToDateTime($event['DTEND']);//->setTimezone(new DateTimeZone($this->stat('timezone')));
+				if ( ($startdatetime < $start && $enddatetime < $start)
+					|| $startdatetime > $end && $enddatetime > $end) {
 					// do nothing; dates outside range
 				} else {
 					$feedevent->StartDate = $startdatetime->format('Y-m-d');
@@ -388,14 +387,10 @@ class Calendar extends Page {
 	}
 
 	public function iCalDateToDateTime($date) {
-		date_default_timezone_set($this->stat('timezone'));
-		$date = str_replace('T', '', $date);//remove T
-		$date = str_replace('Z', '', $date);//remove Z
-		$date = strtotime($date);
-        $date = $date + date('Z');
-		return sfDate::getInstance($date);
+		$dt = new DateTime($date);
+		$dt->setTimeZone( new DateTimezone($this->stat('timezone')) );
+		return $dt;
 	}
-
 
 
 	public function getAllCalendars() {
