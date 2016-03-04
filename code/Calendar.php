@@ -661,7 +661,8 @@ class Calendar_Controller extends Page_Controller {
 		$xml = trim($xml);
 		HTTP::add_cache_headers();
 		$this->getResponse()->addHeader('Content-Type', 'application/rss+xml');
-		echo $xml;
+		$this->getResponse()->setBody($xml);
+        	return $this->getResponse();
 	}
 
 	public function monthjson(SS_HTTPRequest $r) {
