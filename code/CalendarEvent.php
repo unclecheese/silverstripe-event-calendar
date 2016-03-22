@@ -223,6 +223,7 @@ class CalendarEvent_Controller extends Page_Controller {
 				$datetime = $allDates->first();
 				if($datetime) {
 					$datetime->StartDate = $date;
+					$datetime->EndDate = $date;
 					return $datetime;
 				}
 			}
