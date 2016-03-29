@@ -79,17 +79,17 @@ class Calendar extends Page {
 	
 			$configuration = _t('Calendar.CONFIGURATION','Configuration');
 			$f->addFieldsToTab("Root.$configuration", array(
-				new DropdownField('DefaultView',_t('Calendar.DEFAULTVIEW','Default view'), array (
+				DropdownField::create('DefaultView',_t('Calendar.DEFAULTVIEW','Default view'), array (
 					'upcoming' => _t('Calendar.UPCOMINGVIEW',"Show a list of upcoming events."),
 					'month' => _t('Calendar.MONTHVIEW',"Show this month's events."),
 					'week' => _t('Calendar.WEEKVIEW',"Show this week's events. If none, fall back on this month's"),
 					'today' => _t('Calendar.TODAYVIEW',"Show today's events. If none, fall back on this week's events"),
 					'weekend' => _t('Calendar.WEEKENDVIEW',"Show this weekend's events.")
-				)),
-				new NumericField('DefaultFutureMonths', _t('Calendar.DEFAULTFUTUREMONTHS','Number maximum number of future months to show in default view')),
-				new NumericField('EventsPerPage', _t('Calendar.EVENTSPERPAGE','Events per page')),
-				new TextField('DefaultDateHeader', _t('Calendar.DEFAULTDATEHEADER','Default date header (displays when no date range has been selected)')),
-				new NumericField('OtherDatesCount', _t('Calendar.NUMBERFUTUREDATES','Number of future dates to show for repeating events'))
+				))->addExtraClass('defaultView'),
+				NumericField::create('DefaultFutureMonths', _t('Calendar.DEFAULTFUTUREMONTHS','Number maximum number of future months to show in default view'))->addExtraClass('defaultFutureMonths'),
+				NumericField::create('EventsPerPage', _t('Calendar.EVENTSPERPAGE','Events per page')),
+				TextField::create('DefaultDateHeader', _t('Calendar.DEFAULTDATEHEADER','Default date header (displays when no date range has been selected)')),
+				NumericField::create('OtherDatesCount', _t('Calendar.NUMBERFUTUREDATES','Number of future dates to show for repeating events'))
 			));
 			
 			// Announcements
@@ -430,7 +430,7 @@ class Calendar extends Page {
 			$l
 		);
 		$events->sort('StartDate','DESC');
-		return $events->getRange(0,$limit);
+		return $events->limit($limit);
 	}
 
 	public function CalendarWidget() {
@@ -657,7 +657,7 @@ class Calendar_Controller extends Page_Controller {
 		HTTP::add_cache_headers();
 		$this->getResponse()->addHeader('Content-Type', 'application/rss+xml');
 		$this->getResponse()->setBody($xml);
-        	return $this->getResponse();
+		return $this->getResponse();
 	}
 
 	public function monthjson(SS_HTTPRequest $r) {
