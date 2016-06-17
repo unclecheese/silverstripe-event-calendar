@@ -45,5 +45,9 @@ class CalendarAnnouncement extends CalendarDateTime {
 	public function getContent() {
 		return $this->getField('Content');
 	}
+	
+	public function Link() {
+		return Controller::join_links($this->Calendar->Link(),"?date=".$this->StartDate);
+	}
 
 }
