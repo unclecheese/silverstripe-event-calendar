@@ -379,6 +379,7 @@ class Calendar extends Page {
 					$feedevent->EndDate = $enddatetime->format('Y-m-d');
 					$feedevent->EndTime = $enddatetime->format('H:i:s');
 
+					$feedevent->Calendar = $this;
 					$feedevents->push($feedevent);
 				}
 			}
