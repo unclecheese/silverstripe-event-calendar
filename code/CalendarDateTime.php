@@ -192,10 +192,10 @@ class CalendarDateTime extends DataObject {
 		$start = sfDate::getInstance($this->StartDate);
 		$end = sfDate::getInstance($this->EndDate);
 		$dates = array ();
-		while($start->get() <= $end->get()) {
+		do {
 			$dates[] = $start->format('Y-m-d');
 			$start->tomorrow();
-		}
+		} while($start->get() <= $end->get());
 		return $dates;
 	}
 	
