@@ -1,0 +1,20 @@
+sk:
+  Calendar:
+    OneDay: '$StartDayNameShort, $StartMonthNameShort. $StartDayNumberShort, $StartYearLong'
+    SameMonthSameYear: '$StartMonthNameShort. $StartDayNumberShort - $EndDayNumberShort, $EndYearLong'
+    DiffMonthSameYear: '$StartMonthNameShort. $StartDayNumberShort - $EndMonthNameShort. $EndDayNumberShort, $EndYearLong'
+    DiffMonthDiffYear: '$StartMonthNameShort. $StartDayNumberShort, $StartYearLong - $EndMonthNameShort. $EndDayNumberShort, $EndYearLong'
+    OneDayHeader: '$StartMonthNameLong $StartDayNumberShort$StartDaySuffix, $StartYearLong'
+    MonthHeader: '$StartMonthNameLong, $StartYearLong'
+    YearHeader: '$StartYearLong'
+    QUICKNAVTODAY: 'deň'
+    QUICKNAVMONTH: 'mesiac'
+    QUICKNAVWEEK: 'týždeň'
+    QUICKNAVWEEKEND: 'víkend'
+    DATEJSFILE: 'calendar_sk.js'
+  CalendarEvent:
+    ADD: 'Pridať do môjho kalendára (ICS)'
+  CalendarDateTime:
+    DATEFORMAT: dmy
+    TIMEFORMAT: 24
+    FIRSTDAYOFWEEK: Monday
