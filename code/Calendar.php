@@ -1,5 +1,7 @@
 <?php
 
+use ICal\ICal;
+
 class Calendar extends Page {
 
 	private static $db = array(
@@ -363,12 +365,12 @@ class Calendar extends Page {
 			foreach ( $events as $event ) {
 				// translate iCal schema into CalendarAnnouncement schema (datetime + title/content)
 				$feedevent = new CalendarAnnouncement;
-				$feedevent->Title = $event['SUMMARY'];
-				if ( isset($event['DESCRIPTION']) ) {
-					$feedevent->Content = $event['DESCRIPTION'];
+				$feedevent->Title = $event->summary;
+				if ( isset($event->description) ) {
+					$feedevent->Content = $event->description;
 				}
-				$startdatetime = $this->iCalDateToDateTime($event['DTSTART']);//->setTimezone(new DateTimeZone($this->stat('timezone')));
-				$enddatetime = $this->iCalDateToDateTime($event['DTEND']);//->setTimezone(new DateTimeZone($this->stat('timezone')));
+				$startdatetime = $this->iCalDateToDateTime($event->dtstart);//->setTimezone(new DateTimeZone($this->stat('timezone')));
+				$enddatetime = $this->iCalDateToDateTime($event->dtend);//->setTimezone(new DateTimeZone($this->stat('timezone')));
 				if ( ($startdatetime < $start && $enddatetime < $start)
 					|| $startdatetime > $end && $enddatetime > $end) {
 					// do nothing; dates outside range
@@ -378,6 +380,8 @@ class Calendar extends Page {
 
 					$feedevent->EndDate = $enddatetime->format('Y-m-d');
 					$feedevent->EndTime = $enddatetime->format('H:i:s');
+
+					$feedevent->Calendar = $this;
 
 					$feedevents->push($feedevent);
 				}
