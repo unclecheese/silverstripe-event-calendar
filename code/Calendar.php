@@ -781,7 +781,7 @@ class Calendar_Controller extends Page_Controller {
 			switch(strlen(str_replace("-","",$r->param('ID')))) {
 				case 8:
 				$this->view = "day";
-				$this->endDate = sfDate::getInstance($d->get()+1);
+				$this->endDate = sfDate::getInstance($d->get()+86400);
 				break;
 				
 				case 6:
