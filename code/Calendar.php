@@ -355,6 +355,10 @@ class Calendar extends Page {
 			$end = $start;
 		}
 
+		if ($end == $start) {
+			$end = $end->add(new DateInterval('P1D'));
+		}
+
 		$feeds = $this->Feeds();
 		$feedevents = new ArrayList();
 		foreach( $feeds as $feed ) {
@@ -781,7 +785,7 @@ class Calendar_Controller extends Page_Controller {
 			switch(strlen(str_replace("-","",$r->param('ID')))) {
 				case 8:
 				$this->view = "day";
-				$this->endDate = sfDate::getInstance($d->get()+86399);
+				$this->endDate = sfDate::getInstance($d->get());
 				break;
 				
 				case 6:
