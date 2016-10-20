@@ -363,6 +363,8 @@ class Calendar extends Page {
 			foreach ( $events as $event ) {
 				// translate iCal schema into CalendarAnnouncement schema (datetime + title/content)
 				$feedevent = new CalendarAnnouncement;
+                //pass ICS feed ID to event list
+				$feedevent->ID = 'ICS_'.$feed->ID;
 				$feedevent->Title = $event['SUMMARY'];
 				if ( isset($event['DESCRIPTION']) ) {
 					$feedevent->Content = $event['DESCRIPTION'];
