@@ -602,7 +602,6 @@ class Calendar_Controller extends Page_Controller {
 
 			default:
 				$this->setDefaultView();
-				$list = $this->Events();
 				return $this->respond();
 			break;
 
