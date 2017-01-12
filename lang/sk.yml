@@ -53,6 +53,8 @@ sk:
     WEEKVIEW: "Zobraziť udalosti na tento týždeň. Ak nie sú, zobraziť na tento mesiac."
     YearHeader: '$StartYearLong'
   CalendarEvent:
+    ADD: 'Pridať do môjho kalendára (ICS)'
+    ADDITIONALDATES: 'Dalšie dátumy pre túto udalosť'
     ANYEXCEPTIONS: 'Existujú výnimky pri opakovaní udalosti? Ak áno, pridajte termíny nižšie.'
     DAILY: 'Denne'
     DATESANDTIMES: 'Dátumy a časy'
@@ -94,9 +96,6 @@ sk:
   Calendar.ss:
     NOEVENTS: 'K dispozícií nie sú žiadne udalosti.'
     SUBSCRIBE: 'Kalendár RSS'
-  CalendarEvent.ss:
-    ADD: 'Pridať do môjho kalendára (ICS)'
-    ADDITIONALDATES: 'Dalšie dátumy pre túto udalosť'
   LiveCalendarWidget.ss:
     JUMPTOMONTH: 'Prejsť na...'
     QUICKLINKS: 'Rýchle odkazy'
