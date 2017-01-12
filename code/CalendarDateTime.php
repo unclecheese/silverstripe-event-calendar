@@ -200,19 +200,35 @@ class CalendarDateTime extends DataObject {
 	}
 	
 	public function canCreate($member = null) {
-		return Permission::check("CMS_ACCESS_CMSMain");
+		$extended = $this->extendedCan(__FUNCTION__, $member);
+		if($extended !== null) {
+			return $extended;
+		}
+		return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
 	}
 
 	public function canEdit($member = null) {
-		return Permission::check("CMS_ACCESS_CMSMain");
+		$extended = $this->extendedCan(__FUNCTION__, $member);
+		if($extended !== null) {
+			return $extended;
+		}
+		return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
 	}
 
 	public function canDelete($member = null) {
-		return Permission::check("CMS_ACCESS_CMSMain");
+		$extended = $this->extendedCan(__FUNCTION__, $member);
+		if($extended !== null) {
+			return $extended;
+		}
+		return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
 	}
 
 	public function canView($member = null) {
-		return Permission::check("CMS_ACCESS_CMSMain");
+		$extended = $this->extendedCan(__FUNCTION__, $member);
+		if($extended !== null) {
+			return $extended;
+		}
+		return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
 	}
 
 }
