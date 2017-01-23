@@ -1,8 +1,8 @@
 <?php
 
 class CalendarTimeField extends TimeField {
-	
-	function Field() {
+
+	function Field($properties = array()) {
 		$attributes = array(
 			'type' => 'text',
 			'class' => 'text' . ($this->extraClass() ? $this->extraClass() : ''),
@@ -11,11 +11,11 @@ class CalendarTimeField extends TimeField {
 			'value' => $this->attrValue(),
 			'tabindex' => $this->getTabIndex(),
 			'maxlength' => ($this->maxLength) ? $this->maxLength : null,
-			'size' => ($this->maxLength) ? min( $this->maxLength, 30 ) : null 
+			'size' => ($this->maxLength) ? min( $this->maxLength, 30 ) : null
 		);
-		
+
 		if($this->disabled) $attributes['disabled'] = 'disabled';
-		
+
 		return $this->createTag('input', $attributes);
 	}
 }
