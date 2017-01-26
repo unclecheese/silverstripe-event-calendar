@@ -1,9 +1,9 @@
 en:
   Calendar:
     OneDay: '$StartDayNameShort, $StartMonthNameShort. $StartDayNumberShort, $StartYearLong'
-    SameMonthSameYear: '$StartMonthNameShort. $StartDayNumberShort - $EndDayNumberShort, $EndYearLong'
-    DiffMonthSameYear: '$StartMonthNameShort. $StartDayNumberShort - $EndMonthNameShort. $EndDayNumberShort, $EndYearLong'
-    DiffMonthDiffYear: '$StartMonthNameShort. $StartDayNumberShort, $StartYearLong - $EndMonthNameShort. $EndDayNumberShort, $EndYearLong'
+    SameMonthSameYear: '$StartMonthNameShort. $StartDayNumberShort — $EndDayNumberShort, $EndYearLong'
+    DiffMonthSameYear: '$StartMonthNameShort. $StartDayNumberShort — $EndMonthNameShort. $EndDayNumberShort, $EndYearLong'
+    DiffMonthDiffYear: '$StartMonthNameShort. $StartDayNumberShort, $StartYearLong — $EndMonthNameShort. $EndDayNumberShort, $EndYearLong'
     OneDayHeader: '$StartMonthNameLong $StartDayNumberShort$StartDaySuffix, $StartYearLong'
     MonthHeader: '$StartMonthNameLong, $StartYearLong'
     YearHeader: '$StartYearLong'
