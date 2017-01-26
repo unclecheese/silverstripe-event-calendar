@@ -200,6 +200,9 @@ class CalendarDateTime extends DataObject {
 	}
 	
 	public function canCreate($member = null) {
+		if (!$member) {
+			$member = Member::currentUser();
+		}
 		$extended = $this->extendedCan(__FUNCTION__, $member);
 		if($extended !== null) {
 			return $extended;
@@ -208,6 +211,9 @@ class CalendarDateTime extends DataObject {
 	}
 
 	public function canEdit($member = null) {
+		if (!$member) {
+			$member = Member::currentUser();
+		}
 		$extended = $this->extendedCan(__FUNCTION__, $member);
 		if($extended !== null) {
 			return $extended;
@@ -216,6 +222,9 @@ class CalendarDateTime extends DataObject {
 	}
 
 	public function canDelete($member = null) {
+		if (!$member) {
+			$member = Member::currentUser();
+		}
 		$extended = $this->extendedCan(__FUNCTION__, $member);
 		if($extended !== null) {
 			return $extended;
@@ -224,6 +233,9 @@ class CalendarDateTime extends DataObject {
 	}
 
 	public function canView($member = null) {
+		if (!$member) {
+			$member = Member::currentUser();
+		}
 		$extended = $this->extendedCan(__FUNCTION__, $member);
 		if($extended !== null) {
 			return $extended;
