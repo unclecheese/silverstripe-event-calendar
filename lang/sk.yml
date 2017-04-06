@@ -16,7 +16,7 @@ sk:
     ENDDATE: 'Dátum ukončenia'
     ENDTIME: 'Čas ukončenia'
     EVENTSPERPAGE: 'Počet udalostí na stránku'
-    EXCEPTIONDATE: 'Dátum výnimiek'
+    EXCEPTIONDATE: 'Dátum výnimky'
     FEEDS: 'Kanály'
     ICSFEEDDESCRIPTION: 'Pridá ICS kanály do kalendára importovaním udalostí z externých zdrojov, napr. Google Calendar'
     JUMP: 'Prejsť'
