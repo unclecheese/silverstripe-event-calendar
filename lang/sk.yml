@@ -16,7 +16,7 @@ sk:
     ENDDATE: 'Dátum ukončenia'
     ENDTIME: 'Čas ukončenia'
     EVENTSPERPAGE: 'Počet udalostí na stránku'
-    EXCEPTIONDATE: 'Dátum výnimiek'
+    EXCEPTIONDATE: 'Dátum výnimky'
     FEEDS: 'Kanály'
     ICSFEEDDESCRIPTION: 'Pridá ICS kanály do kalendára importovaním udalostí z externých zdrojov, napr. Google Calendar'
     JUMP: 'Prejsť'
@@ -41,8 +41,10 @@ sk:
     PREVIOUSMONTH: 'Predchádzajúci mesiac'
     PREVIOUSWEEK: 'Predchádzajúci týždeň'
     PREVIOUSWEEKEND: 'Predchádzajúci víkend'
+    PLURALNAME: 'Kalendáre'
     RSSTITLE: 'Názov RSS kanálu'
     SameMonthSameYear: '$StartDayNumberLong. - $EndDayNumberLong. $StartMonthNameLong $StartYearLong'
+    SINGULARNAME: 'Kalendár'
     STARTDATE: 'Dátum začiatku'
     STARTTIME: 'Čas začiatku'
     TODAYVIEW: "Zobraziť dnešné udalosti. Ak nie sú, zobraziť na tento týždeň."
@@ -70,9 +72,11 @@ sk:
     ONFOLLOWINGDAYS: 'V nasledujúcich dňoch...'
     ONTHE: 'V...'
     ONTHESEDATES: 'V týchto dátumoch...'
+    PLURALNAME: 'Udalosti'
     RECURSION: 'Rekurzia'
     REPEATEVENT: 'Opakovať túto udalosť?'
     SECOND: 'Druhú'
+    SINGULARNAME: 'Udalosť'
     THIRD: 'Tretiu'
     WEEKLY: 'Týždenne'
     WEEKS: 'týždňov'
@@ -83,15 +87,21 @@ sk:
     ENDTIME: 'Čas ukončenia'
     EXCEPTIONDATE: 'Dátum výnimiek'
     FIRSTDAYOFWEEK: monday
+    PLURALNAME: 'Termíny'
+    SINGULARNAME: 'Termín'
     STARTDATE: 'Dátum začiatku'
     STARTTIME: 'Čas začiatku'
     TIMEFORMAT: 24
   CalendarAnnouncement:
     CONTENT: 'Obsah oznámenia'
     TITLE: 'Názov oznámenia'
+    PLURALNAME: 'Oznámenia'
+    SINGULARNAME: 'Oznámenie'
   ICSFeed:
     TITLE: 'Názov'
     TITLEOFFEED: 'Názov kanálu'
+    PLURALNAME: 'ICS kanály'
+    SINGULARNAME: 'ICS kanál'
     URLLINK: 'URL adresa'
   Calendar.ss:
     NOEVENTS: 'K dispozícií nie sú žiadne udalosti.'
