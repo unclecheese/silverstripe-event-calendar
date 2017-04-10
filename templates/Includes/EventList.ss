@@ -2,7 +2,7 @@
 <% loop Events %>
 <li class="vevent clearfix">
   <h3 class="summary"><% if Announcement %>$Title<% else %><a class="url" href="$Link">$Event.Title</a><% end_if %></h3>
-  <p class="dates">$DateRange <% if AllDay %><% _t('Calendar.ALLDAY','All Day') %><% else %><% if StartTime %>$TimeRange<% end_if %><% end_if %></p>
+  <p class="dates">$DateRange<% if AllDay %> <% _t('Calendar.ALLDAY','All Day') %><% else %><% if StartTime %> $TimeRange<% end_if %><% end_if %></p>
   <p><a href="$ICSLink"><% _t('Calendar.ADD','Add this to Calendar') %></a></p>
   <% if Announcement %>
   $Content
@@ -14,7 +14,7 @@
     <h4><% _t('Calendar.ADDITIONALDATES','Additional Dates for this Event') %>:</h4>
     <ul>
       <% loop OtherDates %>
-      <li><a href="$Link" title="$Event.Title">$DateRange <% if StartTime %> $TimeRange<% end_if %></a></li>
+      <li><a href="$Link" title="$Event.Title">$DateRange<% if AllDay %> <% _t('Calendar.ALLDAY','All Day') %><% else %><% if StartTime %> $TimeRange<% end_if %><% end_if %></a></li>
       <% end_loop %>
     </ul>
   </div>
