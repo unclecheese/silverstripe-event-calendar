@@ -5,7 +5,7 @@ nl:
     DESCRIPTION: Agenda met verzameling kalender items en aankondigingen
     OneDay: '$StartDayNumberShort $StartMonthNameShort. $StartYearLong'
     SameMonthSameYear: '$StartDayNumberShort - $EndDayNumberShort $EndMonthNameShort. $EndYearLong'
-    DiffMonthSameYear: '$StartDayNumberShort $StartMonthNameShort. - %EndDayNumberShort $EndMonthNameShort. $EndYearLong'
+    DiffMonthSameYear: '$StartDayNumberShort $StartMonthNameShort. - $EndDayNumberShort $EndMonthNameShort. $EndYearLong'
     DiffMonthDiffYear: '$StartDayNumberShort $StartMonthNameShort. $StartYearLong - $EndDayNumberShort $EndMonthNameShort. $EndYearLong'
     OneDayHeader: '$StartDayNumberLong $StartMonthLong $StartYearLong'
     MonthHeader: '$StartMonthNameLong $StartYearLong'
