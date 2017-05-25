@@ -663,6 +663,10 @@ class Calendar_Controller extends Page_Controller {
 
 	public function monthjson(SS_HTTPRequest $r) {
 		if(!$r->param('ID')) return false;
+        
+        //Increase the per page limit to 500 as the AJAX request won't look for further pages
+        $this->EventsPerPage = 500;
+        
 		$this->startDate = sfDate::getInstance(CalendarUtil::get_date_from_string($r->param('ID')));
 		$this->endDate = sfDate::getInstance($this->startDate)->finalDayOfMonth();
 		
