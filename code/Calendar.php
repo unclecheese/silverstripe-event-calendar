@@ -371,6 +371,11 @@ class Calendar extends Page {
 				}
 				$startdatetime = $this->iCalDateToDateTime($event['DTSTART']);//->setTimezone(new DateTimeZone($this->stat('timezone')));
 				$enddatetime = $this->iCalDateToDateTime($event['DTEND']);//->setTimezone(new DateTimeZone($this->stat('timezone')));
+                
+                //Set event start/end to midnight to allow comparisons below to work
+   				$startdatetime->modify('00:00:00');
+				$enddatetime->modify('00:00:00');
+                
 				if ( ($startdatetime < $start && $enddatetime < $start)
 					|| $startdatetime > $end && $enddatetime > $end) {
 					// do nothing; dates outside range
@@ -663,6 +668,10 @@ class Calendar_Controller extends Page_Controller {
 
 	public function monthjson(SS_HTTPRequest $r) {
 		if(!$r->param('ID')) return false;
+        
+        //Increase the per page limit to 500 as the AJAX request won't look for further pages
+        $this->EventsPerPage = 500;
+        
 		$this->startDate = sfDate::getInstance(CalendarUtil::get_date_from_string($r->param('ID')));
 		$this->endDate = sfDate::getInstance($this->startDate)->finalDayOfMonth();
 		
