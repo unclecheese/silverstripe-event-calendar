@@ -372,12 +372,15 @@ class Calendar extends Page {
 				$startdatetime = $this->iCalDateToDateTime($event['DTSTART']);//->setTimezone(new DateTimeZone($this->stat('timezone')));
 				$enddatetime = $this->iCalDateToDateTime($event['DTEND']);//->setTimezone(new DateTimeZone($this->stat('timezone')));
                 
-                //Set event start/end to midnight to allow comparisons below to work
-   				$startdatetime->modify('00:00:00');
-				$enddatetime->modify('00:00:00');
+                // Set event start/end to midnight to allow comparisons below to work
+                // assign new variable for comparison
+                $comparestartdatetime = $this->iCalDateToDateTime($event['DTSTART']);
+                $comparestartdatetime->modify('00:00:00');
+                $compareenddatetime = $this->iCalDateToDateTime($event['DTEND']);
+				$compareenddatetime->modify('00:00:00');
                 
-				if ( ($startdatetime < $start && $enddatetime < $start)
-					|| $startdatetime > $end && $enddatetime > $end) {
+				if ( ($comparestartdatetime < $start && $compareenddatetime < $start)
+					|| $comparestartdatetime > $end && $compareenddatetime > $end) {
 					// do nothing; dates outside range
 				} else {
 					$feedevent->StartDate = $startdatetime->format('Y-m-d');
