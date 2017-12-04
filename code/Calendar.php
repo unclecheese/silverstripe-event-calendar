@@ -373,9 +373,10 @@ class Calendar extends Page {
 				$enddatetime = $this->iCalDateToDateTime($event['DTEND']);//->setTimezone(new DateTimeZone($this->stat('timezone')));
                 
                 // Set event start/end to midnight to allow comparisons below to work
-                $comparestartdatetime = $startdatetime;
-   				$comparestartdatetime->modify('00:00:00');
-                $compareenddatetime = $enddatetime;
+                // assign new variable for comparison
+                $comparestartdatetime = $this->iCalDateToDateTime($event['DTSTART']);
+                $comparestartdatetime->modify('00:00:00');
+                $compareenddatetime = $this->iCalDateToDateTime($event['DTEND']);
 				$compareenddatetime->modify('00:00:00');
                 
 				if ( ($comparestartdatetime < $start && $compareenddatetime < $start)
