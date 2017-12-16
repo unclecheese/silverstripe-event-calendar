@@ -1,6 +1,6 @@
 <?php
 
-class CalendarDateTime extends DataObject {
+class CalendarDateTime extends EventDateTime {
 
 	private static $has_one = array (
 		'Event' => 'CalendarEvent'
