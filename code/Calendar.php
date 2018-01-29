@@ -727,6 +727,10 @@ class Calendar_Controller extends Page_Controller {
 		if(is_numeric($id) && $oid) {
 			if(!$feed) { 
 				$event = DataObject::get_by_id($announcement ? $this->data()->getDateTimeClass() : $this->data()->getEventClass(), $id);
+                // return if not found
+                if (!$event) {
+                    return $this->httpError(404);
+                }
 				$FILENAME = $announcement ? preg_replace("/[^a-zA-Z0-9s]/", "", $event->Title) : $event->URLSegment;
 			}
 			else {
