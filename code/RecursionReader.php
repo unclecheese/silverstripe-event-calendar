@@ -1,6 +1,6 @@
 <?php
 
-class RecursionReader extends Object {
+class RecursionReader extends SS_Object {
 	
 	const DAY = 86400;
 
@@ -19,6 +19,8 @@ class RecursionReader extends Object {
 	}
 
 	public function __construct(CalendarEvent $event) {
+	    parent::__construct();
+
 		$this->event = $event;
 		$this->datetimeClass = $event->Parent()->getDateTimeClass();
 		$this->eventClass = $event->Parent()->getEventClass();
