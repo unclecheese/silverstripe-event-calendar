@@ -1,7 +1,11 @@
 <?php
 
-class CalendarUtil {
+namespace UncleCheese\EventCalendar\Helpers;
 
+use UncleCheese\EventCalendar\Models\CalendarDateTime;
+
+class CalendarUtil 
+{
 	const ONE_DAY = "OneDay";
 
 	const SAME_MONTH_SAME_YEAR = "SameMonthSameYear";
@@ -42,7 +46,7 @@ class CalendarUtil {
 	);
 
 	public static function format_character_replacements($start, $end) {
-		return array(
+		return [
 			strftime('%a', $start),
 			strftime('%A', $start),
 			date ('j', $start),
@@ -67,7 +71,7 @@ class CalendarUtil {
 			date ('y', $end), 
 			date ('Y', $end),
 
-		);	
+		];	
 	}
 	
 	public static function localize($start, $end, $key) {
@@ -95,7 +99,7 @@ class CalendarUtil {
 		}
 	}
 
-	static function get_date_string($start_date,$end_date) {
+	public static function get_date_string($start_date, $end_date) {
 		$strStartDate = null;
 		$strEndDate = null;
 		
@@ -109,107 +113,114 @@ class CalendarUtil {
 		$end_month = date("m", $end);
 		
 		// Invalid date. Get me out of here!
-		if($start < 1)	return;
+		if ($start < 1)	{
+			return;
+		}
 
 		// Only one day long!
-		else if($start == $end || !$end || $end < 1) {
+		if ($start == $end || !$end || $end < 1) {
 			$key = self::ONE_DAY;
+		} elseif ($start_year == $end_year) {
+			$key = ($start_month == $end_month) ? self::SAME_MONTH_SAME_YEAR : self::DIFF_MONTH_SAME_YEAR;
 		}
-		
 		else {
-			if($start_year == $end_year) {
-				$key = ($start_month == $end_month) ? self::SAME_MONTH_SAME_YEAR : self::DIFF_MONTH_SAME_YEAR;
-			}
-			else {
-				$key = self::DIFF_MONTH_DIFF_YEAR;
-			}
+			$key = self::DIFF_MONTH_DIFF_YEAR;
 		}
 		$date_string = self::localize($start, $end, $key);		
 		$break = strpos($date_string, '$End');		
 		if($break !== FALSE) {
 			$strStartDate = substr($date_string, 0, $break);
 			$strEndDate = substr($date_string, $break+1, strlen($date_string) - strlen($strStartDate));
-			return array($strStartDate, $strEndDate);
+			return [$strStartDate, $strEndDate];
 		}
 
-		return array($date_string, "");
+		return [$date_string, ""];
 	}
 
-	public static function microformat($date, $time, $offset = null) {
-		if(!$date)
+	public static function microformat($date, $time, $offset = null)
+	{
+		if (!$date) {
 			return "";
-		
+		}
 		$ts = strtotime($date . " " . $time);
-
-		if($ts < 1)
+		if ($ts < 1) {
 			return "";
-			
+		}
 		$ret = date('c', $ts); // ISO 8601 datetime
-		
-		if($offset) {
+		if ($offset) {
 			// Swap out timezine with specified $offset
 			$ret = preg_replace('/((\+)|(-))[\d:]*$/', $offset, $ret);
 		}
 		return $ret;
 	}
 
-	public static function get_months_map($key = '%b') {
-    	return array (
-	  		'01' => strftime($key,strtotime('2000-01-01')),
-	  		'02' => strftime($key,strtotime('2000-02-01')),
-	  		'03' => strftime($key,strtotime('2000-03-01')),
-	  		'04' => strftime($key,strtotime('2000-04-01')),
-	  		'05' => strftime($key,strtotime('2000-05-01')),
-	  		'06' => strftime($key,strtotime('2000-06-01')),
-	  		'07' => strftime($key,strtotime('2000-07-01')),
-	  		'08' => strftime($key,strtotime('2000-08-01')),
-	  		'09' => strftime($key,strtotime('2000-09-01')),
-	  		'10' => strftime($key,strtotime('2000-10-01')),
-	  		'11' => strftime($key,strtotime('2000-11-01')),
-	  		'12' => strftime($key,strtotime('2000-12-01'))
-	   );	
+	public static function get_months_map($key = '%b') 
+	{
+    	return [
+	  		'01' => strftime($key, strtotime('2000-01-01')),
+	  		'02' => strftime($key, strtotime('2000-02-01')),
+	  		'03' => strftime($key, strtotime('2000-03-01')),
+	  		'04' => strftime($key, strtotime('2000-04-01')),
+	  		'05' => strftime($key, strtotime('2000-05-01')),
+	  		'06' => strftime($key, strtotime('2000-06-01')),
+	  		'07' => strftime($key, strtotime('2000-07-01')),
+	  		'08' => strftime($key, strtotime('2000-08-01')),
+	  		'09' => strftime($key, strtotime('2000-09-01')),
+	  		'10' => strftime($key, strtotime('2000-10-01')),
+	  		'11' => strftime($key, strtotime('2000-11-01')),
+	  		'12' => strftime($key, strtotime('2000-12-01'))
+		];	
 	}
 
-	public static function get_date_format() {
-		if($dateFormat = CalendarDateTime::config()->date_format_override) {
+	public static function get_date_format()
+	{
+		if ($dateFormat = CalendarDateTime::config()->date_format_override) {
 			return $dateFormat;
 		}
-		return _t('CalendarDateTime.DATEFORMAT','mdy');
+		return _t(__CLASS__.'.DATEFORMAT','mdy');
 	}
 
-	public static function get_time_format() {
-		if($timeFormat = CalendarDateTime::config()->time_format_override) {
+	public static function get_time_format()
+	{
+		if ($timeFormat = CalendarDateTime::config()->time_format_override) {
 			return $timeFormat;
 		}
-		return _t('CalendarDateTime.TIMEFORMAT','24');
+		return _t(__CLASS__.'.TIMEFORMAT','24');
 	}
 
-	public static function get_first_day_of_week() {
-		$result = strtolower(_t('CalendarDateTime.FIRSTDAYOFWEEK','monday'));
+	public static function get_first_day_of_week()
+	{
+		$result = strtolower(_t(__CLASS__.'.FIRSTDAYOFWEEK','monday'));
 		return ($result == "monday") ? sfTime::MONDAY : sfTime::SUNDAY;
 	}
 
-	public static function date_sort(&$data) {
-			uasort($data, array("CalendarUtil","date_sort_callback"));
+	public static function date_sort(&$data)
+	{
+		uasort($data, ["CalendarUtil", "date_sort_callback"]);
 	}
 	
 	/**
 	 * Callback used by column_sort
 	 */
-	public static function date_sort_callback($a, $b) {
-		if($a->StartDate == $b->StartDate) {
-			if($a->StartTime == $b->StartTime)
+	public static function date_sort_callback($a, $b)
+	{
+		if ($a->StartDate == $b->StartDate) {
+			if ($a->StartTime == $b->StartTime) {
 				return 0;
-			else if(strtotime($a->StartTime) > strtotime($b->StartTime))
+			} elseif (strtotime($a->StartTime) > strtotime($b->StartTime)) {
 				return 1;
-			else 
-				return -1;
-		}
-		else if(strtotime($a->StartDate) > strtotime($b->StartDate))
-			return 1;
-		else 
+			}
 			return -1;
-		
+		}
+		elseif (strtotime($a->StartDate) > strtotime($b->StartDate)) {
+			return 1;
+		}
+		return -1;
+	}
+
+	public function tomorrow($dateTime)
+	{
+		$p = new \CalendarInterval('P1D');
 	}
 
 }

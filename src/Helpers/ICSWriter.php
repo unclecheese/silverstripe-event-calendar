@@ -23,9 +23,15 @@
  * @author Alex Hayes <alex.hayes@dimension27.com>
  * @link https://github.com/dimension27/EventCalendar
  */
+
+namespace UncleCheese\EventCalendar\Helpers;
+
+use SilverStripe\Control\Director;
+use UncleCheese\EventCalendar\Models\CalendarDateTime;
+use UncleCheese\EventCalendar\Pages\Calendar;
+
 class ICSWriter
 {
-
 	/**
 	 * @var Calendar
 	 */
