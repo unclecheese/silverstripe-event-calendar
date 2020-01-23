@@ -2,6 +2,7 @@
 
 namespace UncleCheese\EventCalendar\Pages;
 
+use Carbon\Carbon;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CheckboxsetField;
@@ -14,6 +15,7 @@ use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use UncleCheese\EventCalendar\Models\CachedCalendarEntry;
 use UncleCheese\EventCalendar\Models\CalendarAnnouncement;
+use UncleCheese\EventCalendar\Models\ICSFeed;
 use UncleCheese\EventCalendar\Pages\CalendarController;
 use \Page;
 
@@ -31,8 +33,8 @@ class Calendar extends Page
 	];
 
 	private static $has_many = [
-		'Announcements'	=> 'CalendarAnnouncement',
-		'Feeds'			=> 'ICSFeed'
+		'Announcements'	=> CalendarAnnouncement::class,
+		'Feeds'			=> ICSFeed::class
 	];
 
 	private static $many_many = [
@@ -44,11 +46,11 @@ class Calendar extends Page
 	];
 
 	private static $allowed_children = [
-		'CalendarEvent'
+		CalendarEvent::class
 	];
 
 	private static $defaults = [
-		'DefaultDateHeader'		=> 'Upcoming Events',
+		'DefaultDateHeader'		=> 'Upcoming events',
 		'OtherDatesCount'		=> 3,
 		'DefaultFutureMonths'	=> 6,
 		'EventsPerPage'			=> 10,
@@ -71,7 +73,7 @@ class Calendar extends Page
 
 	private static $language = "EN";
 
-	public static $jquery_included = false;
+	private static $jquery_included = false;
 
 	private static $caching_enabled = false;
 
@@ -201,9 +203,8 @@ class Calendar extends Page
 		if ($this->dateToEventRelation_cache) {
 			return $this->dateToEventRelation_cache;
 		}
-		return $this->dateToEventRelation_cache = singleton(
-			$this->getDateTimeClass()
-		)->getReverseAssociation($this->getEventClass())."ID";
+		return $this->dateToEventRelation_cache = Injector::inst()->get($this->getDateTimeClass())
+			->getReverseAssociation($this->getEventClass())."ID";
 	}
 
 	public function getCachedEventList($start, $end, $filter = null, $limit = null)
@@ -225,7 +226,12 @@ class Calendar extends Page
 			->limit($limit);
 	}
 
-	public function getEventList($start, $end, $filter = null, $limit = null, $announcement_filter = null)
+	public function getEventList(
+		$start, 
+		$end, 
+		$filter = null, 
+		$limit = null, 
+		$announcementFilter = null)
 	{
 		if (self::config()->caching_enabled) {
 			return $this->getCachedEventList($start, $end, $filter, $limit);
@@ -246,8 +252,8 @@ class Calendar extends Page
 						"EndDate:LessThanOrEqual" => $end,
 					]
 				);
-			if ($announcement_filter) {
-				$announcements = $announcements->where($announcement_filter);
+			if ($announcementFilter) {
+				$announcements = $announcements->where($announcementFilter);
 			}
 			if ($announcements) {
 				foreach($announcements as $announcement) {
@@ -321,103 +327,99 @@ class Calendar extends Page
 		return false;
 	}
 
-	public function getNextRecurringEvents($event_obj, $datetime_obj, $limit = null)
+	public function getNextRecurringEvents($eventObj, $datetimeObj, $limit = null)
 	{
-		$counter = sfDate::getInstance($datetime_obj->StartDate);
-		$counter = new \DateTime($datetime_obj->StartDate);
+		//$counter = sfDate::getInstance($datetimeObj->StartDate);
+		$counter = new Carbon($datetimeObj->StartDate);
 
-		if($event = $datetime_obj->Event()->DateTimes()->First()) {
-			$end_date = strtotime($event->EndDate);
-		}
-		else {
-			$end_date = false;
+		if ($event = $datetimeObj->Event()->DateTimes()->First()) {
+			$endDate = strtotime($event->EndDate);
+		} else {
+			$endDate = false;
 		}
 		$counter->tomorrow();
 		$dates = ArrayList::create();
-		while($dates->Count() != $this->OtherDatesCount) {
+		while ($dates->Count() != $this->OtherDatesCount) {
 			// check the end date
-			if($end_date) {
-				if($end_date > 0 && $end_date <= $counter->get())
-					break;
+			if ($endDate && $endDate > 0 && $endDate <= $counter->getTimestamp()) {
+				break;
 			}
-			if($event_obj->getRecursionReader()->recursionHappensOn($counter->get())) {
-				$dates->push($this->newRecursionDateTime($datetime_obj,$counter->date()));
+			if ($eventObj->getRecursionReader()->recursionHappensOn($counter->getTimestamp())) {
+				$dates->push($this->newRecursionDateTime($datetimeObj, $counter->format('Y-m-d')));
 			}
 			$counter->tomorrow();
 		}
 		return $dates;
 	}
 
-	protected function addRecurringEvents($start_date, $end_date, $recurring_events,$all_events)
+	protected function addRecurringEvents($startDate, $endDate, $recurringEvents, $allEvents)
 	{
-		$date_counter = sfDate::getInstance($start_date);
-		$end = sfDate::getInstance($end_date);
-		foreach($recurring_events as $recurring_event) {
-			$reader = $recurring_event->getRecursionReader();
-			$relation = $recurring_event->getReverseAssociation($this->getDateTimeClass());
-			if(!$relation) continue;
+		$dateCounter = new Carbon($startDate);
+		$end = new Carbon($endDate);
 
-			$recurring_event_datetimes = $recurring_event->$relation()->filter(array(
-				'StartDate:LessThanOrEqual' => $end->date(),
-				'EndDate:GreaterThanOrEqual' => $date_counter->date(),
-			));
+		foreach ($recurringEvents as $recurringEvent) {
+			$reader = $recurringEvent->getRecursionReader();
+			$relation = $recurringEvent->getReverseAssociation($this->getDateTimeClass());
+			if (!$relation) {
+				continue;
+			}
+			$recurringEventDatetimes = $recurringEvent->$relation()->filter(
+				[
+					'StartDate:LessThanOrEqual' => $end->format('Y-m-d'),
+					'EndDate:GreaterThanOrEqual' => $dateCounter->format('Y-m-d')
+				]
+			);
 
-			foreach ($recurring_event_datetimes as $recurring_event_datetime) {
-				$date_counter = sfDate::getInstance($start_date);
-				$start = sfDate::getInstance($recurring_event_datetime->StartDate);
-				if ($start->get() > $date_counter->get()) {
-					$date_counter = $start;
+			foreach ($recurringEventDatetimes as $recurringEventDatetime) {
+				$start = new Carbon($recurringEventDatetime->StartDate);
+				if ($start->getTimestamp() > $dateCounter->getTimestamp()) {
+					$dateCounter = $start;
 				}
-				while($date_counter->get() <= $end->get()){
+				while ($dateCounter <= $end){
 					// check the end date
-					if($recurring_event_datetime->EndDate) {
-						$end_stamp = strtotime($recurring_event_datetime->EndDate);
-						if($end_stamp > 0 && $end_stamp < $date_counter->get()) {
+					if ($recurringEventDatetime->EndDate) {
+						$endStamp = strtotime($recurringEventDatetime->EndDate);
+						if ($endStamp > 0 && $endStamp < $dateCounter->getTimestamp()) {
 							break;
 						}
 					}
-					if($reader->recursionHappensOn($date_counter->get())) {
-						$e = $this->newRecursionDateTime($recurring_event_datetime, $date_counter->date());
-						$all_events->push($e);
+					if ($reader->recursionHappensOn($dateCounter->getTimestamp())) {
+						$e = $this->newRecursionDateTime($recurringEventDatetime, $dateCounter->format('Y-m-d'));
+						$allEvents->push($e);
 					}
-					$date_counter->tomorrow();
+					$dateCounter = $dateCounter->tomorrow();
 				}
-				$date_counter->reset();
+				$dateCounter = new Carbon($startDate);
 			}
 		}
-		return $all_events;
+		return $allEvents;
 	}
 
-	public function newRecursionDateTime($recurring_event_datetime, $start_date)
+	public function newRecursionDateTime($recurringEventDatetime, $startDate)
 	{
 		$relation = $this->getDateToEventRelation();
 		$e = Injector::inst()->get($this->getDateTimeClass(), false);
-		foreach ($recurring_event_datetime->db() as $field => $type) {
-			$e->$field = $recurring_event_datetime->$field;
+		foreach ($recurringEventDatetime->db() as $field => $type) {
+			$e->$field = $recurringEventDatetime->$field;
 		}
-		$e->DateTimeID = $recurring_event_datetime->ID;
-		$e->StartDate = $start_date;
-		$e->EndDate = $start_date;
-		$e->$relation = $recurring_event_datetime->$relation;
+		$e->DateTimeID = $recurringEventDatetime->ID;
+		$e->StartDate = $startDate;
+		$e->EndDate = $startDate;
+		$e->$relation = $recurringEventDatetime->$relation;
 		$e->ID = "recurring" . self::$reccurring_event_index;
 		self::$reccurring_event_index++;
 		return $e;
 	}
 
 
-	public function getFeedEvents($start_date, $end_date)
+	public function getFeedEvents($startDate, $endDate)
 	{
-		$start = new \DateTime($start_date);
+		$start = new \DateTime($startDate);
 		// single day views don't pass end dates
-		if ($end_date) {
-			$end = new \DateTime($end_date);
-		} else {
-			$end = $start;
-		}
-
+		$end = $endDate ? new \DateTime($endDate) : $start;
 		$feeds = $this->Feeds();
 		$feedevents = ArrayList::create();
-		foreach( $feeds as $feed ) {
+		foreach ($feeds as $feed) {
 			$feedreader = iCal::create($feed->URL);
 			foreach ($feedreader->events() as $event) {
 				// translate iCal schema into CalendarAnnouncement schema (datetime + title/content)
@@ -466,7 +468,6 @@ class Calendar extends Page
 		return $dt;
 	}
 
-
 	public function getAllCalendars()
 	{
 		$calendars = ArrayList::create();
@@ -477,9 +478,10 @@ class Calendar extends Page
 
 	public function UpcomingEvents($limit = 5, $filter = null)
 	{
+		$date = new Carbon();
 		$all = $this->getEventList(
-			sfDate::getInstance()->date(),
-			sfDate::getInstance()->addMonth($this->DefaultFutureMonths)->date(),
+			$date->format('Y-m-d'),
+			$date->add($this->DefaultFutureMonths, 'months')->format('Y-m-d'),
 			$filter,
 			$limit
 		);

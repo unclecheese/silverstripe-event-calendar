@@ -20,7 +20,8 @@ class RecurringDayOfMonth extends DataObject
 	
 	private static $default_sort = "Value ASC";
 	
-	private static function create_default_records() {
+	private static function create_default_records()
+	{
 		for ($i = 1; $i <= 31; $i++) {
 			$record = self::create();
 			$record->Value = $i;

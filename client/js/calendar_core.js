@@ -14,4 +14,3 @@ function zeroPad(num) {
 	var s = '0'+num;
 	return s.substring(s.length-2)
 }
-

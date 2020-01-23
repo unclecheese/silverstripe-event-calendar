@@ -133,8 +133,8 @@ class CalendarDateTime extends DataObject
 	public function MicroformatEnd($offset = true) {
 		if ($this->AllDay && $this->StartDate) {
 			$time = "00:00:00";
-			$date = new \DateTime($this->StartDate);
-			$date = $date->add(new \DateInterval('P1D'))->format('Y-m-d');
+			$date = new Carbon($this->StartDate);
+			$date = $date->addDay()->format('Y-m-d');
 		} else {
 			$date = $this->EndDate ? $this->EndDate : $this->StartDate;
 			if ($this->EndTime && $this->StartTime) {

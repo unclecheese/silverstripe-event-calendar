@@ -2,6 +2,7 @@
 
 namespace UncleCheese\EventCalendar\Models;
 
+use Carbon\Carbon;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
 use UncleCheese\EventCalendar\Pages\CalendarEvent;
@@ -13,12 +14,12 @@ class RecurringDayOfWeek extends DataObject
 	private static $db = [
 		'Value' => 'Int'
 	];
-
-	private static $default_sort = "Value ASC";
 	
 	private static $belongs_many_many = [
 		'CalendarEvent' => CalendarEvent::class
 	];
+
+	private static $default_sort = "Value ASC";
 	
 	private static function create_default_records()
 	{
@@ -45,7 +46,7 @@ class RecurringDayOfWeek extends DataObject
 
 	public function getTitle()
 	{
-		return strftime("%a", sfDate::getInstance()->nextDay($this->Value)->get());
+		return strftime("%a", Carbon::now()->next($this->Value)->format('Y-m-d'));
 	}
 	
 

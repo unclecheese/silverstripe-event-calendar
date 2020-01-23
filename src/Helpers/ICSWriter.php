@@ -27,11 +27,15 @@
 namespace UncleCheese\EventCalendar\Helpers;
 
 use SilverStripe\Control\Director;
+use SilverStripe\Core\Injector\Injectable;
 use UncleCheese\EventCalendar\Models\CalendarDateTime;
 use UncleCheese\EventCalendar\Pages\Calendar;
 
 class ICSWriter
 {
+
+	use Injectable;
+
 	/**
 	 * @var Calendar
 	 */
@@ -44,7 +48,7 @@ class ICSWriter
 	/**
 	 * @var array
 	 */
-	protected $lines = array();
+	protected $lines = [];
 	
 	/**
 	 * Construct an ICSWriter instance.
@@ -57,7 +61,7 @@ class ICSWriter
 	 *
 	 * @author Alex Hayes <alex.hayes@dimension27.com>
 	 */
-    public function __construct( Calendar $calendar, $host, $prodid = null, $limit = 100 ) {
+    public function __construct(Calendar $calendar, $host, $prodid = null, $limit = 100) {
     	$this->calendar = $calendar;
     	$this->host = $host;
     	$this->prodid = $prodid;
@@ -83,7 +87,8 @@ class ICSWriter
      *
      * @author Alex Hayes <alex.hayes@dimension27.com>
      */
-    public function getOutput() {
+	public function getOutput()
+	{
     	$this->lines = array();
     
 		$this->addLine('BEGIN:VCALENDAR');

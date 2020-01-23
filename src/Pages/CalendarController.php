@@ -2,8 +2,11 @@
 
 namespace UncleCheese\EventCalendar\Pages;
 
+use UncleCheese\EventCalendar\Helpers\CalendarUtil;
 use UncleCheese\EventCalendar\Pages\Calendar;
 use SilverStripe\Control\Controller;
+use SilverStripe\Control\Director;
+use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
@@ -40,93 +43,112 @@ class CalendarController extends PageController
 
 	protected $endDate;
 
-	public function init() {
+	public function init()
+	{
 		parent::init();
 		RSSFeed::linkToFeed($this->Link() . "rss", $this->RSSTitle ? $this->RSSTitle : $this->Title);
 		Requirements::themedCSS('calendar','event_calendar');
 		if(!Calendar::config()->jquery_included) {
 			Requirements::javascript(THIRDPARTY_DIR.'/jquery/jquery.js');
 		}
-		Requirements::javascript('event_calendar/javascript/calendar.js');
+		Requirements::javascript('unclecheese/silverstripe-event-calendar:client/js/calendar.js');
 	}
 
-	public function getStartDate() {
+	public function getStartDate()
+	{
 		return $this->startDate;
 	}
 
-	public function getEndDate() {
+	public function getEndDate()
+	{
 		return $this->endDate;
 	}
 
-	public function getView() {
+	public function getView()
+	{
 		return $this->view;
 	}
 
-	public function setDefaultView() {
+	public function setDefaultView()
+	{
 		$this->view = "default";
-		$this->startDate = sfDate::getInstance();
-		$this->endDate = sfDate::getInstance()->addMonth($this->DefaultFutureMonths);
+		$this->startDate = new \DateTime();
+		$this->endDate = new \DateTime();
+		$this->endDate->add(new \DateInterval('P'.(string)$this->DefaultFutureMonths.'M'));
 	}
 
-	public function setTodayView() {
+	public function setTodayView()
+	{
 		$this->view = "day";
-		$this->startDate = sfDate::getInstance();
-		$this->endDate = sfDate::getInstance();
+		$this->startDate = new \DateTime();
+		$this->endDate = new \DateTime();
 	}
 
-	public function setWeekView() {
+	public function setWeekView()
+	{
 		$this->view = "week";
 		$this->startDate = sfDate::getInstance()->firstDayOfWeek();
 		$this->endDate = sfDate::getInstance()->finalDayOfWeek();
-		if(CalendarUtil::get_first_day_of_week() == sfTime::MONDAY) {
+		if (CalendarUtil::get_first_day_of_week() == CalendarUtil::MONDAY) {
 			$this->startDate->tomorrow();
 			$this->endDate->tomorrow();
 		}
 	}
 
-	public function setWeekendView() {
+	public function setWeekendView()
+	{
  		$this->view = "weekend";
-		$start = sfDate::getInstance();
-		if($start->format('w') == sfTime::SATURDAY) {
+		$start = new \DateTime();
+		if ($start->format('w') == CalendarUtil::SATURDAY) {
 			$start->yesterday();
-		}
-		elseif($start->format('w') != sfTime::FRIDAY) {
-			$start->nextDay(sfTime::FRIDAY);
+		} elseif ($start->format('w') != CalendarUtil::FRIDAY) {
+			$start->nextDay(CalendarUtil::FRIDAY);
 		}
 		$this->startDate = $start;
-		$this->endDate = sfDate::getInstance($start)->nextDay(sfTime::SUNDAY);
+		$this->endDate = sfDate::getInstance($start)->nextDay(CalendarUtil::SUNDAY);
 	}
 
-	public function setMonthView() {
+	public function setMonthView()
+	{
 		$this->view = "month";
 		$this->startDate = sfDate::getInstance()->firstDayOfMonth();
 		$this->endDate = sfDate::getInstance($this->startDate)->finalDayOfMonth();
 	}
 
-	public function getOffset() {
-		if(!isset($_REQUEST['start'])) {
+	public function getOffset()
+	{
+		if (!isset($_REQUEST['start'])) {
 			$_REQUEST['start'] = 0;
 		}
 		return $_REQUEST['start'];
 	}
 
-	protected function getRangeLink(sfDate $start, sfDate $end) {
-		return Controller::join_links($this->Link(), "show", $start->format('Ymd'), $end->format('Ymd'));
+	protected function getRangeLink(sfDate $start, sfDate $end)
+	{
+		return Controller::join_links(
+			$this->Link(), 
+			"show", 
+			$start->format('Ymd'), 
+			$end->format('Ymd')
+		);
 	}
 
-	public function respond() {
-		if(Director::is_ajax()) {
+	public function respond()
+	{
+		if (Director::is_ajax()) {
 			return $this->renderWith('EventList');
 		}
-		return array();
+		return [];
 	}
 
-	public function index(SS_HTTPRequest $r) {
-		$this->extend('index',$r);
+	public function index(HTTPRequest $r) {
+
+		$this->extend('index', $r);
+
 		switch($this->DefaultView) {
 			case "month":
 				return $this->redirect($this->Link('show/month'));
-			break;
+				break;
 
 			case "week":
 				$this->setWeekView();
@@ -140,7 +162,7 @@ class CalendarController extends PageController
 					$this->setMonthView();
 					return array();
 				}
-			break;
+				break;
 
 			case "today":
 				// prevent pagination on these default views
@@ -154,39 +176,39 @@ class CalendarController extends PageController
 					$this->setWeekView();
 					return array();
 				}
-			break;
+				break;
 
 			default:
 				$this->setDefaultView();
 				return $this->respond();
-			break;
-
-
+				break;
 		}
 	}
 
-	public function today(SS_HTTPRequest $r) {
+	public function today(HTTPRequest $r)
+	{
 		$this->setTodayView();
 		return $this->respond();
 	}
 
-	public function week(SS_HTTPRequest $r) {
+	public function week(HTTPRequest $r)
+	{
 		$this->setWeekView();
 		return $this->respond();
 	}
 
-	public function weekend(SS_HTTPRequest $r) {
+	public function weekend(HTTPRequest $r) {
 		$this->setWeekendView();
 		return $this->respond();
 	}
 
 
-	public function month(SS_HTTPRequest $r) {
+	public function month(HTTPRequest $r) {
 		$this->setMonthView();
 		return $this->respond();
 	}
 
-	public function show(SS_HTTPRequest $r) {
+	public function show(HTTPRequest $r) {
 		$this->parseURL($r);
 		return $this->respond();
 	}
@@ -253,12 +275,14 @@ class CalendarController extends PageController
 	 * @see ICSWriter
 	 * @author Alex Hayes <alex.hayes@dimension27.com>
 	 */
-	public function ical() {
-		$writer = new ICSWriter($this->data(), Director::absoluteURL('/'));
+	public function ical()
+	{
+		$writer = ICSWriter::create($this->data(), Director::absoluteURL('/'));
 		$writer->sendDownload();
 	}
 
-	public function ics(HTTPRequest $r) {
+	public function ics(HTTPRequest $r)
+	{
 		$feed = false;
 		$announcement = false;
 		$id = $r->param('ID');
@@ -334,7 +358,8 @@ class CalendarController extends PageController
 		}
 	}
 
-	public function parseURL(SS_HTTPRequest $r) {
+	public function parseURL(HTTPRequest $r)
+	{
 		if(!$r->param('ID')) return;
 		$this->startDate = sfDate::getInstance(CalendarUtil::get_date_from_string($r->param('ID')));
 		if($r->param('OtherID')) {
@@ -367,7 +392,8 @@ class CalendarController extends PageController
 		}
 	}
 
-	public function Events() {
+	public function Events()
+	{
 		$event_filter = null;
 		$announcement_filter = null;
 		$endDate = $this->endDate;
@@ -396,100 +422,121 @@ class CalendarController extends PageController
 		return $list;
 	}
 
-	public function DateHeader() {
+	public function DateHeader()
+	{
 		switch($this->view) {
 			case "day":
 				return CalendarUtil::localize($this->startDate->get(), null, CalendarUtil::ONE_DAY_HEADER);
-			break;
+				break;
 
 			case "month":
 				return CalendarUtil::localize($this->startDate->get(), null, CalendarUtil::MONTH_HEADER);
-			break;
+				break;
 
 			case "year":
 				return CalendarUtil::localize($this->startDate->get(), null, CalendarUtil::YEAR_HEADER);
-			break;
+				break;
 
 			case "range":
 			case "week":
 			case "weekend":
-				list($strStartDate,$strEndDate) = CalendarUtil::get_date_string($this->startDate->date(),$this->endDate->date());
+				list($strStartDate, $strEndDate) = CalendarUtil::get_date_string($this->startDate->date(), $this->endDate->date());
 				return $strStartDate.$strEndDate;
-			break;
+				break;
 
 			default:
 				return $this->DefaultDateHeader;
-			break;
+				break;
 		}
 	}
 
-	public function CurrentAction($a) {
+	public function CurrentAction($a)
+	{
 		return $this->getAction() == $a;
 	}
 
-	public function PreviousDayLink() {
+	public function PreviousDayLink()
+	{
 		$s = sfDate::getInstance($this->startDate)->yesterday();
 		return $this->getRangeLink($s, $s);
 	}
 
-	public function NextDayLink() {
+	public function NextDayLink()
+	{
 		$s = sfDate::getInstance($this->startDate)->tomorrow();
 		return $this->getRangeLink($s, $s);
 	}
 
-	public function PreviousWeekLink() {
+	public function PreviousWeekLink()
+	{
 		$s = sfDate::getInstance($this->startDate)->subtractWeek();
 		$e = sfDate::getInstance($this->endDate)->subtractWeek();
 		return $this->getRangeLink($s, $e);
 	}
 
-	public function NextWeekLink() {
+	public function NextWeekLink()
+	{
 		$s = sfDate::getInstance($this->startDate)->addWeek();
 		$e = sfDate::getInstance($this->endDate)->addWeek();
 		return $this->getRangeLink($s, $e);
 	}
 
-	public function NextMonthLink() {
+	public function NextMonthLink()
+	{
 		$s = sfDate::getInstance($this->startDate)->addMonth();
 		$e = sfDate::getInstance($s)->finalDayOfMonth();
 		return $this->getRangeLink($s, $e);
 	}
 
-	public function PreviousMonthLink() {
+	public function PreviousMonthLink()
+	{
 		$s = sfDate::getInstance($this->startDate)->subtractMonth();
 		$e = sfDate::getInstance($s)->finalDayOfMonth();
 		return $this->getRangeLink($s, $e);
 	}
 
-	public function NextWeekendLink() {
+	public function NextWeekendLink()
+	{
 		return $this->NextWeekLink();
 	}
 
-	public function PreviousWeekendLink() {
+	public function PreviousWeekendLink()
+	{
 		return $this->PreviousWeekLink();
 	}
 
-	public function IsSegment($segment) {
-		switch($segment) {
+	public function IsSegment($segment)
+	{
+		switch ($segment) {
 			case "today":
 				return $this->startDate->date() == $this->endDate->date();
 			case "week":
-				if(CalendarUtil::get_first_day_of_week() == sfTime::MONDAY) {
-					return ($this->startDate->format('w') == sfTime::MONDAY) && ($this->startDate->format('w') == sfTime::SUNDAY);
+				if (CalendarUtil::get_first_day_of_week() == CalendarUtil::MONDAY) {
+					return 
+						($this->startDate->format('w') == CalendarUtil::MONDAY) 
+						&& ($this->startDate->format('w') == CalendarUtil::SUNDAY);
 				}
-				return ($this->startDate->format('w') == sfTime::SUNDAY) && ($this->endDate->format('w') == sfTime::SATURDAY);
+				return 
+					($this->startDate->format('w') == CalendarUtil::SUNDAY) 
+					&& ($this->endDate->format('w') == CalendarUtil::SATURDAY);
 			case "month":
-				return ($this->startDate->format('j') == 1) && (sfDate::getInstance($this->startDate)->finalDayOfMonth()->format('j') == $this->endDate->format('j'));
+				return 
+					($this->startDate->format('j') == 1) 
+					&& (sfDate::getInstance($this->startDate)->finalDayOfMonth()->format('j') == $this->endDate->format('j'));
 			case "weekend":
-				return ($this->startDate->format('w') == sfTime::FRIDAY) && ($this->endDate->format('w') == sfTime::SUNDAY);
+				return 
+					($this->startDate->format('w') == CalendarUtil::FRIDAY) 
+					&& ($this->endDate->format('w') == CalendarUtil::SUNDAY);
 		}
 	}
 
-	public function MonthJumper() {
-		return $this->renderWith('MonthJumper');
+	public function MonthJumper()
+	{
+		return $this->renderWith(__CLASS__.'\MonthJumper');
 	}
 
-	public function MonthJumpForm() {
+	public function MonthJumpForm()
+	{
 		$this->parseURL($this->getRequest());
 		$dummy = sfDate::getInstance($this->startDate);
 		$range = range(($dummy->subtractYear(3)->format('Y')), ($dummy->addYear(6)->format('Y')));

@@ -10,23 +10,54 @@ class RecursionReader
 {
 	use Injectable;
 	
-	const DAY = 86400;
+	const DAY_SECONDS = 86400;		// Seconds in a day
+	const WEEK_SECONDS = 604800;	// Seconds in a week
 
-	const WEEK = 604800;
+	/**
+	 * @var CalendarEvent
+	 */
+	protected $event;
 
-	protected $event, $datetimeClass, $eventClass, $ts;
+	/**
+	 * @var string
+	 */
+	protected $datetimeClass;
 
+	/**
+	 * @var string
+	 */
+	protected $eventClass;
+
+	/**
+	 * @var string
+	 */
+	protected $ts;
+
+	/**
+	 * @var array
+	 */
 	protected $allowedDaysOfWeek = [];
 	
+	/**
+	 * @var array
+	 */
 	protected $allowedDaysOfMonth = [];
 
+	/**
+	 * @var array
+	 */
 	protected $exceptions = [];
 
-	public static function difference_in_months($dateObj1,$dateObj2) {
+	/**
+	 * @return int
+	 */
+	public static function difference_in_months($dateObj1, $dateObj2)
+	{
 		return (($dateObj1->format('Y') * 12) + $dateObj1->format('n')) - (($dateObj2->format('Y') * 12) + $dateObj2->format('n'));
 	}
 
-	public function __construct(CalendarEvent $event) {
+	public function __construct(CalendarEvent $event)
+	{
 		$this->event = $event;
 		$this->datetimeClass = $event->Parent()->getDateTimeClass();
 		$this->eventClass = $event->Parent()->getEventClass();
@@ -57,55 +88,82 @@ class RecursionReader
 		}
 	}
 
+	/**
+	 * @param int $ts The timestamp to check
+	 * @return bool
+	 */
 	public function recursionHappensOn($ts)
 	{
-		$objTestDate = new \DateTime($ts); //new sfDate($ts);
-		$objStartDate = new \DateTime($this->ts);//new sfDate($this->ts);
+		$testDate = new \DateTime($ts); //new sfDate($ts);
+		$startDate = new \DateTime($this->ts);//new sfDate($this->ts);
+		$result = false;
 		
 		// Current date is before the recurring event begins.
-		if ($objTestDate->getTimestamp() < $objStartDate->getTimestamp() 
-			|| in_array($objTestDate->format('Y-m-d'), $this->exceptions)
+		if ($testDate->getTimestamp() < $startDate->getTimestamp() 
+			|| in_array($testDate->format('Y-m-d'), $this->exceptions)
 		) {
-			return false;
+			return $result;
 		}
 
-		switch($this->event->CustomRecursionType)
-		{
+		switch ($this->event->CustomRecursionType) {
+
 			// Daily
 			case CalendarEvent::RECUR_INTERVAL_DAILY:
-				return $this->event->DailyInterval ? (($ts - $this->ts) / self::DAY) % $this->event->DailyInterval == 0 : false;
+				if ($this->event->DailyInterval
+					&& ((($ts - $this->ts) / self::DAY_SECONDS) % $this->event->DailyInterval == 0)
+				) {
+					$result = true;
+				}
 				break;
+
 			// Weekly
 			case CalendarEvent::RECUR_INTERVAL_WEEKLY:
-				return ((($objTestDate->firstDayOfWeek()->get() - $objStartDate->firstDayOfWeek()->get()) / self::WEEK) % $this->event->WeeklyInterval == 0)
-						&&
-					   (in_array($objTestDate->reset()->format('w'), $this->allowedDaysOfWeek));							
+				$testFirstDay = clone $testDate;
+				$testFirstDay->modify(($testFirstDay->format('l') == 'Sunday') 
+					? 'Monday last week' 
+					: 'Monday this week'
+				);
+				if ((($testFirstDay->getTimestamp() - $startDate->modify('first day of week')->getTimestamp()) / self::WEEK_SECONDS) % $this->event->WeeklyInterval == 0
+					&& in_array($testDate->format('w'), $this->allowedDaysOfWeek)
+				) {
+					$result = true;
+				};							
 				break;
+
 			// Monthly
 			case CalendarEvent::RECUR_INTERVAL_MONTHLY:
-				if(self::difference_in_months($objTestDate,$objStartDate) % $this->event->MonthlyInterval == 0) {
-					// A given set of dates in the month e.g. 2 and 15.
-					if($this->event->MonthlyRecursionType1 == 1) {
-						return (in_array($objTestDate->reset()->format('j'), $this->allowedDaysOfMonth));
-					}
-					// e.g. "First Monday of the month"
-					elseif($this->event->MonthlyRecursionType2 == 1) {
-						// Last day of the month?
-						if($this->event->MonthlyIndex == 5) {							
-							$targetDate = $objTestDate->addMonth()->firstDayOfMonth()->previousDay($this->event->MonthlyDayOfWeek)->dump();
+				if (self::difference_in_months($testDate, $startDate) % $this->event->MonthlyInterval == 0) {
+
+					if ($this->event->MonthlyRecursionType1 == 1) {
+
+						// A given set of dates in the month e.g. 2 and 15.
+						if (in_array($testDate->reset()->format('j'), $this->allowedDaysOfMonth)) {
+							$result = true;
 						}
-						else {
-							$objTestDate->subtractMonth()->finalDayOfMonth();
-							for($i=0; $i < $this->event->MonthlyIndex; $i++) {
-								$objTestDate->nextDay($this->event->MonthlyDayOfWeek)->dump();
+
+					} elseif ($this->event->MonthlyRecursionType2 == 1) {
+
+						// e.g. "First Monday of the month"
+
+						if ($this->event->MonthlyIndex == 5) {
+							// Last day of the month?
+							// $targetDate->add(new \DateInterval('P1M'));
+							// $targetDate->modify('first day of month')
+							$targetDate = $testDate->addMonth()->firstDayOfMonth()->previousDay($this->event->MonthlyDayOfWeek)->dump();
+						} else {
+							$testDate->modify("last day of previous month");
+							for ($i = 0; $i < $this->event->MonthlyIndex; $i++) {
+								$testDate->nextDay($this->event->MonthlyDayOfWeek)->dump();
 							}
-							$targetDate = $objTestDate->dump();
+							$targetDate = $testDate->dump();
 						}
-						return $objTestDate->reset()->dump() == $targetDate;
+						return $testDate->reset()->dump() == $targetDate;
 					}				
-				}				
-				return false;
+				}
+				break;
 		}
+
+		return $result;
 	}
 
 }

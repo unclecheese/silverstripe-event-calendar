@@ -7,20 +7,24 @@ use UncleCheese\EventCalendar\Models\CalendarDateTime;
 class CalendarUtil 
 {
 	const ONE_DAY = "OneDay";
-
 	const SAME_MONTH_SAME_YEAR = "SameMonthSameYear";
-
 	const DIFF_MONTH_SAME_YEAR = "DiffMonthSameYear";
-
 	const DIFF_MONTH_DIFF_YEAR = "DiffMonthDiffYear";
-
 	const ONE_DAY_HEADER = "OneDayHeader";
-
 	const MONTH_HEADER = "MonthHeader";
-
 	const YEAR_HEADER = "YearHeader";
 
-	private static $format_character_placeholders = array(
+	// Numeric representation of the day of the week
+	// https://www.php.net/manual/en/function.date.php
+	const SUNDAY	= 0;
+	const MONDAY	= 1;
+	const TUESDAY	= 2;
+	const WEDNESDAY	= 3;
+	const THURSDAY	= 4;
+	const FRIDAY	= 5;
+	const SATURDAY	= 6;
+
+	private static $format_character_placeholders = [
 		'$StartDayNameShort',
 		'$StartDayNameLong',
 		'$StartDayNumberShort',
@@ -43,7 +47,7 @@ class CalendarUtil
 		'$EndMonthNameLong',
 		'$EndYearShort',
 		'$EndYearLong'
-	);
+	];
 
 	public static function format_character_replacements($start, $end) {
 		return [
@@ -58,7 +62,6 @@ class CalendarUtil
 			strftime('%B', $start), 
 			date ('y', $start), 
 			date ('Y', $start),
-
 			strftime('%a', $end),
 			strftime('%A', $end),
 			date ('j', $end),
@@ -191,7 +194,7 @@ class CalendarUtil
 	public static function get_first_day_of_week()
 	{
 		$result = strtolower(_t(__CLASS__.'.FIRSTDAYOFWEEK','monday'));
-		return ($result == "monday") ? sfTime::MONDAY : sfTime::SUNDAY;
+		return ($result == "monday") ? self::MONDAY : self::SUNDAY;
 	}
 
 	public static function date_sort(&$data)
@@ -217,10 +220,4 @@ class CalendarUtil
 		}
 		return -1;
 	}
-
-	public function tomorrow($dateTime)
-	{
-		$p = new \CalendarInterval('P1D');
-	}
-
 }

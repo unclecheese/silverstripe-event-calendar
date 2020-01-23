@@ -1,37 +1,40 @@
-# SilverStripe Event Calendar Module
+# Silverstripe event calendar module
 
-The Event Calendar module for SilverStripe
+An event calendar module for Silverstripe
 
 ## Features
 
- * **Calendar** - This Page is used to hold/present events and announcments.
- * **Calendar Event** - This page represents an event, which can have many DateTimes.
- * **Recurring Events** - Calendar Events can also be set up reoccur automatically.
- * **Calendar Announcements** - Entries in a Calendar which don't have a page associated.
- * **ICS feeds** - Add multiple ICS feeds to a Calendar to display these events in the feed.
- * **ICS output** - Download an ics file for easy importing into calendar apps.
- * **RSS feed** - RSS feed of calendar events
- * **Calendar Widget** - Display a calendar view in a Widget.
- * **Caching**
+* **Calendar** - Page type used to hold/present events and announcements.
+* **Calendar Event** - Page type which represents an event, with one or more DateTimes.
+* **Recurring Events** - Calendar Events can also be set up reoccur automatically.
+* **Calendar Announcements** - Entries in a calendar which don't have an event page associated.
+* **ICS feeds** - Add multiple ICS feeds to a calendar to display these events in the feed.
+* **ICS output** - Download an ics file for easy importing into calendar apps.
+* **RSS feed** - RSS feed of calendar events.
+* **Calendar Widget** - Display a calendar view in a widget.
+* **Caching**
 
 ## Configuration Options
 
-Enable jquery
+Enable jQuery
+
 ```yaml
-Calendar:
+UncleCheese\EventCalendar\Pages\Calendar:
     jquery_included: true
 ```
 
 Enable caching, and years worth of data to cache
+
 ```yaml
-Calendar:
+UncleCheese\EventCalendar\Pages\Calendar:
     caching_enabled: true
     cache_future_years: 2
 ```
 
-Set default timezone, lang for ICS output:
+Set default time zone and language for ICS output:
+
 ```yaml
-Calendar:
+UncleCheese\EventCalendar\Pages\Calendar:
     timezone: America/New_York
     language: EN
 ```
