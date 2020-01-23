@@ -22,6 +22,7 @@ use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\View\Requirements;
+use \PageController;
 
 class CalendarController extends PageController 
 {

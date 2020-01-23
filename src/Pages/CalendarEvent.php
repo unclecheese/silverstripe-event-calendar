@@ -11,8 +11,10 @@ use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\View\Requirements;
 use UncleCheese\EventCalendar\Models\CalendarDateTime;
+use UncleCheese\EventCalendar\Models\RecurringDayOfMonth;
+use UncleCheese\EventCalendar\Models\RecurringDayOfWeek;
+use UncleCheese\EventCalendar\Models\RecurringException;
 use UncleCheese\EventCalendar\Pages\Calendar;
-
 use \Page;
 
 class CalendarEvent extends Page 
@@ -37,13 +39,13 @@ class CalendarEvent extends Page
 	];
 	
 	private static $has_many = [
-		'DateTimes' => CalendarDateTime::class,
-		'Exceptions' => 'RecurringException'
+		'DateTimes'		=> CalendarDateTime::class,
+		'Exceptions'	=> RecurringException::class
 	];
 	
 	private static $many_many = [
-		'RecurringDaysOfWeek' => 'RecurringDayOfWeek',
-		'RecurringDaysOfMonth' => 'RecurringDayOfMonth'
+		'RecurringDaysOfWeek'	=> RecurringDayOfWeek::class,
+		'RecurringDaysOfMonth'	=> RecurringDayOfMonth::class
 	];
 
 	private static $icon = "event_calendar/images/event";	
