@@ -511,7 +511,7 @@ class Calendar extends Page
 		return $events->limit($limit);
 	}
 
-	public function CalendarWidget()
+	public function getCalendarWidget()
 	{
 		$calendar = CalendarWidget::create($this);
 		$controller = Controller::curr();
@@ -528,7 +528,7 @@ class Calendar extends Page
 		return $calendar;
 	}
 
-	public function MonthJumpForm()
+	public function getMonthJumpForm()
 	{
 		$controller = Controller::curr();
 		if (!($controller instanceof CalendarController)) {
