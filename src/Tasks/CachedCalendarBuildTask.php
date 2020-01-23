@@ -2,7 +2,7 @@
 
 namespace UncleCheese\EventCalendar\Tasks;
 
-use SilverStripe\Dev\Tasks\BuildTask;
+use SilverStripe\Dev\BuildTask;
 use UncleCheese\EventCalendar\Tasks\CachedCalendarTask;
 
 class CachedCalendarBuildTask extends BuildTask 
