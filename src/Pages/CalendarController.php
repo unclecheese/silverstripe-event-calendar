@@ -6,7 +6,10 @@ use UncleCheese\EventCalendar\Helpers\CalendarUtil;
 use UncleCheese\EventCalendar\Pages\Calendar;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
+use SilverStripe\Control\HTTP;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control\RSS\RSSFeed;
+use SilverStripe\Core\Convert;
 use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
@@ -47,7 +50,7 @@ class CalendarController extends PageController
 		parent::init();
 		RSSFeed::linkToFeed($this->Link() . "rss", $this->RSSTitle ? $this->RSSTitle : $this->Title);
 		Requirements::themedCSS('calendar','event_calendar');
-		if(!Calendar::config()->jquery_included) {
+		if (!Calendar::config()->jquery_included) {
 			Requirements::javascript(THIRDPARTY_DIR.'/jquery/jquery.js');
 		}
 		Requirements::javascript('unclecheese/silverstripe-event-calendar:client/js/calendar.js');
@@ -219,28 +222,35 @@ class CalendarController extends PageController
 			$event->Title = strip_tags($event->DateRange()) . " : " . $event->getTitle();
 			$event->Description = $event->getContent();
 		}
-		$rss_title = $this->RSSTitle ? $this->RSSTitle : sprintf(_t("Calendar.UPCOMINGEVENTSFOR","Upcoming Events for %s"),$this->Title);
-		$rss = new RSSFeed($events, $this->Link(), $rss_title, "", "Title", "Description");
+		$rssTitle = $this->RSSTitle 
+			? $this->RSSTitle 
+			: sprintf(
+				_t(Calendar::class.'.UPCOMINGEVENTSFOR', "Upcoming Events for %s"),
+				$this->Title
+			);
+		$rss = RSSFeed::create($events, $this->Link(), $rssTitle, "", "Title", "Description");
 
-		if(is_int($rss->lastModified)) {
+		if (is_int($rss->lastModified)) {
 			HTTP::register_modification_timestamp($rss->lastModified);
 			header('Last-Modified: ' . gmdate("D, d M Y H:i:s", $rss->lastModified) . ' GMT');
 		}
-		if(!empty($rss->etag)) {
+		if (!empty($rss->etag)) {
 			HTTP::register_etag($rss->etag);
 		}
-		$xml = str_replace('&nbsp;', '&#160;', $rss->renderWith('RSSFeed'));
+		$xml = str_replace('&nbsp;', '&#160;', $rss->renderWith('SilverStripe\Control\RSS\RSSFeed'));
 		$xml = preg_replace('/<!--(.|\s)*?-->/', '', $xml);
 		$xml = trim($xml);
 		HTTP::add_cache_headers();
 		$this->getResponse()->addHeader('Content-Type', 'application/rss+xml');
 		$this->getResponse()->setBody($xml);
+
 		return $this->getResponse();
 	}
 
 	public function monthjson(SS_HTTPRequest $r) {
-		if(!$r->param('ID')) return false;
-
+		if (!$r->param('ID')) {
+			return false;
+		}
         //Increase the per page limit to 500 as the AJAX request won't look for further pages
         $this->EventsPerPage = 500;
 
@@ -249,7 +259,7 @@ class CalendarController extends PageController
 
 		$json = array ();
 		$counter = clone $this->startDate;
-		while($counter->get() <= $this->endDate->get()) {
+		while ($counter->get() <= $this->endDate->get()) {
 			$d = $counter->format('Y-m-d');
 			$json[$d] = array (
 				'events' => array ()
@@ -397,7 +407,7 @@ class CalendarController extends PageController
 		$announcement_filter = null;
 		$endDate = $this->endDate;
 
-		if($search = $this->getRequest()->getVar('s')) {
+		if ($search = $this->getRequest()->getVar('s')) {
 			$s = Convert::raw2sql($search);
 			$event_filter = "\"SiteTree\".\"Title\" LIKE '%$s%' OR \"SiteTree\".\"Content\" LIKE '%$s%'";
 			$announcement_filter = "\"CalendarAnnouncement\".\"Title\" LIKE '%$s%' OR \"CalendarAnnouncement\".\"Content\" LIKE '%$s%'";
@@ -544,22 +554,22 @@ class CalendarController extends PageController
 			$this,
 			__FUNCTION__,
 			FieldList::create(
-				$m = new DropdownField('Month','', CalendarUtil::get_months_map('%B')),
-				$y = new DropdownField('Year','', $year_map)
+				$m = DropdownField::create('Month','', CalendarUtil::get_months_map('%B')),
+				$y = DropdownField::create('Year','', $year_map)
 			),
 			FieldList::create(
 				FormAction::create('doMonthJump', _t('Calendar.JUMP','Go'))
 			)
 		);
 
-		if($this->startDate) {
+		if ($this->startDate) {
 			$m->setValue($this->startDate->format('m'));
 			$y->setValue($this->startDate->format('Y'));
-		}
-		else {
+		} else {
 			$m->setValue(date('m'));
 			$y->setValue(date('Y'));
 		}
+
 		return $f;
 	}
 

@@ -19,7 +19,7 @@
 	],
 	"require": {
 		"silverstripe/cms": "^4",
-		"johngrogg/ics-parser": "1.0.3",
+		"johngrogg/ics-parser": "^2",
 		"nesbot/carbon": "1.39.1"
 	},
 	"support": {
