@@ -246,7 +246,7 @@ class CalendarDateTime extends DataObject
 		return $dates;
 	}
 	
-	public function canCreate($member = null)
+	public function canCreate($member = null, $context = [])
 	{
 		if (!$member) {
 			$member = Member::currentUser();

@@ -43,7 +43,7 @@ class RecurringDayOfMonth extends DataObject
 	}
 
 
-	public function canCreate($member = null) {
+	public function canCreate($member = null, $context = []) {
 	    return Permission::check("CMS_ACCESS_CMSMain");
 	}
 	

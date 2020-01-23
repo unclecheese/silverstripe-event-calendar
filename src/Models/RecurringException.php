@@ -53,7 +53,7 @@ class RecurringException extends DataObject
     }
 
 
-    public function canCreate($member = null)
+    public function canCreate($member = null, $context = [])
     {
         return Permission::check("CMS_ACCESS_CMSMain");
     }
@@ -68,7 +68,7 @@ class RecurringException extends DataObject
         return Permission::check("CMS_ACCESS_CMSMain");
     }
     
-    public function canView($member = null)
+    public function canView($member = null, $context = [])
     {
         return Permission::check("CMS_ACCESS_CMSMain");
     }
