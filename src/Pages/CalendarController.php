@@ -2,6 +2,7 @@
 
 namespace UncleCheese\EventCalendar\Pages;
 
+use Carbon\Carbon;
 use UncleCheese\EventCalendar\Helpers\CalendarUtil;
 use UncleCheese\EventCalendar\Pages\Calendar;
 use SilverStripe\Control\Controller;
@@ -42,8 +43,14 @@ class CalendarController extends PageController
 
 	protected $view;
 
+	/**
+	 * @var Carbon
+	 */
 	protected $startDate;
 
+	/**
+	 * @var Carbon
+	 */
 	protected $endDate;
 
 	public function init()
@@ -57,130 +64,38 @@ class CalendarController extends PageController
 		Requirements::javascript('unclecheese/silverstripe-event-calendar:client/js/calendar.js');
 	}
 
-	public function getStartDate()
-	{
-		return $this->startDate;
-	}
-
-	public function getEndDate()
-	{
-		return $this->endDate;
-	}
-
-	public function getView()
-	{
-		return $this->view;
-	}
-
-	public function setDefaultView()
-	{
-		$this->view = "default";
-		$this->startDate = new \DateTime();
-		$this->endDate = new \DateTime();
-		$this->endDate->add(new \DateInterval('P'.(string)$this->DefaultFutureMonths.'M'));
-	}
-
-	public function setTodayView()
-	{
-		$this->view = "day";
-		$this->startDate = new \DateTime();
-		$this->endDate = new \DateTime();
-	}
-
-	public function setWeekView()
-	{
-		$this->view = "week";
-		$this->startDate = sfDate::getInstance()->firstDayOfWeek();
-		$this->endDate = sfDate::getInstance()->finalDayOfWeek();
-		if (CalendarUtil::get_first_day_of_week() == CalendarUtil::MONDAY) {
-			$this->startDate->tomorrow();
-			$this->endDate->tomorrow();
-		}
-	}
-
-	public function setWeekendView()
-	{
- 		$this->view = "weekend";
-		$start = new \DateTime();
-		if ($start->format('w') == CalendarUtil::SATURDAY) {
-			$start->yesterday();
-		} elseif ($start->format('w') != CalendarUtil::FRIDAY) {
-			$start->nextDay(CalendarUtil::FRIDAY);
-		}
-		$this->startDate = $start;
-		$this->endDate = sfDate::getInstance($start)->nextDay(CalendarUtil::SUNDAY);
-	}
-
-	public function setMonthView()
-	{
-		$this->view = "month";
-		$this->startDate = sfDate::getInstance()->firstDayOfMonth();
-		$this->endDate = sfDate::getInstance($this->startDate)->finalDayOfMonth();
-	}
-
-	public function getOffset()
-	{
-		if (!isset($_REQUEST['start'])) {
-			$_REQUEST['start'] = 0;
-		}
-		return $_REQUEST['start'];
-	}
-
-	protected function getRangeLink(sfDate $start, sfDate $end)
-	{
-		return Controller::join_links(
-			$this->Link(), 
-			"show", 
-			$start->format('Ymd'), 
-			$end->format('Ymd')
-		);
-	}
-
-	public function respond()
-	{
-		if (Director::is_ajax()) {
-			return $this->renderWith('EventList');
-		}
-		return [];
-	}
-
 	public function index(HTTPRequest $r) {
 
 		$this->extend('index', $r);
 
-		switch($this->DefaultView) {
+		switch ($this->DefaultView) {
 			case "month":
 				return $this->redirect($this->Link('show/month'));
 				break;
-
 			case "week":
 				$this->setWeekView();
 				// prevent pagination on these default views
 				$this->EventsPerPage = 999;
 				$e = $this->Events();
-				if($e->count() > 0) {
-					return array('Events' => $e);
-				}
-				else {
+				if ($e->count() > 0) {
+					return ['Events' => $e];
+				} else {
 					$this->setMonthView();
-					return array();
+					return [];
 				}
 				break;
-
 			case "today":
 				// prevent pagination on these default views
 				$this->EventsPerPage = 999;
 				$this->setTodayView();
 				$e = $this->Events();
-				if($e->count() > 0) {
-					return array('Events' => $e);
-				}
-				else {
+				if ($e->count() > 0) {
+					return ['Events' => $e];
+				} else {
 					$this->setWeekView();
-					return array();
+					return [];
 				}
 				break;
-
 			default:
 				$this->setDefaultView();
 				return $this->respond();
@@ -204,7 +119,6 @@ class CalendarController extends PageController
 		$this->setWeekendView();
 		return $this->respond();
 	}
-
 
 	public function month(HTTPRequest $r) {
 		$this->setMonthView();
@@ -255,10 +169,12 @@ class CalendarController extends PageController
         //Increase the per page limit to 500 as the AJAX request won't look for further pages
         $this->EventsPerPage = 500;
 
-		$this->startDate = sfDate::getInstance(CalendarUtil::get_date_from_string($r->param('ID')));
-		$this->endDate = sfDate::getInstance($this->startDate)->finalDayOfMonth();
+		$this->startDate = Carbon::parse(
+			CalendarUtil::get_date_from_string($r->param('ID'))
+		);
+		$this->endDate = Carbon::parse($this->startDate)->endOfMonth();
 
-		$json = array ();
+		$json = [];
 		$counter = clone $this->startDate;
 		while ($counter->get() <= $this->endDate->get()) {
 			$d = $counter->format('Y-m-d');
@@ -276,6 +192,98 @@ class CalendarController extends PageController
 			}
 		}
 		return Convert::array2json($json);
+	}
+
+	/**
+	 * @return Carbon
+	 */
+	public function getStartDate()
+	{
+		return $this->startDate;
+	}
+
+	/**
+	 * @return Carbon
+	 */
+	public function getEndDate()
+	{
+		return $this->endDate;
+	}
+
+	public function getView()
+	{
+		return $this->view;
+	}
+
+	public function setDefaultView()
+	{
+		$this->view = 'default';
+		$this->startDate = Carbon::now();
+		$this->endDate = Carbon::now()->addMonths($this->DefaultFutureMonths);
+	}
+
+	public function setTodayView()
+	{
+		$this->view = 'day';
+		$this->startDate = Carbon::now();
+		$this->endDate = Carbon::now();
+	}
+
+	public function setWeekView()
+	{
+		$this->view = 'week';
+		$this->startDate = Carbon::now()->startOfWeek();
+		$this->endDate = Carbon::now()->endOfWeek();
+		if (CalendarUtil::get_first_day_of_week() == Carbon::MONDAY) {
+			$this->startDate = $this->startDate->tomorrow();
+			$this->endDate = $this->endDate->tomorrow();
+		}
+	}
+
+	public function setWeekendView()
+	{
+ 		$this->view = 'weekend';
+		$start = Carbon::now();
+		if ($start->format('w') == Carbon::SATURDAY) {
+			$start = $start->yesterday();
+		} elseif ($start->format('w') != Carbon::FRIDAY) {
+			$start = $start->next(Carbon::FRIDAY);
+		}
+		$this->startDate = $start;
+		$this->endDate = Carbon::parse($this->startDate)->next(Carbon::SUNDAY);
+	}
+
+	public function setMonthView()
+	{
+		$this->view = 'month';
+		$this->startDate = Carbon::now()->startOfMonth();
+		$this->endDate = Carbon::parse($this->startDate)->endOfMonth();
+	}
+
+	public function getOffset()
+	{
+		if (!isset($_REQUEST['start'])) {
+			$_REQUEST['start'] = 0;
+		}
+		return $_REQUEST['start'];
+	}
+
+	protected function getRangeLink($start, $end)
+	{
+		return parent::join_links(
+			$this->Link(), 
+			"show", 
+			$start->format('Ymd'), 
+			$end->format('Ymd')
+		);
+	}
+
+	public function respond()
+	{
+		if (Director::is_ajax()) {
+			return $this->renderWith('EventList');
+		}
+		return [];
 	}
 
 	/**
@@ -298,20 +306,18 @@ class CalendarController extends PageController
 		$id = $r->param('ID');
 		$oid = $r->param('OtherID');
 
-		if(stristr($id, "ICS_") !== false) {
-			$id = str_replace("ICS_","",$id);
+		if (stristr($id, "ICS_") !== false) {
+			$id = str_replace("ICS_", "", $id);
 			$feed = true;
-		}
-		else if(stristr($id, "announcement-") !== false) {
+		} elseif(stristr($id, "announcement-") !== false) {
 			$id = str_replace("announcement-","",$id);
 			$announcement = true;
 		}
-		else {
-			$announcement = false;
-		}
-		if(is_numeric($id) && $oid) {
-			if(!$feed) {
-				$event = DataObject::get_by_id($announcement ? $this->data()->getDateTimeClass() : $this->data()->getEventClass(), $id);
+		if (is_numeric($id) && $oid) {
+			if (!$feed) {
+				$event = DataObject::get(
+					$announcement ? $this->data()->getDateTimeClass() : $this->data()->getEventClass()
+				)->byID($id);
                 // return if not found
                 if (!$event) {
                     return $this->httpError(404);
@@ -327,10 +333,10 @@ class CalendarController extends PageController
 			$TIMEZONE = Calendar::config()->timezone;
 			$LANGUAGE = Calendar::config()->language;
 			$CALSCALE = "GREGORIAN";
-			$parts = explode('-',$oid);
+			$parts = explode('-', $oid);
 			$START_TIMESTAMP = $parts[0];
 			$END_TIMESTAMP = $parts[1];
-			if(!$feed) {
+			if (!$feed) {
 				$URL = $announcement ? $event->Calendar()->AbsoluteLink() : $event->AbsoluteLink();
 			}
 			else {
@@ -339,33 +345,36 @@ class CalendarController extends PageController
 			$TITLE = $feed ? $_REQUEST['title'] : $event->Title;
 			$CONTENT = $feed ? $_REQUEST['content'] : $event->obj('Content')->Summary();
 			$LOCATION = $feed ? $_REQUEST['location'] : $event->Location;
+
 			$this->getResponse()->addHeader('Cache-Control','private');
 			$this->getResponse()->addHeader('Content-Description','File Transfer');
 			$this->getResponse()->addHeader('Content-Type','text/calendar');
 			$this->getResponse()->addHeader('Content-Transfer-Encoding','binary');
-			if(stristr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
- 				$this->getResponse()->addHeader("Content-disposition","filename=".$FILENAME."; attachment;");
- 			}
- 			else {
- 				$this->getResponse()->addHeader("Content-disposition","attachment; filename=".$FILENAME);
- 			}
-			$result = trim(strip_tags($this->customise(array(
-				'HOST' => $HOST,
-				'LANGUAGE' => $LANGUAGE,
-				'TIMEZONE' => $TIMEZONE,
-				'CALSCALE' => $CALSCALE,
-				'START_TIMESTAMP' => $START_TIMESTAMP,
-				'END_TIMESTAMP' => $END_TIMESTAMP,
-				'URL' => $URL,
-				'TITLE' => $TITLE,
-				'CONTENT' => $CONTENT,
-				'LOCATION' => $LOCATION
-			))->renderWith(array('ics'))));
+			if (stristr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
+ 				$this->getResponse()->addHeader("Content-disposition", "filename=".$FILENAME."; attachment;");
+ 			} else {
+ 				$this->getResponse()->addHeader("Content-disposition", "attachment; filename=".$FILENAME);
+			}
+			
+			$result = trim(strip_tags($this->customise(
+				[
+					'HOST' => $HOST,
+					'LANGUAGE' => $LANGUAGE,
+					'TIMEZONE' => $TIMEZONE,
+					'CALSCALE' => $CALSCALE,
+					'START_TIMESTAMP' => $START_TIMESTAMP,
+					'END_TIMESTAMP' => $END_TIMESTAMP,
+					'URL' => $URL,
+					'TITLE' => $TITLE,
+					'CONTENT' => $CONTENT,
+					'LOCATION' => $LOCATION
+				]
+			)->renderWith(['ics'])));
+
 			return $result;
 		}
-		else {
-			$this->redirectBack();
-		}
+		
+		$this->redirectBack();
 	}
 
 	public function parseURL(HTTPRequest $r)
@@ -434,19 +443,16 @@ class CalendarController extends PageController
 
 	public function DateHeader()
 	{
-		switch($this->view) {
+		switch ($this->view) {
 			case "day":
 				return CalendarUtil::localize($this->startDate->get(), null, CalendarUtil::ONE_DAY_HEADER);
 				break;
-
 			case "month":
 				return CalendarUtil::localize($this->startDate->get(), null, CalendarUtil::MONTH_HEADER);
 				break;
-
 			case "year":
 				return CalendarUtil::localize($this->startDate->get(), null, CalendarUtil::YEAR_HEADER);
 				break;
-
 			case "range":
 			case "week":
 			case "weekend":
@@ -467,42 +473,42 @@ class CalendarController extends PageController
 
 	public function PreviousDayLink()
 	{
-		$s = sfDate::getInstance($this->startDate)->yesterday();
-		return $this->getRangeLink($s, $s);
+		$start = Carbon::parse($this->startDate)->yesterday();
+		return $this->getRangeLink($start, $start);
 	}
 
 	public function NextDayLink()
 	{
-		$s = sfDate::getInstance($this->startDate)->tomorrow();
-		return $this->getRangeLink($s, $s);
+		$start = Carbon::parse($this->startDate)->tomorrow();
+		return $this->getRangeLink($start, $start);
 	}
 
 	public function PreviousWeekLink()
 	{
-		$s = sfDate::getInstance($this->startDate)->subtractWeek();
-		$e = sfDate::getInstance($this->endDate)->subtractWeek();
-		return $this->getRangeLink($s, $e);
+		$start = Carbon::parse($this->startDate)->subtractWeek();
+		$end = Carbon::parse($this->endDate)->subtractWeek();
+		return $this->getRangeLink($start, $end);
 	}
 
 	public function NextWeekLink()
 	{
-		$s = sfDate::getInstance($this->startDate)->addWeek();
-		$e = sfDate::getInstance($this->endDate)->addWeek();
-		return $this->getRangeLink($s, $e);
+		$start = Carbon::parse($this->startDate)->addWeek();
+		$end = Carbon::parse($this->endDate)->addWeek();
+		return $this->getRangeLink($start, $end);
 	}
 
 	public function NextMonthLink()
 	{
-		$s = sfDate::getInstance($this->startDate)->addMonth();
-		$e = sfDate::getInstance($s)->finalDayOfMonth();
-		return $this->getRangeLink($s, $e);
+		$start = Carbon::parse($this->startDate)->addMonth();
+		$end = Carbon::parse($start)->endOfMonth();
+		return $this->getRangeLink($start, $end);
 	}
 
 	public function PreviousMonthLink()
 	{
-		$s = sfDate::getInstance($this->startDate)->subtractMonth();
-		$e = sfDate::getInstance($s)->finalDayOfMonth();
-		return $this->getRangeLink($s, $e);
+		$start = Carbon::parse($this->startDate)->subMonth();
+		$end = Carbon::parse($start)->endOfMonth();
+		return $this->getRangeLink($start, $end);
 	}
 
 	public function NextWeekendLink()
@@ -515,11 +521,14 @@ class CalendarController extends PageController
 		return $this->PreviousWeekLink();
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function IsSegment($segment)
 	{
 		switch ($segment) {
 			case "today":
-				return $this->startDate->date() == $this->endDate->date();
+				return $this->startDate->format('Y-m-d') == $this->endDate->format('Y-m-d');
 			case "week":
 				if (CalendarUtil::get_first_day_of_week() == CalendarUtil::MONDAY) {
 					return 
@@ -545,21 +554,23 @@ class CalendarController extends PageController
 		return $this->renderWith(__CLASS__.'\MonthJumper');
 	}
 
+	/**
+	 * @return Form
+	 */
 	public function MonthJumpForm()
 	{
 		$this->parseURL($this->getRequest());
-		$dummy = sfDate::getInstance($this->startDate);
-		$range = range(($dummy->subtractYear(3)->format('Y')), ($dummy->addYear(6)->format('Y')));
-		$year_map = array_combine($range, $range);
-		$f = Form::create(
+		$dummy = clone $this->startDate;
+		$yearRange = range(($dummy->subYears(3)->format('Y')), ($dummy->addYears(6)->format('Y')));
+		$form = Form::create(
 			$this,
 			__FUNCTION__,
 			FieldList::create(
 				$m = DropdownField::create('Month','', CalendarUtil::get_months_map('%B')),
-				$y = DropdownField::create('Year','', $year_map)
+				$y = DropdownField::create('Year','', array_combine($yearRange, $yearRange))
 			),
 			FieldList::create(
-				FormAction::create('doMonthJump', _t('Calendar.JUMP','Go'))
+				FormAction::create('doMonthJump', _t('Calendar.JUMP', 'Go'))
 			)
 		);
 
@@ -571,11 +582,16 @@ class CalendarController extends PageController
 			$y->setValue(date('Y'));
 		}
 
-		return $f;
+		return $form;
 	}
 
-	public function doMonthJump($data, $form) {
-		return $this->redirect($this->Link('show').'/'.$data['Year'].$data['Month']);
+	public function doMonthJump($data, $form)
+	{
+		return $this->redirect(
+			parent::join_links(
+				$this->Link('show'),
+				$data['Year'].$data['Month']
+			)
+		);
 	}
-
 }
