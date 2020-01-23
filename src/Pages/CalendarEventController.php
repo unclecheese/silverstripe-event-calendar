@@ -2,7 +2,6 @@
 
 use SilverStripe\ORM\DataList;
 use SilverStripe\View\Requirements;
-use \PageController;
 
 class CalendarEventController extends PageController 
 {

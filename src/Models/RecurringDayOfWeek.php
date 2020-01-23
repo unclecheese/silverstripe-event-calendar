@@ -9,7 +9,7 @@ use UncleCheese\EventCalendar\Pages\CalendarEvent;
 
 class RecurringDayOfWeek extends DataObject 
 {
-	private static $table_name = 'UncleCheese_RecurringDayOfMonth';
+	private static $table_name = 'UncleCheese_RecurringDayOfWeek';
 
 	private static $db = [
 		'Value' => 'Int'
