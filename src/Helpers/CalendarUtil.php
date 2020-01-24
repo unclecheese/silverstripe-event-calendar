@@ -49,7 +49,8 @@ class CalendarUtil
 		'$EndYearLong'
 	];
 
-	public static function format_character_replacements($start, $end) {
+	public static function format_character_replacements($start, $end)
+	{
 		return [
 			strftime('%a', $start),
 			strftime('%A', $start),
@@ -73,11 +74,11 @@ class CalendarUtil
 			strftime('%B', $end), 
 			date ('y', $end), 
 			date ('Y', $end),
-
 		];	
 	}
 	
-	public static function localize($start, $end, $key) {
+	public static function localize($start, $end, $key)
+	{
 		global $customDateTemplates;
 		if(is_array($customDateTemplates) && isset($customDateTemplates[$key]))
 			$template = $customDateTemplates[$key];
@@ -88,7 +89,8 @@ class CalendarUtil
 		return str_replace(self::$format_character_placeholders, self::format_character_replacements($start,$end), $template);		
 	}	
 
-	public static function get_date_from_string($str) {
+	public static function get_date_from_string($str)
+	{
 		$str = str_replace('-','',$str);
 		if(is_numeric($str)) {
 			$missing = (8 - strlen($str));
@@ -102,18 +104,19 @@ class CalendarUtil
 		}
 	}
 
-	public static function get_date_string($start_date, $end_date) {
+	public static function get_date_string($startDate, $endDate)
+	{
 		$strStartDate = null;
 		$strEndDate = null;
 		
-		$start = strtotime($start_date);
-		$end = strtotime($end_date);
+		$start = strtotime($startDate);
+		$end = strtotime($endDate);
 		
-		$start_year = date("Y", $start);
-		$start_month = date("m", $start);
+		$startYear = date("Y", $start);
+		$startMonth = date("m", $start);
 		
-		$end_year = date("Y", $end);
-		$end_month = date("m", $end);
+		$endYear = date("Y", $end);
+		$endMonth = date("m", $end);
 		
 		// Invalid date. Get me out of here!
 		if ($start < 1)	{
@@ -123,21 +126,20 @@ class CalendarUtil
 		// Only one day long!
 		if ($start == $end || !$end || $end < 1) {
 			$key = self::ONE_DAY;
-		} elseif ($start_year == $end_year) {
-			$key = ($start_month == $end_month) ? self::SAME_MONTH_SAME_YEAR : self::DIFF_MONTH_SAME_YEAR;
-		}
-		else {
+		} elseif ($startYear == $endYear) {
+			$key = ($startMonth == $endMonth) ? self::SAME_MONTH_SAME_YEAR : self::DIFF_MONTH_SAME_YEAR;
+		} else {
 			$key = self::DIFF_MONTH_DIFF_YEAR;
 		}
-		$date_string = self::localize($start, $end, $key);		
-		$break = strpos($date_string, '$End');		
-		if($break !== FALSE) {
-			$strStartDate = substr($date_string, 0, $break);
-			$strEndDate = substr($date_string, $break+1, strlen($date_string) - strlen($strStartDate));
+		$dateString = self::localize($start, $end, $key);		
+		$break = strpos($dateString, '$End');		
+		if ($break !== false) {
+			$strStartDate = substr($dateString, 0, $break);
+			$strEndDate = substr($dateString, $break+1, strlen($dateString) - strlen($strStartDate));
 			return [$strStartDate, $strEndDate];
 		}
 
-		return [$date_string, ""];
+		return [$dateString, ""];
 	}
 
 	public static function microformat($date, $time, $offset = null)

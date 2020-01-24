@@ -57,7 +57,7 @@ class CalendarController extends PageController
 	{
 		parent::init();
 		RSSFeed::linkToFeed($this->Link() . "rss", $this->RSSTitle ? $this->RSSTitle : $this->Title);
-		Requirements::themedCSS('calendar','event_calendar');
+		Requirements::css('unclecheese/silverstripe-event-calendar:client/css/calendar.css');
 		if (!Calendar::config()->jquery_included) {
 			Requirements::javascript(THIRDPARTY_DIR.'/jquery/jquery.js');
 		}
@@ -415,7 +415,7 @@ class CalendarController extends PageController
 		}
 	}
 
-	public function Events()
+	public function getEvents()
 	{
 		$eventFilter = null;
 		$announcementFilter = null;
@@ -598,15 +598,18 @@ class CalendarController extends PageController
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public function MonthJumper()
 	{
-		return $this->renderWith(__CLASS__.'\MonthJumper');
+		return $this->renderWith('UncleCheese\EventCalendar\Includes\MonthJumper');
 	}
 
 	/**
 	 * @return Form
 	 */
-	public function MonthJumpForm()
+	public function getMonthJumpForm()
 	{
 		$this->parseURL($this->getRequest());
 		$dummy = clone $this->startDate;
@@ -619,7 +622,7 @@ class CalendarController extends PageController
 				$y = DropdownField::create('Year','', array_combine($yearRange, $yearRange))
 			),
 			FieldList::create(
-				FormAction::create('doMonthJump', _t('Calendar.JUMP', 'Go'))
+				FormAction::create('doMonthJump', _t(__CLASS__.'.JUMP', 'Go'))
 			)
 		);
 

@@ -8,16 +8,17 @@ use \PageController;
 
 class CalendarEventController extends PageController 
 {
-
-	public function init() {
+	public function init()
+	{
 		parent::init();
-		Requirements::css('unclecheese/silverstripe-event-calendar:client/css/calendar');
+		Requirements::css('unclecheese/silverstripe-event-calendar:client/css/calendar.css');
 	}
 	
 	/**
 	 * @return DataList
 	 */
-	public function MultipleDates() {
+	public function MultipleDates()
+	{
 		return DataList::create($this->data()->getDateTimeClass())
 			->filter("EventID", $this->ID)
 			->sort("StartDate ASC")
@@ -27,7 +28,8 @@ class CalendarEventController extends PageController
 	/**
 	 * @return DataList
 	 */
-	public function DateAndTime() {
+	public function DateAndTime()
+	{
 		return DataList::create($this->data()->getDateTimeClass())
 			->filter("EventID", $this->ID)
 			->sort("StartDate ASC");
@@ -40,7 +42,7 @@ class CalendarEventController extends PageController
 	{
 		return DataList::create($this->data()->getDateTimeClass())
 			->filter("EventID", $this->ID)
-			->where("\"StartDate\" >= DATE(NOW())")
+			->where("StartDate:GreaterThanOrEqual", "DATE(NOW())")
 			->sort("StartDate ASC")
 			->limit($limit);
 	}

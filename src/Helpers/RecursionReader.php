@@ -94,13 +94,13 @@ class RecursionReader
 	 */
 	public function recursionHappensOn($ts)
 	{
-		$testDate = new \DateTime($ts); //new sfDate($ts);
-		$startDate = new \DateTime($this->ts);//new sfDate($this->ts);
+		$testDate = Carbon::parse($ts);
+		$startDate = Carbon::parse($this->ts);
 		$result = false;
 		
 		// Current date is before the recurring event begins.
 		if ($testDate->getTimestamp() < $startDate->getTimestamp() 
-			|| in_array($testDate->format('Y-m-d'), $this->exceptions)
+			|| in_array($testDate->toDateString(), $this->exceptions)
 		) {
 			return $result;
 		}
@@ -144,16 +144,13 @@ class RecursionReader
 					} elseif ($this->event->MonthlyRecursionType2 == 1) {
 
 						// e.g. "First Monday of the month"
-
 						if ($this->event->MonthlyIndex == 5) {
 							// Last day of the month?
-							// $targetDate->add(new \DateInterval('P1M'));
-							// $targetDate->modify('first day of month')
-							$targetDate = $testDate->addMonth()->firstDayOfMonth()->previousDay($this->event->MonthlyDayOfWeek)->dump();
+							$targetDate = $testDate->addMonth()->startOfMonth()->previous($this->event->MonthlyDayOfWeek)->dump();
 						} else {
 							$testDate->modify("last day of previous month");
 							for ($i = 0; $i < $this->event->MonthlyIndex; $i++) {
-								$testDate->nextDay($this->event->MonthlyDayOfWeek)->dump();
+								$testDate->next($this->event->MonthlyDayOfWeek)->dump();
 							}
 							$targetDate = $testDate->dump();
 						}

@@ -13,6 +13,7 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
+use SilverStripe\View\Requirements;
 use UncleCheese\EventCalendar\Models\CachedCalendarEntry;
 use UncleCheese\EventCalendar\Models\CalendarAnnouncement;
 use UncleCheese\EventCalendar\Models\ICSFeed;
@@ -61,9 +62,9 @@ class Calendar extends Page
 
 	private static $recent_events_default_limit = 9999;
 
-	private static $icon = "event_calendar/images/calendar";
+	private static $icon = "unclecheese/silverstripe-event-calendar:client/dist/images/calendar-file.gif";
 
-	private static $description = "A collection of Calendar Events";
+	private static $description = "A collection of calendar events";
 
 	private static $event_class = CalendarEvent::class;
 
@@ -86,7 +87,7 @@ class Calendar extends Page
 
 	public static function set_jquery_included($bool = true)
 	{
-		Config::modify()->set(self::class, 'jquery_included', true);
+		Config::modify()->set(self::class, 'jquery_included', $bool);
 	}
 
 	public static function enable_caching()
@@ -214,7 +215,7 @@ class Calendar extends Page
 			->exclude(
 				[
 					"StartDate:LessThan" => $end,
-					"EndDate:GreaterThan" => $start,
+					"EndDate:GreaterThan" => $start
 				]
 			)
 			->sort(
@@ -231,8 +232,8 @@ class Calendar extends Page
 		$end, 
 		$filter = null, 
 		$limit = null, 
-		$announcementFilter = null)
-	{
+		$announcementFilter = null
+	) {
 		if (self::config()->caching_enabled) {
 			return $this->getCachedEventList($start, $end, $filter, $limit);
 		}
@@ -329,7 +330,6 @@ class Calendar extends Page
 
 	public function getNextRecurringEvents($eventObj, $datetimeObj, $limit = null)
 	{
-		//$counter = sfDate::getInstance($datetimeObj->StartDate);
 		$counter = new Carbon($datetimeObj->StartDate);
 
 		if ($event = $datetimeObj->Event()->DateTimes()->First()) {
@@ -470,18 +470,17 @@ class Calendar extends Page
 
 	public function getAllCalendars()
 	{
-		$calendars = ArrayList::create();
-		$calendars->push($this);
+		$calendars = ArrayList::create()->push($this);
 		$calendars->merge($this->NestedCalendars());
 		return $calendars;
 	}
 
 	public function UpcomingEvents($limit = 5, $filter = null)
 	{
-		$date = new Carbon();
+		$date = Carbon::now();
 		$all = $this->getEventList(
-			$date->format('Y-m-d'),
-			$date->add($this->DefaultFutureMonths, 'months')->format('Y-m-d'),
+			$date->toDateString(),
+			$date->addMonths($this->DefaultFutureMonths)->toDateString(),
 			$filter,
 			$limit
 		);
@@ -491,22 +490,22 @@ class Calendar extends Page
 	public function UpcomingAnnouncements($limit = 5, $filter = null)
 	{
 		return $this->Announcements()
-			->filter('StartDate:GreaterThan', 'NOW')
+			->filter('StartDate:GreaterThan', 'NOW()')
 			->where($filter)
 			->limit($limit);
 	}
 
 	public function RecentEvents($limit = null, $filter = null)
 	{
-		$start_date = sfDate::getInstance();
-		$end_date = sfDate::getInstance();
+		$startDate = Carbon::now();
+		$endDate = Carbon::now();
 		$l = ($limit === null) ? $this->config()->recent_events_default_limit : $limit;
 		$events = $this->getEventList(
-			$start_date->subtractMonth($this->DefaultFutureMonths)->date(),
-			$end_date->yesterday()->date(),
+			$startDate->subMonths($this->DefaultFutureMonths)->toDateString(),
+			$endDate->yesterday()->toDateString(),
 			$filter,
 			$l
-		)->sort('StartDate','DESC');
+		)->sort('StartDate DESC');
 
 		return $events->limit($limit);
 	}
@@ -518,10 +517,10 @@ class Calendar extends Page
 		if ($controller instanceof CalendarController) {
 			if ($controller->getView() != "default") {
 				if ($startDate = $controller->getStartDate()) {
-					$calendar->setOption('start', $startDate->format('Y-m-d'));
+					$calendar->setOption('start', $startDate->toDateString());
 				}
 				if ($endDate = $controller->getEndDate()) {
-					$calendar->setOption('end', $endDate->format('Y-m-d'));
+					$calendar->setOption('end', $endDate->toDateString());
 				}
 			}
 		}
@@ -534,7 +533,7 @@ class Calendar extends Page
 		if (!($controller instanceof CalendarController)) {
 			$controller = CalendarController::create($this);
 		}
-		return $controller->MonthJumpForm();
+		return $controller->getMonthJumpForm();
 	}
 
 }

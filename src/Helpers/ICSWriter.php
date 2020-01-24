@@ -33,22 +33,21 @@ use UncleCheese\EventCalendar\Pages\Calendar;
 
 class ICSWriter
 {
-
 	use Injectable;
 
 	/**
 	 * @var Calendar
 	 */
-	public $calendar;
+	private $calendar;
 
-	public $host;
-	public $prodid;
-	public $limit;
+	private $host;
+	private $prodid;
+	private $limit;
 	
 	/**
 	 * @var array
 	 */
-	protected $lines = [];
+	private $lines = [];
 	
 	/**
 	 * Construct an ICSWriter instance.
@@ -61,14 +60,16 @@ class ICSWriter
 	 *
 	 * @author Alex Hayes <alex.hayes@dimension27.com>
 	 */
-    public function __construct(Calendar $calendar, $host, $prodid = null, $limit = 100) {
+	public function __construct(Calendar $calendar, $host, $prodid = null, $limit = 100)
+	{
     	$this->calendar = $calendar;
     	$this->host = $host;
     	$this->prodid = $prodid;
     	$this->limit = $limit;
     }
     
-    public function sendDownload() {
+	public function sendDownload()
+	{
 		header("Cache-Control: private");
 		header("Content-Description: File Transfer");
 		header("Content-Type: text/calendar");
@@ -89,20 +90,20 @@ class ICSWriter
      */
 	public function getOutput()
 	{
-    	$this->lines = array();
+    	$this->lines = [];
     
 		$this->addLine('BEGIN:VCALENDAR');
 		$this->addLine('VERSION:2.0');
     	
-		if( is_null($this->prodid) ) {
+		if (is_null($this->prodid)) {
 			$this->addLine("PRODID:" . '-//'.$this->host.'//NONSGML v1.0//EN');
 		} 
-		elseif( !is_null($this->prodid) ) {
+		elseif (!is_null($this->prodid)) {
 			$this->addLine("PRODID:" . $this->prodid);
 		}
 		
-    	$upcomingEvents = $this->calendar->UpcomingEvents($this->limit); /* @var $upcomingEvents DataObjectSet */
-    	foreach($upcomingEvents as $dateTime) { /* @var $event CalendarDateTime */
+    	$upcomingEvents = $this->calendar->UpcomingEvents($this->limit);
+    	foreach ($upcomingEvents as $dateTime) {
     		$this->addDateTime($dateTime);
     	}
     	
@@ -119,7 +120,8 @@ class ICSWriter
      *
      * @author Alex Hayes <alex.hayes@dimension27.com>
      */
-    protected function addLine($line) {
+	protected function addLine($line)
+	{
     	$this->lines[] = $line;
     }
     
@@ -131,7 +133,8 @@ class ICSWriter
      *
      * @author Alex Hayes <alex.hayes@dimension27.com>
      */
-    protected function getUID( CalendarDateTime $dateTime ) {
+	protected function getUID(CalendarDateTime $dateTime)
+	{
     	return $dateTime->ID.'@'.$this->host;
     }
 
@@ -146,12 +149,12 @@ class ICSWriter
      * 
      * @author Alex Hayes <alex.hayes@dimension27.com>
      */
-	protected function getFormatedDateTime( Date $date = null, Time $time = null ) {
+	protected function getFormatedDateTime(Date $date = null, Time $time = null)
+	{
 		$timestamp = null;
-		if($date && $time) {
+		if ($date && $time) {
 			$timestamp = strtotime($date . ' ' . $time);
-		}
-		else {
+		} else {
 			$timestamp = time();
 		}
 		return gmdate('Ymd\THis\Z', $timestamp);
@@ -165,7 +168,8 @@ class ICSWriter
 	 *
 	 * @author Alex Hayes <alex.hayes@dimension27.com>
 	 */
-    protected function addDateTime( CalendarDateTime $dateTime ) {
+	protected function addDateTime(CalendarDateTime $dateTime)
+	{
     	$this->addLine('BEGIN:VEVENT');
 		$this->addLine('UID:' . $this->getUID($dateTime) );
 		$this->addLine('DTSTAMP;TZID=' . Calendar::config()->timezone . ':' . $this->getFormatedDateTime());
