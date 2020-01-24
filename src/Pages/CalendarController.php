@@ -168,7 +168,6 @@ class CalendarController extends PageController
 		}
         //Increase the per page limit to 500 as the AJAX request won't look for further pages
         $this->EventsPerPage = 500;
-
 		$this->startDate = Carbon::parse(
 			CalendarUtil::get_date_from_string($r->param('ID'))
 		);
@@ -176,22 +175,23 @@ class CalendarController extends PageController
 
 		$json = [];
 		$counter = clone $this->startDate;
-		while ($counter->get() <= $this->endDate->get()) {
-			$d = $counter->format('Y-m-d');
-			$json[$d] = array (
-				'events' => array ()
-			);
+		while ($counter->getTimestamp() <= $this->endDate->getTimestamp()) {
+			$d = $counter->toDateString();
+			$json[$d] = [
+				'events' => []
+			];
 			$counter->tomorrow();
 		}
 		$list = $this->Events();
-		foreach($list as $e) {
-			foreach($e->getAllDatesInRange() as $date) {
-				if(isset($json[$date])) {
+		foreach ($list as $e) {
+			foreach ($e->getAllDatesInRange() as $date) {
+				if (isset($json[$date])) {
 					$json[$date]['events'][] = $e->getTitle();
 				}
 			}
 		}
-		return Convert::array2json($json);
+
+		return json_encode($json);
 	}
 
 	/**
@@ -265,7 +265,7 @@ class CalendarController extends PageController
 		if (!isset($_REQUEST['start'])) {
 			$_REQUEST['start'] = 0;
 		}
-		return $_REQUEST['start'];
+		return (int)$_REQUEST['start'];
 	}
 
 	protected function getRangeLink($start, $end)
@@ -377,86 +377,108 @@ class CalendarController extends PageController
 		$this->redirectBack();
 	}
 
+	/**
+	 * @return void
+	 */
 	public function parseURL(HTTPRequest $r)
 	{
-		if(!$r->param('ID')) return;
-		$this->startDate = sfDate::getInstance(CalendarUtil::get_date_from_string($r->param('ID')));
-		if($r->param('OtherID')) {
-			$this->view = "range";
-			$this->endDate = sfDate::getInstance(CalendarUtil::get_date_from_string($r->param('OtherID')));
+		if (!$r->param('ID')) {
+			return;
 		}
-		else {
+		$this->startDate = Carbon::parse(CalendarUtil::get_date_from_string($r->param('ID')));
+		if ($r->param('OtherID')) {
+			$this->view = "range";
+			$this->endDate = Carbon::parse(CalendarUtil::get_date_from_string($r->param('OtherID')));
+		} else {
 			$d = clone $this->startDate;
-			switch(strlen(str_replace("-","",$r->param('ID')))) {
+			switch(strlen(str_replace("-", "", $r->param('ID')))) {
 				case 8:
-				$this->view = "day";
-				$this->endDate = sfDate::getInstance($d->get()+1);
-				break;
+					$this->view = "day";
+					$this->endDate = Carbon::parse($d->getTimestamp()+1);
+					break;
 
 				case 6:
-				$this->view = "month";
-				$this->endDate = sfDate::getInstance($d->finalDayOfMonth()->date());
-				break;
+					$this->view = "month";
+					$this->endDate = Carbon::parse($d->endOfMonth()->toDateString());
+					break;
 
 				case 4:
-				$this->view = "year";
-				$this->endDate = sfDate::getInstance($d->finalDayOfYear()->date());
-				break;
+					$this->view = "year";
+					$this->endDate = Carbon::parse($d->endOfMonth()->toDateString());
+					break;
 
 				default:
-				$this->view = "default";
-				$this->endDate = sfDate::getInstance($d->addMonth($this->DefaultFutureMonths)->date());
-				break;
+					$this->view = "default";
+					$this->endDate = Carbon::parse($d->addMonths($this->DefaultFutureMonths)->toDateString());
+					break;
 			}
 		}
 	}
 
 	public function Events()
 	{
-		$event_filter = null;
-		$announcement_filter = null;
+		$eventFilter = null;
+		$announcementFilter = null;
 		$endDate = $this->endDate;
 
 		if ($search = $this->getRequest()->getVar('s')) {
 			$s = Convert::raw2sql($search);
-			$event_filter = "\"SiteTree\".\"Title\" LIKE '%$s%' OR \"SiteTree\".\"Content\" LIKE '%$s%'";
-			$announcement_filter = "\"CalendarAnnouncement\".\"Title\" LIKE '%$s%' OR \"CalendarAnnouncement\".\"Content\" LIKE '%$s%'";
+			$eventFilter = "\"SiteTree\".\"Title\" LIKE '%$s%' OR \"SiteTree\".\"Content\" LIKE '%$s%'";
+			$announcementFilter = "\"CalendarAnnouncement\".\"Title\" LIKE '%$s%' OR \"CalendarAnnouncement\".\"Content\" LIKE '%$s%'";
 			$this->SearchQuery = $search;
-			$endDate = sfDate::getInstance()->addMonth($this->DefaultFutureMonths);
+			$endDate = Carbon::now()->addMonths($this->DefaultFutureMonths);
 		}
 
 		$all = $this->data()->getEventList(
-			$this->startDate ? $this->startDate->date() : null,
-			$endDate ? $endDate->date() : null,
-			$event_filter,
+			$this->startDate ? $this->startDate->toDateString() : null,
+			$endDate ? $endDate->toDateString() : null,
+			$eventFilter,
 			null,
-			$announcement_filter
+			$announcementFilter
 		);
 
-		$all_events_count = $all->count();
+		$allEventsCount = $all->count();
 		$list = $all->limit($this->EventsPerPage, $this->getOffset());
-		$next = $this->getOffset()+$this->EventsPerPage;
-		$this->MoreEvents = ($next < $all_events_count);
+		$next = $this->getOffset() + $this->EventsPerPage;
+		$this->MoreEvents = ($next < $allEventsCount);
 		$this->MoreLink = HTTP::setGetVar("start", $next);
+
 		return $list;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function DateHeader()
 	{
 		switch ($this->view) {
 			case "day":
-				return CalendarUtil::localize($this->startDate->get(), null, CalendarUtil::ONE_DAY_HEADER);
+				return CalendarUtil::localize(
+					$this->startDate->getTimestamp(), 
+					null, 
+					CalendarUtil::ONE_DAY_HEADER
+				);
 				break;
 			case "month":
-				return CalendarUtil::localize($this->startDate->get(), null, CalendarUtil::MONTH_HEADER);
+				return CalendarUtil::localize(
+					$this->startDate->getTimestamp(), 
+					null, 
+					CalendarUtil::MONTH_HEADER
+				);
 				break;
 			case "year":
-				return CalendarUtil::localize($this->startDate->get(), null, CalendarUtil::YEAR_HEADER);
+				return CalendarUtil::localize(
+					$this->startDate->getTimestamp(), 
+					null, 
+					CalendarUtil::YEAR_HEADER
+				);
 				break;
 			case "range":
 			case "week":
 			case "weekend":
-				list($strStartDate, $strEndDate) = CalendarUtil::get_date_string($this->startDate->date(), $this->endDate->date());
+				list($strStartDate, $strEndDate) = CalendarUtil::get_date_string(
+					$this->startDate->toDateString(), $this->endDate->toDateString()
+				);
 				return $strStartDate.$strEndDate;
 				break;
 
@@ -466,23 +488,35 @@ class CalendarController extends PageController
 		}
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function CurrentAction($a)
 	{
 		return $this->getAction() == $a;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function PreviousDayLink()
 	{
 		$start = Carbon::parse($this->startDate)->yesterday();
 		return $this->getRangeLink($start, $start);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function NextDayLink()
 	{
 		$start = Carbon::parse($this->startDate)->tomorrow();
 		return $this->getRangeLink($start, $start);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function PreviousWeekLink()
 	{
 		$start = Carbon::parse($this->startDate)->subtractWeek();
@@ -490,6 +524,9 @@ class CalendarController extends PageController
 		return $this->getRangeLink($start, $end);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function NextWeekLink()
 	{
 		$start = Carbon::parse($this->startDate)->addWeek();
@@ -497,6 +534,9 @@ class CalendarController extends PageController
 		return $this->getRangeLink($start, $end);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function NextMonthLink()
 	{
 		$start = Carbon::parse($this->startDate)->addMonth();
@@ -504,6 +544,9 @@ class CalendarController extends PageController
 		return $this->getRangeLink($start, $end);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function PreviousMonthLink()
 	{
 		$start = Carbon::parse($this->startDate)->subMonth();
@@ -511,11 +554,17 @@ class CalendarController extends PageController
 		return $this->getRangeLink($start, $end);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function NextWeekendLink()
 	{
 		return $this->NextWeekLink();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function PreviousWeekendLink()
 	{
 		return $this->PreviousWeekLink();
@@ -528,7 +577,7 @@ class CalendarController extends PageController
 	{
 		switch ($segment) {
 			case "today":
-				return $this->startDate->format('Y-m-d') == $this->endDate->format('Y-m-d');
+				return $this->startDate->toDateString() == $this->endDate->toDateString();
 			case "week":
 				if (CalendarUtil::get_first_day_of_week() == CalendarUtil::MONDAY) {
 					return 
@@ -541,7 +590,7 @@ class CalendarController extends PageController
 			case "month":
 				return 
 					($this->startDate->format('j') == 1) 
-					&& (sfDate::getInstance($this->startDate)->finalDayOfMonth()->format('j') == $this->endDate->format('j'));
+					&& (Carbon::parse($this->startDate)->endOfMonth()->format('j') == $this->endDate->format('j'));
 			case "weekend":
 				return 
 					($this->startDate->format('w') == CalendarUtil::FRIDAY) 
