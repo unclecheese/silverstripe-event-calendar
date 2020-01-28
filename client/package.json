@@ -1,0 +1,20 @@
+{
+    "name": "silverstripe-event-calendar",
+    "version": "1.0.0",
+    "main": "index.js",
+    "repository": "https://github.com/gheggie/silverstripe-event-calendar",
+    "author": "Grant Heggie",
+    "license": "BSD-3-Clause",
+    "private": false,
+    "devDependencies": {
+        "@babel/core": "7",
+        "@babel/preset-env": "7",
+        "@rollup/plugin-node-resolve": "^6.0.0",
+        "@rollup/plugin-replace": "^2.2.1",
+        "rollup": "1.20",
+        "rollup-plugin-babel": "^4.3.3"
+    },
+    "dependencies": {
+        "jquery": "3.1.1"
+    }
+}

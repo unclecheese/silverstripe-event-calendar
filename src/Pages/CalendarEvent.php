@@ -84,7 +84,7 @@ class CalendarEvent extends Page
 			);
 
 			$f->addFieldsToTab("Root.$recursion", array(
-				CheckboxField::create('Recursion',_t(__CLASS__.'.REPEATEVENT','Repeat this event'))->addExtraClass('recursion'),
+				CheckboxField::create('Recursion', _t(__CLASS__.'.REPEATEVENT','Repeat this event'))->addExtraClass('recursion'),
 				OptionsetField::create(
 					'CustomRecursionType',
 					_t(__CLASS__.'.DESCRIBEINTERVAL','Describe the interval at which this event recurs.'),
@@ -96,47 +96,69 @@ class CalendarEvent extends Page
 				)->setHasEmptyDefault(true)
 			));
 		
-			$f->addFieldToTab("Root.$recursion", $dailyInterval = FieldGroup::create(
-				LabelField::create($name = "every1", $title = _t(__CLASS__.'.EVERY', "Every ")),
-				DropdownField::create('DailyInterval', '', array_combine(range(1,10), range(1,10))),
-				LabelField::create($name = "days",$title = _t(__CLASS__.'.DAYS', " day(s)"))
-			));
+			$f->addFieldToTab(
+				"Root.$recursion", 
+				FieldGroup::create(
+					LabelField::create("every1", _t(__CLASS__.'.EVERY', "Every ")),
+					DropdownField::create('DailyInterval', '', array_combine(range(1,10), range(1,10))),
+					LabelField::create("days", _t(__CLASS__.'.DAYS', " day(s)"))
+				)->addExtraClass('dailyinterval')
+			);
 		
-			$f->addFieldToTab("Root.$recursion", $weeklyInterval = FieldGroup::create(
-				LabelField::create($name = "every2", $title = _t("CalendarEvent.EVERY","Every ")),
-				DropdownField::create('WeeklyInterval', '', array_combine(range(1,10), range(1,10))),
-				LabelField::create($name = "weeks", $title = _t("CalendarEvent.WEEKS", " weeks"))
-			));
+			$f->addFieldToTab(
+				"Root.$recursion",
+					FieldGroup::create(
+					LabelField::create("every2", _t("CalendarEvent.EVERY","Every ")),
+					DropdownField::create('WeeklyInterval', '', array_combine(range(1,10), range(1,10))),
+					LabelField::create("weeks", _t("CalendarEvent.WEEKS", " weeks"))
+				)->addExtraClass('weeklyinterval')
+			);
 		
-			$f->addFieldToTab("Root.$recursion", CheckboxSetField::create(
-				'RecurringDaysOfWeek', 
-				_t('CalendarEvent.ONFOLLOWINGDAYS','On the following day(s)...'),
-				DataList::create("RecurringDayOfWeek")->map("ID", "Title")
-			));
+			$f->addFieldToTab(
+				"Root.$recursion",
+				CheckboxSetField::create(
+					'RecurringDaysOfWeek', 
+					_t('CalendarEvent.ONFOLLOWINGDAYS','On the following day(s)...'),
+					DataList::create("RecurringDayOfWeek")->map("ID", "Title")
+				)
+			);
 		
-			$f->addFieldToTab("Root.$recursion", $monthlyInterval = FieldGroup::create(
-				LabelField::create($name="every3", $title = _t("CalendarEvent.EVERY", "Every ")),
-				DropdownField::create('MonthlyInterval', '', array_combine(range(1,10), range(1,10))),
-				LabelField::create($name = "months", $title = _t("CalendarEvent.MONTHS", " month(s)"))
-			));
+			$f->addFieldToTab(
+				"Root.$recursion", 
+				FieldGroup::create(
+					LabelField::create("every3", _t("CalendarEvent.EVERY", "Every ")),
+					DropdownField::create('MonthlyInterval', '', array_combine(range(1,10), range(1,10))),
+					LabelField::create("months", _t("CalendarEvent.MONTHS", " month(s)"))
+				)->addExtraClass('monthlyinterval')
+			);
 
-			$f->addFieldsToTab("Root.$recursion", array (
-				OptionsetField::create('MonthlyRecursionType1','', array('1' => _t('CalendarEvent.ONTHESEDATES','On these date(s)...')))->setHasEmptyDefault(true),
-				CheckboxsetField::create('RecurringDaysOfMonth', '', DataList::create("RecurringDayOfMonth")->map("ID", "Value")),
-				OptionsetField::create('MonthlyRecursionType2','', array('1' => _t('CalendarEvent.ONTHE','On the...')))->setHasEmptyDefault(true)
-			));
+			$f->addFieldsToTab(
+				"Root.$recursion", 
+				[
+					OptionsetField::create(
+						'MonthlyRecursionType1',
+						'', 
+						['1' => _t('CalendarEvent.ONTHESEDATES','On these date(s)...')]
+					)->setHasEmptyDefault(true),
+					CheckboxsetField::create('RecurringDaysOfMonth', '', DataList::create("RecurringDayOfMonth")->map("ID", "Value")),
+					OptionsetField::create('MonthlyRecursionType2','', array('1' => _t('CalendarEvent.ONTHE','On the...')))->setHasEmptyDefault(true)
+				]
+			);
 
-			$f->addFieldToTab("Root.$recursion", $monthlyIndex = FieldGroup::create(
-				DropdownField::create('MonthlyIndex', '', array (
-					'1' => _t('CalendarEvent.FIRST', 'First'),
-					'2' => _t('CalendarEvent.SECOND', 'Second'),
-					'3' => _t('CalendarEvent.THIRD', 'Third'),
-					'4' => _t('CalendarEvent.FOURTH', 'Fourth'),
-					'5' => _t('CalendarEvent.LAST', 'Last')
-				))->setHasEmptyDefault(true),
-				DropdownField::create('MonthlyDayOfWeek','', DataList::create('RecurringDayOfWeek')->map('Value', 'Title'))->setHasEmptyDefault(true),
-				LabelField::create($name = "ofthemonth", $title = _t(__CLASS__.'.OFTHEMONTH', " of the month."))
-			));
+			$f->addFieldToTab(
+				"Root.$recursion", 
+				FieldGroup::create(
+					DropdownField::create('MonthlyIndex', '', [
+						'1' => _t('CalendarEvent.FIRST', 'First'),
+						'2' => _t('CalendarEvent.SECOND', 'Second'),
+						'3' => _t('CalendarEvent.THIRD', 'Third'),
+						'4' => _t('CalendarEvent.FOURTH', 'Fourth'),
+						'5' => _t('CalendarEvent.LAST', 'Last')
+					])->setHasEmptyDefault(true),
+					DropdownField::create('MonthlyDayOfWeek','', DataList::create('RecurringDayOfWeek')->map('Value', 'Title'))->setHasEmptyDefault(true),
+					LabelField::create($name = "ofthemonth", $title = _t(__CLASS__.'.OFTHEMONTH', " of the month."))
+				)->addExtraClass('monthlyindex')
+			);
 			$f->addFieldToTab("Root.$recursion",
 				GridField::create(
 					'Exceptions',
@@ -145,10 +167,6 @@ class CalendarEvent extends Page
 					GridFieldConfig_RecordEditor::create()
 				)
 			);
-			$dailyInterval->addExtraClass('dailyinterval');
-			$weeklyInterval->addExtraClass('weeklyinterval');
-			$monthlyInterval->addExtraClass('monthlyinterval');
-			$monthlyIndex->addExtraClass('monthlyindex');
 
 		});
 		
@@ -159,7 +177,7 @@ class CalendarEvent extends Page
 
 	public function getRecursionReader()
 	{
-		return new RecursionReader($this);
+		return RecursionReader::create($this);
 	}
 
 	public function getDateTimeClass()

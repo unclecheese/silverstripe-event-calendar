@@ -1,3 +1,6 @@
+---
+Name: "event-calendar-fi"
+---
 fi:
   Calendar:
     OneDay: '$StartDayNameLong, $StartDayNumberShort.$StartMonthNumberShort.$StartYearLong'

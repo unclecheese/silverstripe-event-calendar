@@ -2,6 +2,7 @@
 
 namespace UncleCheese\EventCalendar\Helpers;
 
+use Carbon\Carbon;
 use UncleCheese\EventCalendar\Models\CalendarDateTime;
 
 class CalendarUtil 
@@ -13,16 +14,6 @@ class CalendarUtil
 	const ONE_DAY_HEADER = "OneDayHeader";
 	const MONTH_HEADER = "MonthHeader";
 	const YEAR_HEADER = "YearHeader";
-
-	// Numeric representation of the day of the week
-	// https://www.php.net/manual/en/function.date.php
-	const SUNDAY	= 0;
-	const MONDAY	= 1;
-	const TUESDAY	= 2;
-	const WEDNESDAY	= 3;
-	const THURSDAY	= 4;
-	const FRIDAY	= 5;
-	const SATURDAY	= 6;
 
 	private static $format_character_placeholders = [
 		'$StartDayNameShort',
@@ -196,7 +187,7 @@ class CalendarUtil
 	public static function get_first_day_of_week()
 	{
 		$result = strtolower(_t(__CLASS__.'.FIRSTDAYOFWEEK','monday'));
-		return ($result == "monday") ? self::MONDAY : self::SUNDAY;
+		return ($result == "monday") ? Carbon::MONDAY : Carbon::SUNDAY;
 	}
 
 	public static function date_sort(&$data)

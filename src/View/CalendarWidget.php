@@ -1,10 +1,11 @@
 <?php
 
-namespace UncleCheese\EventCalendar\View;
+namespace UncleCheese\EventCalendar\Views;
 
+use SilverStripe\Core\Convert;
+use SilverStripe\Core\Manifest\ModuleResourceLoader;
 use SilverStripe\View\Requirements;
 use SilverStripe\View\ViewableData;
-use SilverStripe\Core\Convert;
 use UncleCheese\EventCalendar\Pages\Calendar;
 
 class CalendarWidget extends ViewableData
@@ -51,12 +52,15 @@ class CalendarWidget extends ViewableData
 
 	public function forTemplate()
 	{
-		Requirements::javascript(THIRDPARTY_DIR."/jquery/jquery.js");		
+		Requirements::javascript('silverstripe/admin:thirdparty/jquery/jquery.min.js');
 		Requirements::javascript("unclecheese/silverstripe-event-calendar:client/js/calendar-widget.js");
-		$locale_file = _t(Calendar::class.'.DATEJSFILE', 'calendar_en.js');
-		Requirements::javascript("unclecheese/silverstripe-event-calendar:client/js/lang/{$locale_file}");
-		Requirements::javascript("unclecheese/silverstripe-event-calendar:client/js/calendar-widget-init.js");
-		Requirements::css("unclecheese/silverstripe-event-calendar:client/css/calendar-widget.css");
+
+		$localeFile = _t(Calendar::class.'.DATEJSFILE', 'unclecheese/silverstripe-event-calendar:client/dist/js/lang/calendar_en.js');
+		Requirements::javascript($localeFile);
+
+		Requirements::javascript("unclecheese/silverstripe-event-calendar:client/dist/js/calendar-widget-init.js");
+		Requirements::css("unclecheese/silverstripe-event-calendar:client/dist/css/calendar-widget.css");
+		
 		return '<div class="calendar-widget" ' . $this->getDataAttributes() . '></div>';
 	}
 }

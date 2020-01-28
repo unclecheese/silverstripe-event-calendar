@@ -1,3 +1,6 @@
+---
+Name: "event-calendar-de"
+---
 de:
   Calendar:
     OneDay: '$StartDayNumberShort. $StartMonthNameShort. $StartYearLong' #e.g. 4. Okt. 2009

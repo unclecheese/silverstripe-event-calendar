@@ -18,6 +18,7 @@ use UncleCheese\EventCalendar\Models\CachedCalendarEntry;
 use UncleCheese\EventCalendar\Models\CalendarAnnouncement;
 use UncleCheese\EventCalendar\Models\ICSFeed;
 use UncleCheese\EventCalendar\Pages\CalendarController;
+use UncleCheese\EventCalendar\Views\CalendarWidget;
 use \Page;
 
 class Calendar extends Page 
@@ -175,6 +176,9 @@ class Calendar extends Page
 		return $f = parent::getCMSFields();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getEventClass()
 	{
 		if ($this->eventClass_cache) {
@@ -183,6 +187,9 @@ class Calendar extends Page
 		return $this->eventClass_cache = self::config()->event_class;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getAnnouncementClass()
 	{
 		if ($this->announcementClass_cache) {
@@ -191,6 +198,9 @@ class Calendar extends Page
 		return $this->announcementClass_cache = self::config()->announcement_class;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getDateTimeClass()
 	{
 		if ($this->datetimeClass_cache) {
@@ -208,6 +218,9 @@ class Calendar extends Page
 			->getReverseAssociation($this->getEventClass())."ID";
 	}
 
+	/**
+	 * @return DataList
+	 */
 	public function getCachedEventList($start, $end, $filter = null, $limit = null)
 	{
 		return CachedCalendarEntry::get()
@@ -227,6 +240,9 @@ class Calendar extends Page
 			->limit($limit);
 	}
 
+	/**
+	 * @return DataList
+	 */
 	public function getEventList(
 		$start, 
 		$end, 
@@ -244,7 +260,6 @@ class Calendar extends Page
 			if ($events = $calendar->getStandardEvents($start, $end, $filter)) {
 				$eventList->merge($events);
 			}
-
 			$announcements = DataList::create($this->getAnnouncementClass())
 				->filter(
 					[
@@ -269,12 +284,7 @@ class Calendar extends Page
 			}
 		}
 
-		$eventList = $eventList->sort(
-			[
-				"StartDate" => "ASC", 
-				"StartTime" => "ASC"
-			]
-		)->limit($limit);
+		$eventList = $eventList->sort('StartDate ASC, StartTime ASC')->limit($limit);
 
 		return $this->eventList_cache = $eventList;
 	}

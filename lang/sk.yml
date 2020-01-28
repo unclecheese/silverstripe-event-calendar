@@ -1,3 +1,6 @@
+---
+Name: "event-calendar-sk"
+---
 sk:
   Calendar:
     ADD: 'Pridať do môjho kalendára (ICS)'
@@ -6,7 +9,7 @@ sk:
     ANNOUNCEMENTDESCRIPTION: 'Oznámenia sú jednoduché záznamy bez stránky s podrobnosťami, ktoré môžete pridať do kalendára (napr. "Kancelária zatvorená)"'
     Announcements: 'Oznámenia'
     CONFIGURATION: 'Konfigurácia'
-    DATEJSFILE: 'calendar_sk.js'
+    DATEJSFILE: 'unclecheese/silverstripe-event-calendar:client/dist/js/lang/calendar_sk.js'
     DATETIMEDESCRIPTION: 'Pridať termíny pre túto udalosť'
     DEFAULTDATEHEADER: 'Predvolený titulok (zobrazuje sa keď nie je vybraté žiadne časové obdobie)'
     DEFAULTFUTUREMONTHS: 'Maximálny počet budúcich mesiacov na predvolenom zobrazení'

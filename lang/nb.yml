@@ -1,3 +1,6 @@
+---
+Name: "event-calendar-nb"
+---
 nb:
   Calendar:
     OneDay: '$StartDayNumberShort. $StartMonthNameShort. $StartYearLong' #e.g. 4. Okt. 2009
@@ -30,7 +33,7 @@ nb:
     MORE: 'Les mer&hellip;'
     ADDITIONALDATES: 'Ytterligere datoer for denne begivenheten'
     VIEWMOREEVENTS: 'Se flere begivenheter...'
-    DATEJSFILE: 'calendar_nb.js'
+    DATEJSFILE: 'unclecheese/silverstripe-event-calendar:client/dist/js/lang/calendar_nb.js'
   CalendarDateTime:
     INVALIDFORMAT: 'Ugyldig datoformat. Gyldig: "dmy" eller "mdy".'
   CalendarEvent:
