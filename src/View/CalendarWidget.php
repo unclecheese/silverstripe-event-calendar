@@ -55,7 +55,7 @@ class CalendarWidget extends ViewableData
 		Requirements::javascript('silverstripe/admin:thirdparty/jquery/jquery.min.js');
 		Requirements::javascript("unclecheese/silverstripe-event-calendar:client/js/calendar-widget.js");
 
-		$localeFile = _t(Calendar::class.'.DATEJSFILE', 'unclecheese/silverstripe-event-calendar:client/dist/js/lang/calendar_en.js');
+		$localeFile = _t(__CLASS__.'.DATEJSFILE', 'unclecheese/silverstripe-event-calendar:client/dist/js/lang/calendar_en.js');
 		Requirements::javascript($localeFile);
 
 		Requirements::javascript("unclecheese/silverstripe-event-calendar:client/dist/js/calendar-widget-init.js");

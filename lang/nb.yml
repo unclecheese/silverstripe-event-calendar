@@ -1,8 +1,5 @@
----
-Name: "event-calendar-nb"
----
 nb:
-  Calendar:
+  UncleCheese\EventCalendar\Pages\Calendar:
     OneDay: '$StartDayNumberShort. $StartMonthNameShort. $StartYearLong' #e.g. 4. Okt. 2009
     SameMonthSameYear: '$StartDayNumberShort. - $EndDayNumberShort. $StartMonthNameShort. $EndYearLong' #e.g. 4. - 6. Okt. 2009
     DiffMonthSameYear: '$StartDayNumberShort. $StartMonthNameShort - $EndDayNumberShort. $EndMonthNameShort. $EndYearLong' #e.g. 4. Okt. - 6. Nov. 2009
@@ -33,10 +30,19 @@ nb:
     MORE: 'Les mer&hellip;'
     ADDITIONALDATES: 'Ytterligere datoer for denne begivenheten'
     VIEWMOREEVENTS: 'Se flere begivenheter...'
-    DATEJSFILE: 'unclecheese/silverstripe-event-calendar:client/dist/js/lang/calendar_nb.js'
-  CalendarDateTime:
+    BROWSECALENDAR: 'Bla i kalender'
+    USECALENDAR: 'Bruk kalenderen.'
+    SUBSCRIBE: 'Abonnér på denne kalenderen.'
+    TIME: 'Tid'
+    MORE: 'Les mer...'
+    SEEALSO: 'Se også'
+    NOEVENTS: 'Ingen begivenheter funnet.'
+  UncleCheese\EventCalendar\Models\CalendarDateTime:
     INVALIDFORMAT: 'Ugyldig datoformat. Gyldig: "dmy" eller "mdy".'
-  CalendarEvent:
+    DATEFORMAT: dmy
+    TIMEFORMAT: 24
+    FIRSTDAYOFWEEK: Mandag
+  UncleCheese\EventCalendar\Pages\CalendarEvent:
     REPEATEVENT: 'Gjenta begivenheten'
     DESCRIBEINTERVAL: 'Definér intervallet:'
     EVERY: 'Hver '
@@ -52,24 +58,11 @@ nb:
     RSSFEED: 'RSS-feed for denne kalenderen'
     ADD: 'Legg til i kalender'
     ADDITIONALDATES: 'Flere datoer'
-  Calendar.ss:
-    BROWSECALENDAR: 'Bla i kalender'
-    USECALENDAR: 'Bruk kalenderen.'
-    SUBSCRIBE: 'Abonnér på denne kalenderen.'
-    ALLDAY: 'Hele dagen'
-    TIME: 'Tid'
-    MORE: 'Les mer...'
-    SEEALSO: 'Se også'
-    NOEVENTS: 'Ingen begivenheter funnet.'
-  CalendarEvent.ss:
     BROWSECALENDAR: $lang['nb_NO']['Calendar.ss']['BROWSECALENDAR']
     USECALENDAR: $lang['nb_NO']['Calendar.ss']['USECALENDAR']
     FILTERCALENDAR: 'Filtrér kalenderen'
     BACKTO: 'Tilbake til'
     SUBSCRIBE: $lang['nb_NO']['Calendar.ss']['SUBSCRIBE']
-  CalendarDateTime:
-    DATEFORMAT: dmy
-    TIMEFORMAT: 24
-    FIRSTDAYOFWEEK: Mandag
-  CalendarWidget:
+  UncleCheese\EventCalendar\Views\CalendarWidget:
     LOCALEFILE: 'date_nb.js'
+    DATEJSFILE: 'unclecheese/silverstripe-event-calendar:client/dist/js/lang/calendar_nb.js'

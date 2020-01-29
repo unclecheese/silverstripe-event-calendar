@@ -1,7 +1,7 @@
 
 <h2>$Title</h2>
 
-<p class="event-calendar-feed"><a href="$Link(rss)"><% _t('SUBSCRIBE','Calendar RSS Feed') %></a></p>
+<p class="event-calendar-feed"><a href="$Link(rss)"><% _t('UncleCheese\EventCalendar\Pages\Calendar.SUBSCRIBE', 'Calendar RSS Feed') %></a></p>
 
 $Content
 
@@ -17,5 +17,5 @@ $Content
 		<% include UncleCheese\EventCalendar\Includes\EventList %>
 	</div>
 <% else %>
-	<p><% _t('NOEVENTS','There are no events') %>.</p>
+	<p><% _t('UncleCheese\EventCalendar\Pages\Calendar.NOEVENTS','There are no events') %>.</p>
 <% end_if %>

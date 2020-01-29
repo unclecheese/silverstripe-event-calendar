@@ -12,13 +12,9 @@
     	attachTo: function(element) {
     		this.element = element;
     	},
-
-
     	getContainer: function() {
     		return this.element;
     	},
-
-
 		setMonth: function(month, year) {
     		this.month = month;
     		this.year = year;
@@ -35,51 +31,33 @@
 					this.monthLength = 29;
 				}
 			}
-			
+
 			html = this.generateHTML();
 			$(this.element).html(html);			
 
 			var calendar = this;
-
 			$('.prev', this.element).click(function() {
 				calendar.previousMonth();
 			});
-
-
 			$('.next', this.element).click(function() {
 				calendar.nextMonth();
 			});
-
-
 			$('.calendar-day',this.element).click(function() {
 				calendar.showDay(this);
 			});
-
-
 			$('.show-week', this.element).click(function() {
 				calendar.showWeek(this);
 			});
-
-
 			$('.show-month',this.element).click(function() {
 				calendar.showMonth(this);
 			});
 		},
-
-
-
 		getPaddedMonth: function() {
 			return this.pad(this.month+1);
 		},
-
-
-
 		setOptions: function(options) {
 			$.extend(this.settings, options);
 		},
-
-
-
     	getNextMonthYear: function() {
 			var m = this.month+1;
 			var y = this.year;
@@ -89,9 +67,6 @@
 			}
 			return [m, y];    		
     	},
-
-
-
     	getPrevMonthYear: function() {
 			var m = this.month-1;
 			var y = this.year;
@@ -101,47 +76,30 @@
 			}
 			return [m, y];    		
     	},
-
-
-
     	previousMonth: function() {
     		result = this.getPrevMonthYear();
 			this.setMonth(result[0], result[1]);
 			this.settings.onMonthChange(result[0]+1, result[1], this);
 		},
-
-
-
     	nextMonth: function() {    		
     		result = this.getNextMonthYear();
 			this.setMonth(result[0], result[1]);
 			this.settings.onMonthChange(result[0]+1, result[1], this);
 		},
-
-
-
 		showDay: function(element) {
 			this.settings.onShowDay($(element).data('date'), this);
 		},
-
-
-
 		showWeek: function(element) {
 			var start = $(element).closest('tr').find('td').eq(0);
 			var end = $(element).closest('tr').find('td').eq(6);
 			this.settings.onShowWeek(start.data('date'), end.data('date'), this);			
 		},
-
-
-
 		showMonth: function(element) {
 			month = this.getPaddedMonth();
 			start = this.year + '-' + month + '-01';
 			end = this.year + '-' + month + '-' + this.monthLength;
 			this.settings.onShowMonth(start, end, this);
 		},
-
-
 		generateHTML: function() {
 			// do the header
 			var monthName = this.settings.calMonthsLabels[this.month]			
@@ -212,16 +170,11 @@
 			html += '</tr></tbody></table>';
 			return html;
 		},
-
 		pad: function(num) {
 			str = new String(num);
 			return (str.length == 1) ? "0"+str : str;
 		}
-
-
 	});
-
-
 
   	$.fn.extend({
   		CalendarWidget: function(options) {
@@ -252,4 +205,4 @@
 		calMonthsLabels: []
     });
 
-})( jQuery );
+})(jQuery);

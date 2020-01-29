@@ -3,6 +3,7 @@
 namespace UncleCheese\EventCalendar\Pages;
 
 use Carbon\Carbon;
+use SilverStripe\Control\Controller;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CheckboxsetField;

@@ -6,11 +6,11 @@
                 $DateRange
                 <% if AllDay %> <% _t('UncleCheese\EventCalendar\Pages\Calendar.ALLDAY','All Day') %>
                 <% else %>
-                        <% if StartTime %> $TimeRange<% end_if %>
+                        <% if $StartTime %> $TimeRange<% end_if %>
                 <% end_if %>
             </p>
             <p>
-                <a href="$ICSLink"><% _t('Calendar.ADD','Add this to Calendar') %></a>
+                <a href="$ICSLink"><% _t('UncleCheese\EventCalendar\Pages\Calendar.ADD','Add this to Calendar') %></a>
             </p>
 
             <% if $Announcement %>
@@ -19,11 +19,11 @@
                 <% with $Event %>$Content.LimitWordCount(60)<% end_with %> <a href="$Link"><% _t('Calendar.MORE','Read more&hellip;') %></a>
             <% end_if %>
             
-            <% if OtherDates %>
+            <% if $OtherDates %>
                 <div class="event-other-dates">
                     <h4><% _t('UncleCheese\EventCalendar\Pages\Calendar.ADDITIONALDATES','Additional Dates for this Event') %>:</h4>
                     <ul>
-                        <% loop OtherDates %>
+                        <% loop $OtherDates %>
                             <li>
                                 <a href="$Link" title="$Event.Title">
                                     $DateRange

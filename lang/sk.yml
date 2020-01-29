@@ -1,8 +1,5 @@
----
-Name: "event-calendar-sk"
----
 sk:
-  Calendar:
+  UncleCheese\EventCalendar\Pages\Calendar:
     ADD: 'Pridať do môjho kalendára (ICS)'
     ADDITIONALDATES: 'Dalšie dátumy pre túto udalosť'
     ALLDAY: 'Celý deň'
@@ -34,6 +31,7 @@ sk:
     NEXTMONTH: 'Nasledujúci mesiac'
     NEXTWEEK: 'Nasledujúci týždeň'
     NEXTWEEKEND: 'Nasledujúci víkend'
+    NOEVENTS: 'K dispozícií nie sú žiadne udalosti.'
     NUMBERFUTUREDATES: 'Počet budúcich dátumov, ktoré sa zobrazujú pre opakujúce udalosti'
     OneDay: '$StartDayNameLong, $StartDayNumberLong. $StartMonthNameLong $StartYearLong'
     OneDayHeader: '$StartDayNameLong, $StartDayNumberLong. $StartMonthNumberLong. $StartYearLong'
@@ -51,6 +49,7 @@ sk:
     SINGULARNAME: 'Kalendár'
     STARTDATE: 'Dátum začiatku'
     STARTTIME: 'Čas začiatku'
+    SUBSCRIBE: 'Kalendár RSS'
     TODAYVIEW: "Zobraziť dnešné udalosti. Ak nie sú, zobraziť na tento týždeň."
     UPCOMINGEVENTSFOR: 'Pripravované udalosti pre %s'
     UPCOMINGVIEW: "Zobraziť list pripravovaných udalostí."
@@ -58,7 +57,7 @@ sk:
     WEEKENDVIEW: "Zobraziť udalosti na tento víkend."
     WEEKVIEW: "Zobraziť udalosti na tento týždeň. Ak nie sú, zobraziť na tento mesiac."
     YearHeader: '$StartYearLong'
-  CalendarEvent:
+  UncleCheese\EventCalendar\Pages\CalendarEvent:
     ADD: 'Pridať do môjho kalendára (ICS)'
     ADDITIONALDATES: 'Dalšie dátumy pre túto udalosť'
     ANYEXCEPTIONS: 'Existujú výnimky pri opakovaní udalosti? Ak áno, pridajte termíny nižšie.'
@@ -85,7 +84,7 @@ sk:
     THIRD: 'Tretiu'
     WEEKLY: 'Týždenne'
     WEEKS: 'týždňov'
-  CalendarDateTime:
+  UncleCheese\EventCalendar\Models\CalendarDateTime:
     ALLDAY: 'Udalosť trvá celý deň'
     DATEFORMAT: dmy
     ENDDATE: 'Dátum ukončenia'
@@ -97,20 +96,17 @@ sk:
     STARTDATE: 'Dátum začiatku'
     STARTTIME: 'Čas začiatku'
     TIMEFORMAT: 24
-  CalendarAnnouncement:
+  UncleCheese\EventCalendar\Models\CalendarAnnouncement:
     CONTENT: 'Obsah oznámenia'
     TITLE: 'Názov oznámenia'
     PLURALNAME: 'Oznámenia'
     SINGULARNAME: 'Oznámenie'
-  ICSFeed:
+  UncleCheese\EventCalendar\Models\ICSFeed:
     TITLE: 'Názov'
     TITLEOFFEED: 'Názov kanálu'
     PLURALNAME: 'ICS kanály'
     SINGULARNAME: 'ICS kanál'
     URLLINK: 'URL adresa'
-  Calendar.ss:
-    NOEVENTS: 'K dispozícií nie sú žiadne udalosti.'
-    SUBSCRIBE: 'Kalendár RSS'
   LiveCalendarWidget.ss:
     JUMPTOMONTH: 'Prejsť na...'
     QUICKLINKS: 'Rýchle odkazy'

@@ -219,7 +219,7 @@ class CalendarDateTime extends DataObject
 
 	public function getFormattedAllDay()
 	{
-	   return $this->AllDay == 1 ? _t('YES', 'Yes') : _t('NO', 'No');
+	   return $this->AllDay == 1 ? _t(__CLASS__.'.YES', 'Yes') : _t(__CLASS__.'.NO', 'No');
 	}
 
 	public function getTitle()

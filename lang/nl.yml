@@ -1,8 +1,5 @@
----
-Name: "event-calendar-nl"
----
 nl:
-  Calendar:
+  UncleCheese\EventCalendar\Pages\Calendar:
     PLURALNAME: Kalenders
     SINGULARNAME: Kalender
     DESCRIPTION: Agenda met verzameling kalender items en aankondigingen
@@ -38,26 +35,35 @@ nl:
     NUMBERFUTUREDATES: Aantal toekomstige data voor herhalende evenementen
     FEEDS: ICS Feeds
     ICSFEEDDESCRIPTION: Voeg een ICS feeds toe aan je kalender voor het importeren van een externe kalender, bijvoorbeeld Google Calendar
-    RSSTITLE: Titel van RSS Feed         
-  CalendarAnnouncement:
+    RSSTITLE: Titel van RSS Feed
+    BROWSECALENDAR: 'Doorblader de Kalender'
+    USECALENDAR: 'Kalender gebruiken.'
+    SUBSCRIBE: 'Op deze kalender abonneren.'
+    ALLDAY: 'De hele dag'
+    TIME: Tijd
+    MORE: meer...
+    SEEALSO: 'Zie ook'
+    ADD: 'Aan mijn kalender toevoegen'
+    NOEVENTS: 'Geen events gevonden.' 
+  UncleCheese\EventCalendar\Models\CalendarAnnouncement:
     PLURALNAME: Aankondigingen
     SINGULARNAME: Aankondiging
     TITLE: Naam
     CONTENT: Omschrijving
-  ICSFeed:
+  UncleCheese\EventCalendar\Models\ICSFeed:
     PLURALNAME: ICS Feeds
     SINGULARNAME: ICS Feed
     TITLE: Titel
     TITLEOFFEED: Titel van Feed
     URLLINK: URL
-  CalendarDateTime:
+  UncleCheese\EventCalendar\Models\CalendarDateTime:
     INVALIDFORMAT: 'Foutief datumformaat. Gebruik "dmy" of "mdy".'
     STARTDATE: Startdatum
     ENDDATE: Einddatum
     STARTTIME: Starttijd
     ENDTIME: Eindtijd
     ALLDAY: Hele dag
-  CalendarEvent:
+  UncleCheese\EventCalendar\Pages\CalendarEvent:
     PLURALNAME: Kalender items
     SINGULARNAME: Kalender item
     DESCRIPTION: Individueel kalender item
@@ -74,17 +80,6 @@ nl:
     ANYEXCEPTIONS: 'Zijn er uitzonderingen bij het herhalen? Zo ja, vul deze hieronder in.'
     DATE: Datum
     RSSFEED: 'RSS-Feed van deze kalender'
-  Calendar.ss:
-    BROWSECALENDAR: 'Doorblader de Kalender'
-    USECALENDAR: 'Kalender gebruiken.'
-    SUBSCRIBE: 'Op deze kalender abonneren.'
-    ALLDAY: 'De hele dag'
-    TIME: Tijd
-    MORE: meer...
-    SEEALSO: 'Zie ook'
-    ADD: 'Aan mijn kalender toevoegen'
-    NOEVENTS: 'Geen events gevonden.'
-  CalendarEvent.ss:
     BROWSECALENDAR: 'Doorblader de Kalender'
     USECALENDAR: 'Kalender gebruiken.'
     FILTERCALENDAR: 'Kalender filteren'
@@ -92,5 +87,5 @@ nl:
     SUBSCRIBE: 'Op deze kalender abonneren.'
     ADDITIONALDATES: 'Extra datums'
     ADD: 'Aan mijn kalender toevoegen'
-  CalendarWidget:
+  UncleCheese\EventCalendar\Views\CalendarWidget:
     LOCALEFILE: date_nl.js
