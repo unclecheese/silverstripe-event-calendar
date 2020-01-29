@@ -292,15 +292,25 @@ class Calendar extends Page
 
 	protected function getStandardEvents($start, $end, $filter = null)
 	{
-		$ids = $this->AllChildren()->column('ID');
+		$eventTable = Config::inst()->get($this->getEventClass(), 'table_name');
 		$relation = $this->getDateToEventRelation();
-		$eventClass = $this->getEventClass();
+		$siteTreeTable = SiteTree::config()->table_name;
 
 		$list = DataList::create($this->getDateTimeClass())
-			->filter($relation, $ids)
-			->innerJoin($eventClass, "$relation = \"{$eventClass}\".\"ID\"")
-			->innerJoin("SiteTree", "\"SiteTree\".\"ID\" = \"{$eventClass}\".\"ID\"")
-			->where("Recursion != 1");
+			->innerJoin($eventTable, "\"$relation\" = \"$eventTable\".\"ID\"")
+			->innerJoin($siteTreeTable, "\"$siteTreeTable\".\"ID\" = \"$eventTable\".\"ID\"");
+
+		$filters = [
+			'Recursion:not' => 1
+		];
+
+		$ids = $this->AllChildren()->column('ID');
+		if ($ids) {
+			$filters[$relation] = $ids;
+		}
+
+		$list = $list->filter($filters);
+		
 		if ($start && $end) {
 			$list = $list->where("
 				(StartDate <= '$start' AND EndDate >= '$end') OR
@@ -322,7 +332,8 @@ class Calendar extends Page
 	protected function getRecurringEvents($filter = null)
 	{
 		if ($relation = $this->getDateToEventRelation()) {
-			$datetime_class = $this->getDateTimeClass();
+			$dtTable = Config::inst()->get($this->getDateTimeClass(), 'table_name');
+			$siteTreeTable = SiteTree::config()->table_name;
 			$events = DataList::create($this->getEventClass())
 				->filter(
 					[
@@ -330,12 +341,13 @@ class Calendar extends Page
 						"ParentID" => $this->ID
 					]
 				)
-				->innerJoin($datetime_class, "\"{$datetime_class}\".{$relation} = \"SiteTree\".ID");
+				->innerJoin($dtTable, "\"$dtTable\".\"$relation\" = \"$siteTreeTable\".\"ID\"");
 			if ($filter) {
 				$events = $events->where($filter);
 			}
 			return $events;
 		}
+		
 		return false;
 	}
 
@@ -376,8 +388,8 @@ class Calendar extends Page
 			}
 			$recurringEventDatetimes = $recurringEvent->$relation()->filter(
 				[
-					'StartDate:LessThanOrEqual' => $end->format('Y-m-d'),
-					'EndDate:GreaterThanOrEqual' => $dateCounter->format('Y-m-d')
+					'StartDate:LessThanOrEqual' => $end->toDateString(),
+					'EndDate:GreaterThanOrEqual' => $dateCounter->toDateString()
 				]
 			);
 
@@ -481,7 +493,8 @@ class Calendar extends Page
 
 	public function getAllCalendars()
 	{
-		$calendars = ArrayList::create()->push($this);
+		$calendars = ArrayList::create();
+		$calendars->push($this);
 		$calendars->merge($this->NestedCalendars());
 		return $calendars;
 	}

@@ -11,7 +11,7 @@ class CalendarEventController extends PageController
 	public function init()
 	{
 		parent::init();
-		Requirements::css('unclecheese/silverstripe-event-calendar:client/css/calendar.css');
+		Requirements::css('unclecheese/silverstripe-event-calendar:client/dist/css/calendar.css');
 	}
 	
 	/**
