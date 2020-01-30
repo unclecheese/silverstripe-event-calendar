@@ -7,6 +7,7 @@ use SilverStripe\Forms\CheckboxsetField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\LabelField;
+use SilverStripe\Forms\ListboxField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\GridField\GridField;
@@ -101,24 +102,30 @@ class CalendarEvent extends Page
 			$f->addFieldToTab(
 				"Root.$recursion", 
 				FieldGroup::create(
-					LabelField::create("every1", _t(__CLASS__.'.EVERY', 'Every ')),
-					DropdownField::create('DailyInterval', '', array_combine(range(1,10), range(1,10))),
+					DropdownField::create(
+						'DailyInterval', 
+						_t(__CLASS__.'.EVERY', 'Every'), 
+						array_combine(range(1,10), range(1,10))
+					),
 					LabelField::create("days", _t(__CLASS__.'.DAYS', ' day(s)'))
 				)->addExtraClass('dailyinterval')
 			);
 		
 			$f->addFieldToTab(
 				"Root.$recursion",
-					FieldGroup::create(
-					LabelField::create("every2", _t(__CLASS__.'.EVERY', 'Every ')),
-					DropdownField::create('WeeklyInterval', '', array_combine(range(1,10), range(1,10))),
+				FieldGroup::create(
+					DropdownField::create(
+						'WeeklyInterval', 
+						_t(__CLASS__.'.EVERY', 'Every'), 
+						array_combine(range(1,10), range(1,10))
+					),
 					LabelField::create("weeks", _t(__CLASS__.'.WEEKS', ' weeks'))
 				)->addExtraClass('weeklyinterval')
 			);
 		
 			$f->addFieldToTab(
 				"Root.$recursion",
-				CheckboxSetField::create(
+				ListboxField::create(
 					'RecurringDaysOfWeek', 
 					_t(__CLASS__.'.ONFOLLOWINGDAYS', 'On the following day(s)...'),
 					RecurringDayOfWeek::get()->map("ID", "Title")->toArray()
@@ -142,7 +149,7 @@ class CalendarEvent extends Page
 						'', 
 						['1' => _t(__CLASS__.'.ONTHESEDATES','On these date(s)...')]
 					)->setHasEmptyDefault(true),
-					CheckboxsetField::create(
+					ListboxField::create(
 						'RecurringDaysOfMonth', 
 						'', 
 						RecurringDayOfMonth::get()->map("ID", "Value")->toArray()
