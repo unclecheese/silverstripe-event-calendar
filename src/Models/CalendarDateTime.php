@@ -31,6 +31,10 @@ class CalendarDateTime extends DataObject
 		'Event' => CalendarEvent::class
 	];
 
+	private static $singular_name = "Event date and time";
+
+	private static $plural_name = "Event dates and times";
+
 	private static $date_format_override;
 
 	private static $time_format_override;
@@ -80,6 +84,9 @@ class CalendarDateTime extends DataObject
 		return Controller::join_links($this->Event()->Link(),"?date=".$this->StartDate);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getDateRange()
 	{
 		list($startDate, $endDate) = CalendarUtil::get_date_string($this->StartDate, $this->EndDate);
@@ -91,19 +98,28 @@ class CalendarDateTime extends DataObject
 		)->renderWith(__CLASS__ .'\DateRange');
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function getTimeRange()
 	{
-		$func = CalendarUtil::get_time_format() == "24" ? "Nice24" : "Nice";
+		$func = CalendarUtil::get_time_format() == "24" ? "format('H:i')" : "Nice";
 		$ret = $this->obj('StartTime')->$func();
 		$ret .= $this->EndTime ? self::config()->time_range_separator . $this->obj('EndTime')->$func() : "";
 		return $ret;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function Announcement()
 	{
 		return $this->ClassName == CalendarAnnouncement::class;
 	}
 
+	/**
+	 * @return SilverStripe\ORM\DataList
+	 */
 	public function getOtherDates()
 	{
 		if ($this->Announcement()) {
@@ -134,7 +150,7 @@ class CalendarDateTime extends DataObject
 		if ($this->AllDay && $this->StartDate) {
 			$time = "00:00:00";
 			$date = new Carbon($this->StartDate);
-			$date = $date->addDay()->format('Y-m-d');
+			$date = $date->addDay()->toDateString();
 		} else {
 			$date = $this->EndDate ? $this->EndDate : $this->StartDate;
 			if ($this->EndTime && $this->StartTime) {
