@@ -46,7 +46,7 @@ class RecurringDayOfWeek extends DataObject
 
 	public function getTitle()
 	{
-		return strftime("%a", Carbon::now()->next($this->Value)->format('Y-m-d'));
+		return strftime("%a", Carbon::now()->next($this->Value)->getTimestamp());
 	}
 	
 
