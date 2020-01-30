@@ -135,8 +135,11 @@ class CalendarEvent extends Page
 			$f->addFieldToTab(
 				"Root.$recursion", 
 				FieldGroup::create(
-					LabelField::create("every3", _t(__CLASS__.'.EVERY', 'Every ')),
-					DropdownField::create('MonthlyInterval', '', array_combine(range(1,10), range(1,10))),
+					DropdownField::create(
+						'MonthlyInterval', 
+						_t(__CLASS__.'.EVERY', 'Every'), 
+						array_combine(range(1,10), range(1,10))
+					),
 					LabelField::create("months", _t(__CLASS__.'.MONTHS', ' month(s)'))
 				)->addExtraClass('monthlyinterval')
 			);

@@ -23,7 +23,7 @@
 				}
 				var $recursion = this;
 				var $tab = $recursion.closest('.tab-pane');
-				var $customRecursionType = $tab.find('#Form_EditForm_CustomRecursionType_Holder').hide();
+				var $customRecursionType = $tab.find(fieldHolderID('CustomRecursionType')).hide();
 				var $dailyInterval = $tab.find('.dailyinterval').hide();
 				var $weeklyInterval = $tab.find('.weeklyinterval').hide();
 				var $monthlyInterval = $tab.find('.monthlyinterval').hide();
