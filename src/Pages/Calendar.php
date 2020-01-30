@@ -207,16 +207,24 @@ class Calendar extends Page
 		if ($this->datetimeClass_cache) {
 			return $this->datetimeClass_cache;
 		};
-		return $this->datetimeClass_cache = Config::inst()->get($this->getEventClass(), 'datetime_class');
+		return $this->datetimeClass_cache = Config::inst()
+			->get($this->getEventClass(), 'datetime_class');
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getDateToEventRelation()
 	{
 		if ($this->dateToEventRelation_cache) {
 			return $this->dateToEventRelation_cache;
 		}
-		return $this->dateToEventRelation_cache = Injector::inst()->get($this->getDateTimeClass())
-			->getReverseAssociation($this->getEventClass())."ID";
+		$dateTime = Injector::inst()->get($this->getDateTimeClass());
+		foreach ($dateTime->config()->has_one as $rel => $class) {
+			if ($class == $this->getEventClass()) {
+				return $this->dateToEventRelation_cache = $rel.'ID';
+			}
+		}
 	}
 
 	/**
@@ -266,7 +274,7 @@ class Calendar extends Page
 					[
 						"CalendarID" => $calendar->ID,
 						"StartDate:GreaterThanOrEqual" => $start,
-						"EndDate:LessThanOrEqual" => $end,
+						"EndDate:LessThanOrEqual" => $end
 					]
 				);
 			if ($announcementFilter) {
@@ -285,7 +293,12 @@ class Calendar extends Page
 			}
 		}
 
-		$eventList = $eventList->sort('StartDate ASC, StartTime ASC')->limit($limit);
+		$eventList = $eventList->sort(
+			[
+				'StartDate' => 'ASC',
+				'StartTime' => 'ASC'
+			]
+		)->limit($limit);
 
 		return $this->eventList_cache = $eventList;
 	}
