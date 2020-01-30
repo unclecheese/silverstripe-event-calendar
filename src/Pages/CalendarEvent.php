@@ -13,6 +13,7 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\View\Requirements;
+use UncleCheese\EventCalendar\Helpers\RecursionReader;
 use UncleCheese\EventCalendar\Models\CalendarDateTime;
 use UncleCheese\EventCalendar\Models\RecurringDayOfMonth;
 use UncleCheese\EventCalendar\Models\RecurringDayOfWeek;

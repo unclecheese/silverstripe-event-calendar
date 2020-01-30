@@ -579,22 +579,22 @@ class CalendarController extends PageController
 			case "today":
 				return $this->startDate->toDateString() == $this->endDate->toDateString();
 			case "week":
-				if (CalendarUtil::get_first_day_of_week() == CalendarUtil::MONDAY) {
+				if (CalendarUtil::get_first_day_of_week() == Carbon::MONDAY) {
 					return 
-						($this->startDate->format('w') == CalendarUtil::MONDAY) 
-						&& ($this->startDate->format('w') == CalendarUtil::SUNDAY);
+						($this->startDate->format('w') == Carbon::MONDAY) 
+						&& ($this->startDate->format('w') == Carbon::SUNDAY);
 				}
 				return 
-					($this->startDate->format('w') == CalendarUtil::SUNDAY) 
-					&& ($this->endDate->format('w') == CalendarUtil::SATURDAY);
+					($this->startDate->format('w') == Carbon::SUNDAY) 
+					&& ($this->endDate->format('w') == Carbon::SATURDAY);
 			case "month":
 				return 
 					($this->startDate->format('j') == 1) 
 					&& (Carbon::parse($this->startDate)->endOfMonth()->format('j') == $this->endDate->format('j'));
 			case "weekend":
 				return 
-					($this->startDate->format('w') == CalendarUtil::FRIDAY) 
-					&& ($this->endDate->format('w') == CalendarUtil::SUNDAY);
+					($this->startDate->format('w') == Carbon::FRIDAY) 
+					&& ($this->endDate->format('w') == Carbon::SUNDAY);
 		}
 	}
 
