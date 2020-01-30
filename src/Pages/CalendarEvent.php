@@ -9,6 +9,8 @@ use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\LabelField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\View\Requirements;
 use UncleCheese\EventCalendar\Models\CalendarDateTime;
 use UncleCheese\EventCalendar\Models\RecurringDayOfMonth;
@@ -56,8 +58,8 @@ class CalendarEvent extends Page
 	
 	private static $can_be_root = false;
 
-	public function getCMSFields()
-	{
+	public function getCMSFields() {
+		
 		$self = $this;
 		
 		$this->beforeUpdateCMSFields(function($f) use ($self) {
@@ -66,18 +68,18 @@ class CalendarEvent extends Page
 			
 			$f->addFieldToTab("Root.Main",
 				TextField::create(
-					"Location",
-					_t(Calendar::class.'.LOCATIONDESCRIPTION','The location for this event')
+					'Location',
+					_t(Calendar::class.'.LOCATIONDESCRIPTION', 'The location for this event')
 				), 'Content'
 			);
 			
-			$dt = _t(__CLASS__.'DATESANDTIMES','Dates and Times');
-			$recursion = _t(__CLASS__.'.RECURSION','Recursion');
+			$dt = _t(__CLASS__.'DATESANDTIMES', 'Dates and Times');
+			$recursion = _t(__CLASS__.'.RECURSION', 'Recursion');
 		
 			$f->addFieldToTab("Root.$dt",
 				GridField::create(
-					"DateTimes",
-					_t('Calendar.DATETIMEDESCRIPTION','Add dates for this event'),
+					'DateTimes',
+					_t(Calendar::class.'.DATETIMEDESCRIPTION','Add dates for this event'),
 					$self->DateTimes(),
 					GridFieldConfig_RecordEditor::create()
 				)
@@ -99,18 +101,18 @@ class CalendarEvent extends Page
 			$f->addFieldToTab(
 				"Root.$recursion", 
 				FieldGroup::create(
-					LabelField::create("every1", _t(__CLASS__.'.EVERY', "Every ")),
+					LabelField::create("every1", _t(__CLASS__.'.EVERY', 'Every ')),
 					DropdownField::create('DailyInterval', '', array_combine(range(1,10), range(1,10))),
-					LabelField::create("days", _t(__CLASS__.'.DAYS', " day(s)"))
+					LabelField::create("days", _t(__CLASS__.'.DAYS', ' day(s)'))
 				)->addExtraClass('dailyinterval')
 			);
 		
 			$f->addFieldToTab(
 				"Root.$recursion",
 					FieldGroup::create(
-					LabelField::create("every2", _t("CalendarEvent.EVERY","Every ")),
+					LabelField::create("every2", _t(__CLASS__.'.EVERY', 'Every ')),
 					DropdownField::create('WeeklyInterval', '', array_combine(range(1,10), range(1,10))),
-					LabelField::create("weeks", _t("CalendarEvent.WEEKS", " weeks"))
+					LabelField::create("weeks", _t(__CLASS__.'.WEEKS', ' weeks'))
 				)->addExtraClass('weeklyinterval')
 			);
 		
@@ -118,17 +120,17 @@ class CalendarEvent extends Page
 				"Root.$recursion",
 				CheckboxSetField::create(
 					'RecurringDaysOfWeek', 
-					_t('CalendarEvent.ONFOLLOWINGDAYS','On the following day(s)...'),
-					DataList::create("RecurringDayOfWeek")->map("ID", "Title")
+					_t(__CLASS__.'.ONFOLLOWINGDAYS', 'On the following day(s)...'),
+					RecurringDayOfWeek::get()->map("ID", "Title")->toArray()
 				)
 			);
 		
 			$f->addFieldToTab(
 				"Root.$recursion", 
 				FieldGroup::create(
-					LabelField::create("every3", _t("CalendarEvent.EVERY", "Every ")),
+					LabelField::create("every3", _t(__CLASS__.'.EVERY', 'Every ')),
 					DropdownField::create('MonthlyInterval', '', array_combine(range(1,10), range(1,10))),
-					LabelField::create("months", _t("CalendarEvent.MONTHS", " month(s)"))
+					LabelField::create("months", _t(__CLASS__.'.MONTHS', ' month(s)'))
 				)->addExtraClass('monthlyinterval')
 			);
 
@@ -138,10 +140,18 @@ class CalendarEvent extends Page
 					OptionsetField::create(
 						'MonthlyRecursionType1',
 						'', 
-						['1' => _t('CalendarEvent.ONTHESEDATES','On these date(s)...')]
+						['1' => _t(__CLASS__.'.ONTHESEDATES','On these date(s)...')]
 					)->setHasEmptyDefault(true),
-					CheckboxsetField::create('RecurringDaysOfMonth', '', DataList::create("RecurringDayOfMonth")->map("ID", "Value")),
-					OptionsetField::create('MonthlyRecursionType2','', array('1' => _t('CalendarEvent.ONTHE','On the...')))->setHasEmptyDefault(true)
+					CheckboxsetField::create(
+						'RecurringDaysOfMonth', 
+						'', 
+						RecurringDayOfMonth::get()->map("ID", "Value")->toArray()
+					),
+					OptionsetField::create(
+						'MonthlyRecursionType2',
+						'', 
+						['1' => _t(__CLASS__.'.ONTHE','On the...')]
+					)->setHasEmptyDefault(true)
 				]
 			);
 
@@ -149,14 +159,18 @@ class CalendarEvent extends Page
 				"Root.$recursion", 
 				FieldGroup::create(
 					DropdownField::create('MonthlyIndex', '', [
-						'1' => _t('CalendarEvent.FIRST', 'First'),
-						'2' => _t('CalendarEvent.SECOND', 'Second'),
-						'3' => _t('CalendarEvent.THIRD', 'Third'),
-						'4' => _t('CalendarEvent.FOURTH', 'Fourth'),
-						'5' => _t('CalendarEvent.LAST', 'Last')
+						'1' => _t(__CLASS__.'.FIRST', 'First'),
+						'2' => _t(__CLASS__.'.SECOND', 'Second'),
+						'3' => _t(__CLASS__.'.THIRD', 'Third'),
+						'4' => _t(__CLASS__.'.FOURTH', 'Fourth'),
+						'5' => _t(__CLASS__.'.LAST', 'Last')
 					])->setHasEmptyDefault(true),
-					DropdownField::create('MonthlyDayOfWeek','', DataList::create('RecurringDayOfWeek')->map('Value', 'Title'))->setHasEmptyDefault(true),
-					LabelField::create($name = "ofthemonth", $title = _t(__CLASS__.'.OFTHEMONTH', " of the month."))
+					DropdownField::create(
+						'MonthlyDayOfWeek',
+						'', 
+						RecurringDayOfWeek::get()->map('Value', 'Title')->toArray()
+					)->setHasEmptyDefault(true),
+					LabelField::create("ofthemonth", _t(__CLASS__.'.OFTHEMONTH', " of the month."))
 				)->addExtraClass('monthlyindex')
 			);
 			$f->addFieldToTab("Root.$recursion",

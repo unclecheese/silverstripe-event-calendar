@@ -2,6 +2,7 @@
 
 namespace UncleCheese\EventCalendar\Models;
 
+use Carbon\Carbon;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\DateField;
 use SilverStripe\Forms\CheckboxField;
@@ -51,10 +52,9 @@ class CalendarDateTime extends DataObject
 
 	public function getCMSFields() 
 	{
-		DateField::set_default_config('showcalendar', true);
 		$fields = FieldList::create(
-			DateField::create('StartDate',_t(__CLASS__.'.STARTDATE','Start date')),
-			DateField::create('EndDate',_t(__CLASS__.'.ENDDATE','End date')),
+			DateField::create('StartDate', _t(__CLASS__.'.STARTDATE','Start date')),
+			DateField::create('EndDate', _t(__CLASS__.'.ENDDATE','End date')),
 			TimeField::create('StartTime', _t(__CLASS__.'.STARTTIME','Start time')),
 			TimeField::create('EndTime', _t(__CLASS__.'.ENDTIME','End time')),
 			CheckboxField::create('AllDay', _t(__CLASS__.'.ALLDAY','This event lasts all day'))
@@ -183,8 +183,8 @@ class CalendarDateTime extends DataObject
 			return $this->config()->formatted_field_empty_string;
 		}
 		return CalendarUtil::get_date_format() == "mdy" 
-			? $this->obj('StartDate')->Format('m-d-Y') 
-			: $this->obj('StartDate')->Format('d-m-Y');
+			? $this->obj('StartDate')->Format('MM-dd-Y') 
+			: $this->obj('StartDate')->Format('dd-MM-Y');
 	}
 	
 	public function getFormattedEndDate()
@@ -193,8 +193,8 @@ class CalendarDateTime extends DataObject
 			return $this->config()->formatted_field_empty_string;
 		}
 		return CalendarUtil::get_date_format() == "mdy" 
-			? $this->obj('EndDate')->Format('m-d-Y') 
-			: $this->obj('EndDate')->Format('d-m-Y');
+			? $this->obj('EndDate')->Format('MM-dd-Y') 
+			: $this->obj('EndDate')->Format('dd-MM-Y');
 	}
 
 	public function getFormattedStartTime()
@@ -202,9 +202,9 @@ class CalendarDateTime extends DataObject
 		if (!$this->StartTime) {
 			return $this->config()->formatted_field_empty_string;
 		}
-		CalendarUtil::get_time_format() == "12" 
+		return CalendarUtil::get_time_format() == "12" 
 			? $this->obj('StartTime')->Nice() 
-			: $this->obj('StartTime')->Nice24();
+			: Carbon::createFromTimeString($this->StartTime)->format('H:i');
 	}
 
 	public function getFormattedEndTime()
@@ -214,7 +214,7 @@ class CalendarDateTime extends DataObject
 		}
 		return CalendarUtil::get_time_format() == "12" 
 			? $this->obj('EndTime')->Nice() 
-			: $this->obj('EndTime')->Nice24();
+			: Carbon::createFromTimeString($this->EndTime)->format('H:i');
 	}
 
 	public function getFormattedAllDay()

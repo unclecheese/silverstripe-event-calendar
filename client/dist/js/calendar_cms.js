@@ -18,20 +18,22 @@
 
 		$('.field.checkbox.recursion').entwine({
 			onmatch: function() {
-
-				var $tab = this.closest('.tab');
+				var fieldHolderID = function(field) {
+					return '#Form_EditForm_' + field + '_Holder';
+				}
 				var $recursion = this;
-				var $customRecursionType = $tab.find('#CustomRecursionType').hide();
+				var $tab = $recursion.closest('.tab-pane');
+				var $customRecursionType = $tab.find('#Form_EditForm_CustomRecursionType_Holder').hide();
 				var $dailyInterval = $tab.find('.dailyinterval').hide();
 				var $weeklyInterval = $tab.find('.weeklyinterval').hide();
 				var $monthlyInterval = $tab.find('.monthlyinterval').hide();
 				var $monthlyIndex = $tab.find('.monthlyindex').hide();
-				var $recurringDaysOfWeek = $tab.find('#RecurringDaysOfWeek').hide();
-				var $recurringDaysOfMonth = $tab.find('#RecurringDaysOfMonth').hide();
-				var $monthlyRecursionType1 = $tab.find('#MonthlyRecursionType1').hide();
-				var $monthlyRecursionType2 = $tab.find('#MonthlyRecursionType2').hide();
+				var $recurringDaysOfWeek = $tab.find(fieldHolderID('RecurringDaysOfWeek')).hide();
+				var $recurringDaysOfMonth = $tab.find(fieldHolderID('RecurringDaysOfMonth')).hide();
+				var $monthlyRecursionType1 = $tab.find(fieldHolderID('MonthlyRecursionType1')).hide();
+				var $monthlyRecursionType2 = $tab.find(fieldHolderID('MonthlyRecursionType2')).hide();
 
-				var resetPanels = function () {
+				var resetPanels = function() {
 					$dailyInterval.hide();
 					$weeklyInterval.hide();
 					$monthlyInterval.hide();
@@ -42,7 +44,7 @@
 					$monthlyIndex.hide().find('select').attr('disabled', true);
 				};
 				
-				var resetSubPanels = function () {
+				var resetSubPanels = function() {
 					$recurringDaysOfMonth.hide().find(':checkbox').attr('disabled', true);
 					$monthlyIndex.hide().find('select').attr('disabled', true);
 				};
@@ -50,8 +52,7 @@
 				$recursion.find('input').change(function() {
 					if ($(this).is(':checked')) {
 						$customRecursionType.show();
-					}
-					else {
+					} else {
 						$tab.find(':checkbox, :radio').attr('checked', false);
 						$customRecursionType.hide();
 						resetPanels();
@@ -65,12 +66,10 @@
 							case "1":
 								$dailyInterval.show();
 								break;
-
 							case "2":
 								$weeklyInterval.show();
 								$recurringDaysOfWeek.show();
 								break;
-
 							case "3":
 								$monthlyInterval.show();
 								$monthlyRecursionType1.show();
@@ -82,11 +81,8 @@
 
 				$monthlyRecursionType1.find('input').change(function() {
 					if ($(this).is(':checked')) {
-						
 						resetSubPanels();
-						$recurringDaysOfMonth.show();
-						
-						$recurringDaysOfMonth.find(':checkbox').attr('disabled', false);
+						$recurringDaysOfMonth.show().find(':checkbox').attr('disabled', false);
 						$monthlyIndex.find('select').attr('disabled', true);
 						$monthlyRecursionType2.find('input').attr('checked', false).change();
 					}
@@ -94,10 +90,8 @@
 
 				$monthlyRecursionType2.find('input').change(function() {
 					if ($(this).is(':checked')) {
-						
 						resetSubPanels();
 						$monthlyIndex.show();
-						
 						$recurringDaysOfMonth.find(':checkbox').attr('disabled', true);
 						$monthlyIndex.find('select').attr('disabled', false);
 						$monthlyRecursionType1.find('input').attr('checked', false).change();

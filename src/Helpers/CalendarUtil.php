@@ -74,7 +74,7 @@ class CalendarUtil
 		if(is_array($customDateTemplates) && isset($customDateTemplates[$key]))
 			$template = $customDateTemplates[$key];
 		else {
-			$template = _t("Calendar.$key"); 
+			$template = _t(Calendar::class.".$key"); 
 		}
 		
 		return str_replace(self::$format_character_placeholders, self::format_character_replacements($start,$end), $template);		
