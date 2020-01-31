@@ -76,7 +76,7 @@ class CalendarController extends PageController
 				$this->setWeekView();
 				// prevent pagination on these default views
 				$this->EventsPerPage = 999;
-				$e = $this->Events();
+				$e = $this->getEvents();
 				if ($e->count() > 0) {
 					return ['Events' => $e];
 				} else {
@@ -88,7 +88,7 @@ class CalendarController extends PageController
 				// prevent pagination on these default views
 				$this->EventsPerPage = 999;
 				$this->setTodayView();
-				$e = $this->Events();
+				$e = $this->getEvents();
 				if ($e->count() > 0) {
 					return ['Events' => $e];
 				} else {
@@ -132,7 +132,7 @@ class CalendarController extends PageController
 
 	public function rss() {
 		$this->setDefaultView();
-		$events = $this->Events();
+		$events = $this->getEvents();
 		foreach($events as $event) {
 			$event->Title = strip_tags($event->DateRange()) . " : " . $event->getTitle();
 			$event->Description = $event->getContent();
@@ -162,9 +162,13 @@ class CalendarController extends PageController
 		return $this->getResponse();
 	}
 
-	public function monthjson(SS_HTTPRequest $r) {
+	/**
+	 * @return string
+	 */
+	public function monthjson(HTTPRequest $r) {
+		$json = [];
 		if (!$r->param('ID')) {
-			return false;
+			return json_encode($json);
 		}
         //Increase the per page limit to 500 as the AJAX request won't look for further pages
         $this->EventsPerPage = 500;
@@ -173,16 +177,16 @@ class CalendarController extends PageController
 		);
 		$this->endDate = Carbon::parse($this->startDate)->endOfMonth();
 
-		$json = [];
+		
 		$counter = clone $this->startDate;
 		while ($counter->getTimestamp() <= $this->endDate->getTimestamp()) {
 			$d = $counter->toDateString();
 			$json[$d] = [
 				'events' => []
 			];
-			$counter->tomorrow();
+			$counter->addDay();
 		}
-		$list = $this->Events();
+		$list = $this->getEvents();
 		foreach ($list as $e) {
 			foreach ($e->getAllDatesInRange() as $date) {
 				if (isset($json[$date])) {
@@ -609,10 +613,10 @@ class CalendarController extends PageController
 	/**
 	 * @return Form
 	 */
-	public function getMonthJumpForm()
+	public function MonthJumpForm()
 	{
 		$this->parseURL($this->getRequest());
-		$dummy = clone $this->startDate;
+		$dummy = Carbon::parse($this->startDate);
 		$yearRange = range(($dummy->subYears(3)->format('Y')), ($dummy->addYears(6)->format('Y')));
 		$form = Form::create(
 			$this,

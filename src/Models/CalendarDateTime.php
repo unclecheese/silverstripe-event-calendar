@@ -9,6 +9,7 @@ use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TimeField;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
 use UncleCheese\EventCalendar\Helpers\CalendarUtil;
@@ -103,10 +104,11 @@ class CalendarDateTime extends DataObject
 	 */
 	public function getTimeRange()
 	{
-		$func = CalendarUtil::get_time_format() == "24" ? "format('H:i')" : "Nice";
-		$ret = $this->obj('StartTime')->$func();
-		$ret .= $this->EndTime ? self::config()->time_range_separator . $this->obj('EndTime')->$func() : "";
-		return $ret;
+		$ret = CalendarUtil::format_time($this->obj('StartTime'));
+		if ($this->EndTime) {
+			$ret .= self::config()->time_range_separator . CalendarUtil::format_time($this->obj('EndTime'));
+		}
+		return DBField::create_field('HTMLFragment', $ret);
 	}
 
 	/**

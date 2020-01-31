@@ -21,6 +21,11 @@ class RecurringDayOfWeek extends DataObject
 
 	private static $default_sort = "Value ASC";
 	
+	/**
+	 * Add week recurrence records
+	 * 
+	 * @return void
+	 */
 	private static function create_default_records()
 	{
 		for ($i = 0; $i <= 6; $i++) {

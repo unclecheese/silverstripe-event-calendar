@@ -4,6 +4,7 @@ namespace UncleCheese\EventCalendar\Helpers;
 
 use Carbon\Carbon;
 use UncleCheese\EventCalendar\Models\CalendarDateTime;
+use UncleCheese\EventCalendar\Pages\Calendar;
 
 class CalendarUtil 
 {
@@ -15,6 +16,9 @@ class CalendarUtil
 	const MONTH_HEADER = "MonthHeader";
 	const YEAR_HEADER = "YearHeader";
 
+	/**
+	 * @return array
+	 */
 	private static $format_character_placeholders = [
 		'$StartDayNameShort',
 		'$StartDayNameLong',
@@ -40,6 +44,9 @@ class CalendarUtil
 		'$EndYearLong'
 	];
 
+	/**
+	 * @return array
+	 */
 	public static function format_character_replacements($start, $end)
 	{
 		return [
@@ -67,34 +74,49 @@ class CalendarUtil
 			date ('Y', $end),
 		];	
 	}
-	
+
+	/**
+	 * @return string
+	 */
 	public static function localize($start, $end, $key)
 	{
 		global $customDateTemplates;
-		if(is_array($customDateTemplates) && isset($customDateTemplates[$key]))
+		if (is_array($customDateTemplates) && isset($customDateTemplates[$key])) {
 			$template = $customDateTemplates[$key];
-		else {
-			$template = _t(Calendar::class.".$key"); 
+		} else {
+			$template = _t(Calendar::class.".$key", $key); 
 		}
 		
-		return str_replace(self::$format_character_placeholders, self::format_character_replacements($start,$end), $template);		
+		return str_replace(
+			self::$format_character_placeholders, 
+			self::format_character_replacements($start, $end), 
+			$template
+		);
 	}	
 
+	/**
+	 * @return string
+	 */
 	public static function get_date_from_string($str)
 	{
-		$str = str_replace('-','',$str);
-		if(is_numeric($str)) {
+		$str = str_replace('-', '', $str);
+		if (is_numeric($str)) {
 			$missing = (8 - strlen($str));
-			if($missing > 0) {
-				while($missing > 0) {$str .= "01";$missing-=2;}
+			if ($missing > 0) {
+				while ($missing > 0) {
+					$str .= "01";
+					$missing -= 2;
+				}
 			}
 			return substr($str,0,4) . "-" . substr($str,4,2) . "-" . substr($str,6,2);
 		}
-		else {
-			return date('Y-m-d');
-		}
+		
+		return date('Y-m-d');
 	}
 
+	/**
+	 * @return array|null
+	 */
 	public static function get_date_string($startDate, $endDate)
 	{
 		$strStartDate = null;
@@ -133,6 +155,9 @@ class CalendarUtil
 		return [$dateString, ""];
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function microformat($date, $time, $offset = null)
 	{
 		if (!$date) {
@@ -150,6 +175,9 @@ class CalendarUtil
 		return $ret;
 	}
 
+	/**
+	 * @return array
+	 */
 	public static function get_months_map($key = '%b') 
 	{
     	return [
@@ -168,31 +196,40 @@ class CalendarUtil
 		];	
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function get_date_format()
 	{
 		if ($dateFormat = CalendarDateTime::config()->date_format_override) {
 			return $dateFormat;
 		}
-		return _t(__CLASS__.'.DATEFORMAT','mdy');
+		return _t(__CLASS__.'.DATEFORMAT', 'mdy');
 	}
 
+	/**
+	 * @return string
+	 */
 	public static function get_time_format()
 	{
 		if ($timeFormat = CalendarDateTime::config()->time_format_override) {
 			return $timeFormat;
 		}
-		return _t(__CLASS__.'.TIMEFORMAT','24');
+		return _t(__CLASS__.'.TIMEFORMAT', '24');
 	}
 
+	/**
+	 * @return int
+	 */
 	public static function get_first_day_of_week()
 	{
-		$result = strtolower(_t(__CLASS__.'.FIRSTDAYOFWEEK','monday'));
+		$result = strtolower(_t(__CLASS__.'.FIRSTDAYOFWEEK', 'monday'));
 		return ($result == "monday") ? Carbon::MONDAY : Carbon::SUNDAY;
 	}
 
 	public static function date_sort(&$data)
 	{
-		uasort($data, ["CalendarUtil", "date_sort_callback"]);
+		uasort($data, [self::class, "date_sort_callback"]);
 	}
 	
 	/**
@@ -212,5 +249,15 @@ class CalendarUtil
 			return 1;
 		}
 		return -1;
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function format_time($timeObj)
+	{
+		return self::get_time_format() == '24'
+			? $timeObj->Format('HH:mm')
+			: $timeObj->Nice();
 	}
 }

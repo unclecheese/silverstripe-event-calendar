@@ -571,7 +571,7 @@ class Calendar extends Page
 		if (!($controller instanceof CalendarController)) {
 			$controller = CalendarController::create($this);
 		}
-		return $controller->getMonthJumpForm();
+		return $controller->MonthJumpForm();
 	}
 
 }
