@@ -398,7 +398,7 @@ class Calendar extends Page
 		foreach ($recurringEvents as $recurringEvent) {
 			$reader = $recurringEvent->getRecursionReader();
 			$relation = null;
-			foreach ($recurringEvent->config()->has_one as $rel => $class) {
+			foreach ($recurringEvent->config()->has_many as $rel => $class) {
 				if ($class == $this->getDateTimeClass()) {
 					$relation = $rel;
 				}
@@ -414,7 +414,7 @@ class Calendar extends Page
 			);
 
 			foreach ($recurringEventDatetimes as $recurringEventDatetime) {
-				$start = new Carbon($recurringEventDatetime->StartDate);
+				$start = Carbon::parse($recurringEventDatetime->StartDate);
 				if ($start->getTimestamp() > $dateCounter->getTimestamp()) {
 					$dateCounter = $start;
 				}
@@ -442,7 +442,7 @@ class Calendar extends Page
 	{
 		$relation = $this->getDateToEventRelation();
 		$e = Injector::inst()->get($this->getDateTimeClass(), false);
-		foreach ($recurringEventDatetime->db() as $field => $type) {
+		foreach ($recurringEventDatetime->config()->db as $field => $type) {
 			$e->$field = $recurringEventDatetime->$field;
 		}
 		$e->DateTimeID = $recurringEventDatetime->ID;

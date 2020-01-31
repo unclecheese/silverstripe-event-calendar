@@ -2,6 +2,7 @@
 
 namespace UncleCheese\EventCalendar\Helpers;
 
+use Carbon\Carbon;
 use UncleCheese\EventCalendar\Pages\CalendarEvent;
 use SilverStripe\ORM\DataList;
 use SilverStripe\Core\Injector\Injectable;
@@ -59,32 +60,36 @@ class RecursionReader
 	public function __construct(CalendarEvent $event)
 	{
 		$this->event = $event;
-		$this->datetimeClass = $event->Parent()->getDateTimeClass();
-		$this->eventClass = $event->Parent()->getEventClass();
-		$relation = $event->Parent()->getDateToEventRelation();
+		$cal = $event->Parent();
+
+		$this->datetimeClass = $cal->getDateTimeClass();
+		$this->eventClass = $cal->getEventClass();
+		$relation = $cal->getDateToEventRelation();
 	
-		if ($datetime = DataList::create($this->datetimeClass)->where("{$relation} = {$event->ID}")->first()) {
+		if ($datetime = DataList::create($this->datetimeClass)
+			->filter($relation, $event->ID)->first()
+		) {
 			$this->ts = strtotime($datetime->StartDate);
 		}
 
 		if ($event->CustomRecursionType == CalendarEvent::RECUR_INTERVAL_WEEKLY) {
-			if ($days_of_week = $event->getManyManyComponents('RecurringDaysOfWeek')) {
-				foreach ($days_of_week as $day) {
+			if ($daysOfWeek = $event->getManyManyComponents('RecurringDaysOfWeek')) {
+				foreach ($daysOfWeek as $day) {
 					$this->allowedDaysOfWeek[] = $day->Value;
 				}
 			}
 		} elseif ($event->CustomRecursionType == CalendarEvent::RECUR_INTERVAL_MONTHLY) {
-			if ($days_of_month = $event->getManyManyComponents('RecurringDaysOfMonth')) {
-				foreach ($days_of_month as $day) {
+			if ($daysOfMonth = $event->getManyManyComponents('RecurringDaysOfMonth')) {
+				foreach ($daysOfMonth as $day) {
 					$this->allowedDaysOfMonth[] = $day->Value;
 				}
-			}		
+			}
 		}
 				
 		if ($exceptions = $event->getComponents('Exceptions')) {
 			foreach ($exceptions as $exception) {
 				$this->exceptions[] = $exception->ExceptionDate;
-			}			
+			}
 		}
 	}
 
@@ -94,8 +99,8 @@ class RecursionReader
 	 */
 	public function recursionHappensOn($ts)
 	{
-		$testDate = Carbon::parse($ts);
-		$startDate = Carbon::parse($this->ts);
+		$testDate = Carbon::createFromTimestamp($ts);
+		$startDate = Carbon::createFromTimestamp($this->ts);
 		$result = false;
 		
 		// Current date is before the recurring event begins.
@@ -123,7 +128,7 @@ class RecursionReader
 					? 'Monday last week' 
 					: 'Monday this week'
 				);
-				if ((($testFirstDay->getTimestamp() - $startDate->modify('first day of week')->getTimestamp()) / self::WEEK_SECONDS) % $this->event->WeeklyInterval == 0
+				if ((($testFirstDay->getTimestamp() - $startDate->startOfWeek()->getTimestamp()) / self::WEEK_SECONDS) % $this->event->WeeklyInterval == 0
 					&& in_array($testDate->format('w'), $this->allowedDaysOfWeek)
 				) {
 					$result = true;
@@ -155,12 +160,11 @@ class RecursionReader
 							$targetDate = $testDate->dump();
 						}
 						return $testDate->reset()->dump() == $targetDate;
-					}				
+					}
 				}
 				break;
 		}
 
 		return $result;
 	}
-
 }
