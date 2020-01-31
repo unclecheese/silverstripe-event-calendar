@@ -61,24 +61,53 @@ class Calendar extends Page
 		'DefaultView'			=> 'upcoming'
 	];
 
-	private static $reccurring_event_index = 0;
-
-	private static $recent_events_default_limit = 9999;
-
 	private static $icon = "unclecheese/silverstripe-event-calendar:client/dist/images/calendar-file.gif";
 
 	private static $description = "A collection of calendar events";
 
+	/**
+	 * @var int
+	 */
+	private static $reccurring_event_index = 0;
+
+	/**
+	 * @var int
+	 */
+	private static $recent_events_default_limit = 9999;
+
+	/**
+	 * @var int
+	 */
+	private static $max_recurring_events_listed = 0;
+
+	/**
+	 * @var string
+	 */
 	private static $event_class = CalendarEvent::class;
 
+	/**
+	 * @var string
+	 */
 	private static $announcement_class = CalendarAnnouncement::class;
 
+	/**
+	 * @var string
+	 */
 	private static $timezone = "America/New_York";
 
+	/**
+	 * @var string
+	 */
 	private static $language = "EN";
 
+	/**
+	 * @var bool
+	 */
 	private static $jquery_included = false;
 
+	/**
+	 * @var bool
+	 */
 	private static $caching_enabled = false;
 
 	protected $eventClass_cache,
@@ -88,11 +117,17 @@ class Calendar extends Page
 			  $announcementToCalendarRelation_cache,
 			  $eventList_cache;
 
+	/**
+	 * @return void
+	 */
 	public static function set_jquery_included($bool = true)
 	{
 		Config::modify()->set(self::class, 'jquery_included', $bool);
 	}
 
+	/**
+	 * @return void
+	 */
 	public static function enable_caching()
 	{
 		Config::modify()->set(self::class, 'caching_enabled', true);
@@ -418,7 +453,13 @@ class Calendar extends Page
 				if ($start->getTimestamp() > $dateCounter->getTimestamp()) {
 					$dateCounter = $start;
 				}
-				while ($dateCounter <= $end){
+				$recurrenceAdded = 0;
+				while ($dateCounter <= $end) {
+					if (self::config()->max_recurring_events_listed
+						&& ($recurrenceAdded == self::config()->max_recurring_events_listed)
+					) {
+						break;
+					}
 					// check the end date
 					if ($recurringEventDatetime->EndDate) {
 						$endStamp = strtotime($recurringEventDatetime->EndDate);
@@ -429,6 +470,7 @@ class Calendar extends Page
 					if ($reader->recursionHappensOn($dateCounter->getTimestamp())) {
 						$e = $this->newRecursionDateTime($recurringEventDatetime, $dateCounter->toDateString());
 						$allEvents->push($e);
+						$recurrenceAdded++;
 					}
 					$dateCounter->addDay()->startOfDay();
 				}
@@ -478,8 +520,8 @@ class Calendar extends Page
 				if (isset($event['DESCRIPTION'])) {
 					$feedevent->Content = $event['DESCRIPTION'];
 				}
-				$startdatetime = $this->iCalDateToDateTime($event['DTSTART']);//->setTimezone(new DateTimeZone($this->stat('timezone')));
-				$enddatetime = $this->iCalDateToDateTime($event['DTEND']);//->setTimezone(new DateTimeZone($this->stat('timezone')));
+				$startdatetime = $this->iCalDateToDateTime($event['DTSTART']);
+				$enddatetime = $this->iCalDateToDateTime($event['DTEND']);
 
                 //Set event start/end to midnight to allow comparisons below to work
    				$startdatetime->modify('00:00:00');
@@ -554,6 +596,9 @@ class Calendar extends Page
 		return $events->limit($limit);
 	}
 
+	/**
+	 * @return CalendarWidget
+	 */
 	public function getCalendarWidget()
 	{
 		$calendar = CalendarWidget::create($this);
