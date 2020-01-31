@@ -367,14 +367,14 @@ class Calendar extends Page
 
 	public function getNextRecurringEvents($eventObj, $datetimeObj, $limit = null)
 	{
-		$counter = new Carbon($datetimeObj->StartDate);
+		$counter = Carbon::parse($datetimeObj->StartDate);
 
 		if ($event = $datetimeObj->Event()->DateTimes()->First()) {
 			$endDate = strtotime($event->EndDate);
 		} else {
 			$endDate = false;
 		}
-		$counter->tomorrow();
+		$counter->addDay()->startOfDay();
 		$dates = ArrayList::create();
 		while ($dates->Count() != $this->OtherDatesCount) {
 			// check the end date
@@ -382,21 +382,27 @@ class Calendar extends Page
 				break;
 			}
 			if ($eventObj->getRecursionReader()->recursionHappensOn($counter->getTimestamp())) {
-				$dates->push($this->newRecursionDateTime($datetimeObj, $counter->format('Y-m-d')));
+				$dates->push($this->newRecursionDateTime($datetimeObj, $counter->toDateString()));
 			}
-			$counter->tomorrow();
+			$counter->addDay()->startOfDay();
 		}
+
 		return $dates;
 	}
 
 	protected function addRecurringEvents($startDate, $endDate, $recurringEvents, $allEvents)
 	{
-		$dateCounter = new Carbon($startDate);
-		$end = new Carbon($endDate);
+		$dateCounter = Carbon::parse($startDate);
+		$end = Carbon::parse($endDate);
 
 		foreach ($recurringEvents as $recurringEvent) {
 			$reader = $recurringEvent->getRecursionReader();
-			$relation = $recurringEvent->getReverseAssociation($this->getDateTimeClass());
+			$relation = null;
+			foreach ($recurringEvent->config()->has_one as $rel => $class) {
+				if ($class == $this->getDateTimeClass()) {
+					$relation = $rel;
+				}
+			}
 			if (!$relation) {
 				continue;
 			}
@@ -421,12 +427,12 @@ class Calendar extends Page
 						}
 					}
 					if ($reader->recursionHappensOn($dateCounter->getTimestamp())) {
-						$e = $this->newRecursionDateTime($recurringEventDatetime, $dateCounter->format('Y-m-d'));
+						$e = $this->newRecursionDateTime($recurringEventDatetime, $dateCounter->toDateString());
 						$allEvents->push($e);
 					}
-					$dateCounter = $dateCounter->tomorrow();
+					$dateCounter->addDay()->startOfDay();
 				}
-				$dateCounter = new Carbon($startDate);
+				$dateCounter = Carbon::parse($startDate);
 			}
 		}
 		return $allEvents;
