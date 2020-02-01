@@ -210,9 +210,9 @@ class CalendarEvent extends Page
 		return $this->config()->datetime_class;
 	}
 
-	public function CalendarWidget()
+	public function getCalendarWidget()
 	{
-		return $this->Parent()->CalendarWidget();
+		return $this->Parent()->getCalendarWidget();
 	}
 
 }
