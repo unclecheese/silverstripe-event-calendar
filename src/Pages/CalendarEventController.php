@@ -4,6 +4,7 @@ namespace UncleCheese\EventCalendar\Pages;
 
 use SilverStripe\ORM\DataList;
 use SilverStripe\View\Requirements;
+use UncleCheese\EventCalendar\Pages\Calendar;
 use \PageController;
 
 class CalendarEventController extends PageController 
@@ -11,20 +12,19 @@ class CalendarEventController extends PageController
 	public function init()
 	{
 		parent::init();
-		Requirements::css('unclecheese/silverstripe-event-calendar:client/dist/css/calendar.css');
+		if (Calendar::config()->include_default_css) {
+			Requirements::css('unclecheese/silverstripe-event-calendar:client/dist/css/calendar.css');
+		}
 	}
 	
 	/**
-	 * @return DataList
+	 * @return bool
 	 */
 	public function MultipleDates()
 	{
-		return DataList::create($this->data()->getDateTimeClass())
-			->filter("EventID", $this->ID)
-			->sort("StartDate ASC")
-			->count() > 1;
+		return $this->DateAndTime()->count() > 1;
 	}
-	
+
 	/**
 	 * @return DataList
 	 */
@@ -40,10 +40,8 @@ class CalendarEventController extends PageController
 	 */
 	public function UpcomingDates($limit = 3)
 	{
-		return DataList::create($this->data()->getDateTimeClass())
-			->filter("EventID", $this->ID)
+		return $this->DateAndTime()
 			->where("StartDate:GreaterThanOrEqual", "DATE(NOW())")
-			->sort("StartDate ASC")
 			->limit($limit);
 	}
 	
@@ -72,17 +70,15 @@ class CalendarEventController extends PageController
 			return $cal->getNextRecurringEvents($this, $datetimeObj);
 		}
 		
-		return DataList::create($this->data()->getDateTimeClass())
-			->filter("EventID", $this->ID)
+		return $this->DateAndTime()
 			->exclude("StartDate", $date)
-			->sort("StartDate ASC")
 			->limit($cal->OtherDatesCount);
 	}
 	
 	/**
 	 * @return \SilverStripe\ORM\DataObject
 	 */
-	public function CurrentDate()
+	public function getCurrentDate()
 	{
 		$allDates = DataList::create($this->data()->getDateTimeClass())
 			->filter("EventID", $this->ID)

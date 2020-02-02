@@ -3,6 +3,7 @@
 namespace UncleCheese\EventCalendar\Pages;
 
 use Carbon\Carbon;
+use ICal\ICal;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Config\Config;
@@ -104,6 +105,11 @@ class Calendar extends Page
 	 * @var bool
 	 */
 	private static $jquery_included = false;
+
+	/**
+	 * @var bool
+	 */
+	private static $include_default_css = false;
 
 	/**
 	 * @var bool
@@ -339,6 +345,9 @@ class Calendar extends Page
 		return $this->eventList_cache = $eventList;
 	}
 
+	/**
+	 * @return DataList
+	 */
 	protected function getStandardEvents($start, $end, $filter = null)
 	{
 		$eventTable = Config::inst()->get($this->getEventClass(), 'table_name');
@@ -378,6 +387,9 @@ class Calendar extends Page
 		return $list;
 	}
 
+	/**
+	 * @return DataList|false
+	 */
 	protected function getRecurringEvents($filter = null)
 	{
 		if ($relation = $this->getDateToEventRelation()) {
@@ -400,6 +412,9 @@ class Calendar extends Page
 		return false;
 	}
 
+	/**
+	 * @return ArrayList
+	 */
 	public function getNextRecurringEvents($eventObj, $datetimeObj, $limit = null)
 	{
 		$counter = Carbon::parse($datetimeObj->StartDate);
@@ -505,7 +520,7 @@ class Calendar extends Page
 		$feeds = $this->Feeds();
 		$feedevents = ArrayList::create();
 		foreach ($feeds as $feed) {
-			$feedreader = iCal::create($feed->URL);
+			$feedreader = new ICal($feed->URL);
 			foreach ($feedreader->events() as $event) {
 				// translate iCal schema into CalendarAnnouncement schema (datetime + title/content)
 				$feedevent = CalendarAnnouncement::create()
@@ -546,6 +561,9 @@ class Calendar extends Page
 		return $feedevents;
 	}
 
+	/**
+	 * @return \DateTime
+	 */
 	public function iCalDateToDateTime($date)
 	{
 		$dt = new \DateTime($date);
@@ -553,6 +571,9 @@ class Calendar extends Page
 		return $dt;
 	}
 
+	/**
+	 * @return ArrayList
+	 */
 	public function getAllCalendars()
 	{
 		$calendars = ArrayList::create();
@@ -561,16 +582,18 @@ class Calendar extends Page
 		return $calendars;
 	}
 
+	/**
+	 * @return DataList
+	 */
 	public function UpcomingEvents($limit = 5, $filter = null)
 	{
 		$date = Carbon::now();
-		$all = $this->getEventList(
+		return $this->getEventList(
 			$date->toDateString(),
 			$date->addMonths($this->DefaultFutureMonths)->toDateString(),
 			$filter,
 			$limit
-		);
-		return $all->limit($limit);
+		)->limit($limit);
 	}
 
 	public function UpcomingAnnouncements($limit = 5, $filter = null)
@@ -581,6 +604,9 @@ class Calendar extends Page
 			->limit($limit);
 	}
 
+	/**
+	 * @return DataList
+	 */
 	public function RecentEvents($limit = null, $filter = null)
 	{
 		$startDate = Carbon::now();

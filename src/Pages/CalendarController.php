@@ -57,7 +57,9 @@ class CalendarController extends PageController
 	{
 		parent::init();
 		RSSFeed::linkToFeed($this->Link() . "rss", $this->RSSTitle ? $this->RSSTitle : $this->Title);
-		Requirements::css('unclecheese/silverstripe-event-calendar:client/dist/css/calendar.css');
+		if (Calendar::config()->include_default_css) {
+			Requirements::css('unclecheese/silverstripe-event-calendar:client/dist/css/calendar.css');
+		}
 		if (!Calendar::config()->jquery_included) {
 			Requirements::javascript('silverstripe/admin:thirdparty/jquery/jquery.min.js');
 		}
