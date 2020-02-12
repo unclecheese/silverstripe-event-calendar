@@ -1,0 +1,89 @@
+@mixin border($colour) {
+    border: 1px solid $colour; 
+}
+
+@mixin active() {
+    background-color: #d9edf7; 
+    color: #3a87ad;
+    cursor: pointer;
+}
+
+@mixin hover-state() {
+
+    &:hover {
+        @include active();
+    }
+}
+
+.calendar-widget { 
+    margin: 0 0 2em;
+
+    &-table { 
+        width: 100%; 
+        @include border(#ddd); 
+        border-collapse: collapse; 
+        border-spacing: 0; 
+
+        td,
+        th {
+            @include border(#ddd); 
+        }
+
+        th {
+            text-align: center; 
+            padding: 5px; 
+            font-size: 1.2em;
+        }
+
+        tbody {
+
+            td {
+                background-color: #fff; 
+                padding: 4px; 
+                width: 13%; 
+                font-size: 1em;
+            
+            }
+
+            .calendar-header {
+
+                td {
+                    background-color: #555; 
+                    color: #fff; 
+                    border-color: #555;
+                }
+            }
+
+            .calendar-day {
+                text-align: right;
+                @include hover-state();
+            }
+
+            .show-week {
+                width: 9%; 
+                text-align: center;
+                @include hover-state();
+            }
+
+            &.selected {
+                @include active();
+            }
+
+            .out-of-month {
+                background-color: #eee; 
+                color: #999;
+            }
+
+            .today { 
+                font-weight: 700; 
+                color: #3a87ad; 
+            }
+
+            .hasEvent {
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAAHe9q7oAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAFVJREFUeNpimD9/fjVAADGkp6f/Bwggxuzs7P/MzMwMAAHEWF5e/vTjx49STJ8/f5bi5+d/CxBgjNXV1Q9ev34tD5Lm4OD4zwLisLOzgzjPxcTENgAAKIIbWtDRU4YAAAAASUVORK5CYII=); 
+                background-repeat: no-repeat;
+                background-position: center center;
+            }
+        }
+    }
+}
