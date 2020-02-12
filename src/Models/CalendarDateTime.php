@@ -164,19 +164,20 @@ class CalendarDateTime extends DataObject
 		return CalendarUtil::microformat($date, $time, self::config()->offset);
 	}
 
-	public function ICSLink() {
-		$ics_start = $this->obj('StartDate')->Format('Ymd')."T".$this->obj('StartTime')->Format('His');
+	public function ICSLink()
+	{
+		$icsStart = $this->obj('StartDate')->Format('YMMdd')."T".$this->obj('StartTime')->Format('Hmm');
 		if ($this->EndDate) {
-			$ics_end = $this->obj('EndDate')->Format('Ymd')."T".$this->obj('EndTime')->Format('His'); 
+			$icsEnd = $this->obj('EndDate')->Format('YMMdd')."T".$this->obj('EndTime')->Format('Hmm'); 
 		} else {
-			$ics_end = $ics_start;
+			$icsEnd = $icsStart;
 		}
 		if ($this->Feed) {
 			return Controller::join_links(
 				$this->Calendar()->Link(),
 				"ics",
 				$this->ID,
-				$ics_start . "-" . $ics_end,
+				$icsStart . "-" . $icsEnd,
 				"?title=".urlencode($this->Title)
 			);
 		} elseif ($this->Announcement()) {
@@ -184,14 +185,14 @@ class CalendarDateTime extends DataObject
 				$this->Calendar()->Link(),
 				"ics",
 				"announcement-".$this->ID, 
-				$ics_start . "-" . $ics_end
+				$icsStart . "-" . $icsEnd
 			); 
 		}
 		return Controller::join_links(
 			$this->Event()->Parent()->Link(),
 			"ics",
 			$this->Event()->ID,
-			$ics_start . "-" . $ics_end
+			$icsStart . "-" . $icsEnd
 		);
 	}
 
