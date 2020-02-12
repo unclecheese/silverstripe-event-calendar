@@ -7,6 +7,7 @@ use UncleCheese\EventCalendar\Helpers\CalendarUtil;
 use UncleCheese\EventCalendar\Pages\Calendar;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
+use SilverStripe\Control\Email\Email;
 use SilverStripe\Control\HTTP;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\RSS\RSSFeed;
@@ -22,6 +23,7 @@ use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\View\Requirements;
 use \PageController;
 
@@ -39,7 +41,12 @@ class CalendarController extends PageController
 		'ics',
 		'monthjson',
 		'MonthJumpForm'
-    ];
+	];
+	
+	/**
+	 * @var string
+	 */
+	private static $default_organiser;
 
 	protected $view;
 
@@ -60,10 +67,11 @@ class CalendarController extends PageController
 		if (Calendar::config()->include_default_css) {
 			Requirements::css('unclecheese/silverstripe-event-calendar:client/dist/css/calendar.css');
 		}
-		if (!Calendar::config()->jquery_included) {
-			Requirements::javascript('silverstripe/admin:thirdparty/jquery/jquery.min.js');
+		if (Calendar::config()->include_calendar_js) {
+			if (!Calendar::config()->jquery_included) {
+				Requirements::javascript('silverstripe/admin:thirdparty/jquery/jquery.min.js');
+			}
 		}
-		Requirements::javascript('unclecheese/silverstripe-event-calendar:client/dist/js/calendar.js');
 	}
 
 	public function index(HTTPRequest $r) {
@@ -158,10 +166,11 @@ class CalendarController extends PageController
 		$xml = preg_replace('/<!--(.|\s)*?-->/', '', $xml);
 		$xml = trim($xml);
 		HTTP::add_cache_headers();
-		$this->getResponse()->addHeader('Content-Type', 'application/rss+xml');
-		$this->getResponse()->setBody($xml);
+		
+		return $this->getResponse()
+			->addHeader('Content-Type', 'application/rss+xml')
+			->setBody($xml);
 
-		return $this->getResponse();
 	}
 
 	/**
@@ -305,6 +314,9 @@ class CalendarController extends PageController
 		$writer->sendDownload();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function ics(HTTPRequest $r)
 	{
 		$feed = false;
@@ -324,13 +336,12 @@ class CalendarController extends PageController
 				$event = DataObject::get(
 					$announcement ? $this->data()->getDateTimeClass() : $this->data()->getEventClass()
 				)->byID($id);
-                // return if not found
                 if (!$event) {
+					// No event found
                     return $this->httpError(404);
                 }
 				$FILENAME = $announcement ? preg_replace("/[^a-zA-Z0-9s]/", "", $event->Title) : $event->URLSegment;
-			}
-			else {
+			} else {
 				$FILENAME = preg_replace("/[^a-zA-Z0-9s]/", "", urldecode($_REQUEST['title']));
 			}
 
@@ -344,18 +355,21 @@ class CalendarController extends PageController
 			$END_TIMESTAMP = $parts[1];
 			if (!$feed) {
 				$URL = $announcement ? $event->Calendar()->AbsoluteLink() : $event->AbsoluteLink();
-			}
-			else {
+			} else {
 				$URL = "";
 			}
+			$UID = sprintf('%s-%s@%s', $r->param('ID'), $r->param('OtherID'), $HOST);
 			$TITLE = $feed ? $_REQUEST['title'] : $event->Title;
 			$CONTENT = $feed ? $_REQUEST['content'] : $event->obj('Content')->Summary();
 			$LOCATION = $feed ? $_REQUEST['location'] : $event->Location;
+			$ORGANIZER = $this->getOrganiser();
 
-			$this->getResponse()->addHeader('Cache-Control','private');
-			$this->getResponse()->addHeader('Content-Description','File Transfer');
-			$this->getResponse()->addHeader('Content-Type','text/calendar');
-			$this->getResponse()->addHeader('Content-Transfer-Encoding','binary');
+			$this->getResponse()
+				->addHeader('Cache-Control','private')
+				->addHeader('Content-Description','File Transfer')
+				->addHeader('Content-Type','text/calendar')
+				->addHeader('Content-Transfer-Encoding','binary');
+
 			if (stristr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
  				$this->getResponse()->addHeader("Content-disposition", "filename=".$FILENAME."; attachment;");
  			} else {
@@ -368,14 +382,17 @@ class CalendarController extends PageController
 					'LANGUAGE' => $LANGUAGE,
 					'TIMEZONE' => $TIMEZONE,
 					'CALSCALE' => $CALSCALE,
+					'UID' => $UID,
+					'DTSTAMP' => date("Ymd\THis"),
 					'START_TIMESTAMP' => $START_TIMESTAMP,
 					'END_TIMESTAMP' => $END_TIMESTAMP,
 					'URL' => $URL,
 					'TITLE' => $TITLE,
 					'CONTENT' => $CONTENT,
-					'LOCATION' => $LOCATION
+					'LOCATION' => $LOCATION,
+					'ORGANIZER' => 	$ORGANIZER
 				]
-			)->renderWith(['ics'])));
+			)->renderWith(['UncleCheese\EventCalendar\ics'])));
 
 			return $result;
 		}
@@ -400,7 +417,7 @@ class CalendarController extends PageController
 			switch(strlen(str_replace("-", "", $r->param('ID')))) {
 				case 8:
 					$this->view = "day";
-					$this->endDate = Carbon::parse($d->getTimestamp()+1);
+					$this->endDate = Carbon::createFromTimestamp($d->getTimestamp()+1);
 					break;
 
 				case 6:
@@ -651,5 +668,15 @@ class CalendarController extends PageController
 				$data['Year'].$data['Month']
 			)
 		);
+	}
+
+	public function getOrganiser()
+	{
+		$organiser = $this->config()->default_organiser 
+			? $this->config()->default_organiser
+			: ":MAILTO:".Email::config()->admin_email;
+			
+		$this->extend('updateOrganiser', $organiser);
+		return $organiser;
 	}
 }

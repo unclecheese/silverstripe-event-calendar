@@ -114,6 +114,11 @@ class Calendar extends Page
 	/**
 	 * @var bool
 	 */
+	private static $include_calendar_js = false;
+
+	/**
+	 * @var bool
+	 */
 	private static $caching_enabled = false;
 
 	protected $eventClass_cache,
