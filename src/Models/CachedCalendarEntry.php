@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * A cached calendar datetime entry with some values pre-calculated for storage
+ * 
+ * @author Aaron Carlino
+ * @author Grant Heggie
+ * @package silverstripe-event-calendar
+ */
+
 namespace UncleCheese\EventCalendar\Models;
 
 use UncleCheese\EventCalendar\Models\CalendarAnnouncement;
@@ -34,13 +42,21 @@ class CachedCalendarEntry extends DataObject
 	
 	private static $default_sort = "StartDate ASC, StartTime ASC";
 
-	public static function create_from_datetime(CalendarDateTime $dt, Calendar $calendar) {
+	/**
+	 * @return CachedCalendarEntry
+	 */
+	public static function create_from_datetime(CalendarDateTime $dt, Calendar $calendar)
+	{
 		$cached = self::create();
 		$cached->hydrate($dt, $calendar);
 		return $cached;
 	}
 
-	public static function create_from_announcement(CalendarAnnouncement $dt, Calendar $calendar) {
+	/**
+	 * @return CachedCalendarEntry
+	 */
+	public static function create_from_announcement(CalendarAnnouncement $dt, Calendar $calendar)
+	{
 		$cached = self::create();
 		$cached->hydrate($dt, $calendar);
 		$cached->CalendarID = $dt->CalendarID;		
@@ -48,7 +64,11 @@ class CachedCalendarEntry extends DataObject
 		return $cached;
 	}
 
-	public function OtherDates() {
+	/**
+	 * @return \SilverStripe\ORM\DataList
+	 */
+	public function OtherDates()
+	{
 		if ($this->Announcement) {
 			return false;
 		}
@@ -61,12 +81,13 @@ class CachedCalendarEntry extends DataObject
 			)->limit($this->CachedCalendar()->OtherDatesCount);
 	}
 
-	public function hydrate(CalendarDateTime $dt, Calendar $calendar) {
+	public function hydrate(CalendarDateTime $dt, Calendar $calendar)
+	{
 		$this->CachedCalendarID = $calendar->ID;
-		foreach ($dt->db() as $field => $type) {
+		foreach ($dt->config()->db as $field => $type) {
 			$this->$field = $dt->$field;
 		}
-		foreach ($dt->has_one() as $field => $type) {
+		foreach ($dt->config()->has_one as $field => $type) {
 			$this->{$field."ID"} = $dt->{$field."ID"};
 		}
 		$this->DateRange = $dt->DateRange();

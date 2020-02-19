@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Controller for the calendar page
+ * 
+ * @author Aaron Carlino
+ * @author Grant Heggie
+ * @package silverstripe-event-calendar
+ */
+
 namespace UncleCheese\EventCalendar\Pages;
 
 use Carbon\Carbon;
@@ -71,6 +79,7 @@ class CalendarController extends PageController
 			if (!Calendar::config()->jquery_included) {
 				Requirements::javascript('silverstripe/admin:thirdparty/jquery/jquery.min.js');
 			}
+			Requirements::javascript('unclecheese/silverstripe-event-calendar:client/dist/js/calendar.js');
 		}
 	}
 

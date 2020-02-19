@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Calendar page
+ * 
+ * @author Aaron Carlino
+ * @author Grant Heggie
+ * @package silverstripe-event-calendar
+ */
+
 namespace UncleCheese\EventCalendar\Pages;
 
 use Carbon\Carbon;
@@ -21,12 +29,17 @@ use UncleCheese\EventCalendar\Models\CachedCalendarEntry;
 use UncleCheese\EventCalendar\Models\CalendarAnnouncement;
 use UncleCheese\EventCalendar\Models\ICSFeed;
 use UncleCheese\EventCalendar\Pages\CalendarController;
+use UncleCheese\EventCalendar\Pages\CalendarEvent;
 use UncleCheese\EventCalendar\Views\CalendarWidget;
 use \Page;
 
 class Calendar extends Page 
 {
 	private static $table_name = 'UncleCheese_Calendar';
+
+	private static $singular_name = 'Calendar';
+
+	private static $plural_name = 'Calendars';
 
 	private static $db = [
 		'DefaultDateHeader'		=> 'Varchar(50)',
@@ -275,6 +288,10 @@ class Calendar extends Page
 	}
 
 	/**
+	 * @param string $start Start date
+	 * @param string $end End date
+	 * @param string $filter 
+	 * @param int $limit Limit result set size
 	 * @return DataList
 	 */
 	public function getCachedEventList($start, $end, $filter = null, $limit = null)
@@ -297,6 +314,13 @@ class Calendar extends Page
 	}
 
 	/**
+	 * Get the event list for this calendar, including standard, recurring and announcements
+	 * 
+	 * @param string $start Start date
+	 * @param string $end End date
+	 * @param string $filter Additional filters
+	 * @param int $limit Limit result set size
+	 * @param int $announcementFilter Filter announcements prior to their inclusion
 	 * @return DataList
 	 */
 	public function getEventList(
@@ -333,7 +357,7 @@ class Calendar extends Page
 				}
 			}
 			if ($recurring = $calendar->getRecurringEvents($filter)) {
-				$eventList = $calendar->addRecurringEvents($start, $end, $recurring, $eventList);
+				$calendar->addRecurringEvents($start, $end, $recurring, $eventList);
 			}
 			if ($feedevents = $calendar->getFeedEvents($start,$end)) {
 				$eventList->merge($feedevents);
@@ -351,6 +375,11 @@ class Calendar extends Page
 	}
 
 	/**
+	 * Get non-recurring events for this calendar that fall within a start and end date
+	 * 
+	 * @param string $start Start date
+	 * @param string $end End date
+	 * @param string $filter Additional filters
 	 * @return DataList
 	 */
 	protected function getStandardEvents($start, $end, $filter = null)
@@ -393,6 +422,9 @@ class Calendar extends Page
 	}
 
 	/**
+	 * Get the list of events in this calendar that are set to recur
+	 * 
+	 * @param string $filter Additional filters
 	 * @return DataList|false
 	 */
 	protected function getRecurringEvents($filter = null)
@@ -418,6 +450,11 @@ class Calendar extends Page
 	}
 
 	/**
+	 * Get the next set of recurring datetimes for an event
+	 * 
+	 * @param CalendarEvent $eventObj Event record
+	 * @param CalendarDateTime $datetimeObj Datetime record
+	 * @param int $limit Limit the result set size
 	 * @return ArrayList
 	 */
 	public function getNextRecurringEvents($eventObj, $datetimeObj, $limit = null)
@@ -445,6 +482,14 @@ class Calendar extends Page
 		return $dates;
 	}
 
+	/**
+	 * Add recurring events to a list of events
+	 * 
+	 * @param string $startDate Start date
+	 * @param string $endDate End date
+	 * @param DataList $recurringEvents Set of recurring events
+	 * @param ArrayList $allEvents The list to add events to
+	 */
 	protected function addRecurringEvents($startDate, $endDate, $recurringEvents, $allEvents)
 	{
 		$dateCounter = Carbon::parse($startDate);
@@ -497,9 +542,15 @@ class Calendar extends Page
 				$dateCounter = Carbon::parse($startDate);
 			}
 		}
-		return $allEvents;
 	}
 
+	/**
+	 * Create a Datetime for a recursion instance (recurrence)
+	 * 
+	 * @param mixed $recurringEventDatetime The Datetime to base the recurrence off
+	 * @param string $startDate The start date
+	 * @return mixed An instance of the class defined in CalendarEvent::datetime_class
+	 */
 	public function newRecursionDateTime($recurringEventDatetime, $startDate)
 	{
 		$relation = $this->getDateToEventRelation();
@@ -516,7 +567,13 @@ class Calendar extends Page
 		return $e;
 	}
 
-
+	/**
+	 * Get events from specified feeds that fall within a date range
+	 * 
+	 * @param string $stardDate Range start date
+	 * @param string $endDate Range end date
+	 * @return ArrayList
+	 */
 	public function getFeedEvents($startDate, $endDate)
 	{
 		$start = new \DateTime($startDate);

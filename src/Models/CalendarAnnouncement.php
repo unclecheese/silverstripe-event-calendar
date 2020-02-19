@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * A calendar announcement
+ * 
+ * @author Aaron Carlino
+ * @author Grant Heggie
+ * @package silverstripe-event-calendar
+ */
+
 namespace UncleCheese\EventCalendar\Models;
 
 use SilverStripe\Forms\TextareaField;
@@ -10,6 +18,10 @@ use UncleCheese\EventCalendar\Models\CalendarDateTime;
 class CalendarAnnouncement extends CalendarDateTime 
 {
 	private static $table_name = 'UncleCheese_CalendarAnnouncement';
+
+	private static $singular_name = 'Calendar accouncement';
+
+	private static $plural_name = 'Calendar accouncements';
 
 	private static $db = [
 		'Title' => 'Varchar(255)',
@@ -25,14 +37,21 @@ class CalendarAnnouncement extends CalendarDateTime
 		$self = $this;
 
 		$this->beforeUpdateCMSFields(function($f) use ($self) {
-			$f->insertBefore(TextField::create('Title', _t(__CLASS__.'.TITLE','Title of announcement')), "StartDate");
-			$f->insertBefore(TextareaField::create('Content', _t(__CLASS__.'.CONTENT','Announcement content')), "StartDate");
+			$f->insertBefore(
+				'StartDate', 
+				TextField::create('Title', _t(__CLASS__.'.TITLE', 'Title of announcement'))
+			);
+			$f->insertBefore(
+				'StartDate', 
+				TextareaField::create('Content', _t(__CLASS__.'.CONTENT', 'Announcement content'))
+			);
 		});
 
 		return $f = parent::getCMSFields();;
 	}
 
-	public function summaryFields() {
+	public function summaryFields()
+	{
 		return [
 			'Title' => _t(__CLASS__.'.TITLE','Title of announcement'),
 			'FormattedStartDate' => _t(Calendar::class.'.STARTDATE','Start date'),

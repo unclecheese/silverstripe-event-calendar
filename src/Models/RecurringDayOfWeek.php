@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * A day of the week - used to configure an event that is set to recur
+ * 
+ * @author Aaron Carlino
+ * @author Grant Heggie
+ * @package silverstripe-event-calendar
+ */
+
 namespace UncleCheese\EventCalendar\Models;
 
 use Carbon\Carbon;
@@ -10,6 +18,10 @@ use UncleCheese\EventCalendar\Pages\CalendarEvent;
 class RecurringDayOfWeek extends DataObject 
 {
 	private static $table_name = 'UncleCheese_RecurringDayOfWeek';
+
+	private static $singular_name = 'Recurring day of week';
+
+	private static $plural_name = 'Recurring days of week';
 
 	private static $db = [
 		'Value' => 'Int'

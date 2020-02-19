@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Date and time for a calendar event occurence
+ * 
+ * @author Aaron Carlino
+ * @author Grant Heggie
+ * @package silverstripe-event-calendar
+ */
+
 namespace UncleCheese\EventCalendar\Models;
 
 use Carbon\Carbon;
@@ -36,8 +44,14 @@ class CalendarDateTime extends DataObject
 
 	private static $plural_name = "Event dates and times";
 
+	/**
+	 * @var string
+	 */
 	private static $date_format_override;
 
+	/**
+	 * @var string
+	 */
 	private static $time_format_override;
 
 	private static $default_sort = "StartDate ASC, StartTime ASC";
@@ -70,7 +84,8 @@ class CalendarDateTime extends DataObject
 		return $fields;
 	}
 
-	public function summaryFields() {
+	public function summaryFields()
+	{
 		return [
 			'FormattedStartDate' => _t(__CLASS__.'.STARTDATE','Start date'),
 			'FormattedEndDate' => _t(__CLASS__.'.ENDDATE','End date'),
@@ -80,6 +95,9 @@ class CalendarDateTime extends DataObject
 		];
 	}
 
+	/**
+	 * @return string
+	 */
 	public function Link()
 	{
 		return Controller::join_links($this->Event()->Link(),"?date=".$this->StartDate);
@@ -120,7 +138,7 @@ class CalendarDateTime extends DataObject
 	}
 
 	/**
-	 * @return SilverStripe\ORM\DataList
+	 * @return bool|SilverStripe\ORM\DataList
 	 */
 	public function getOtherDates()
 	{
@@ -140,7 +158,11 @@ class CalendarDateTime extends DataObject
 		)->limit($this->Event()->Parent()->OtherDatesCount);
 	}
 
-	public function MicroformatStart($offset = true) {
+	/**
+	 * @return string
+	 */
+	public function MicroformatStart($offset = true)
+	{
 		if (!$this->StartDate) {
 			return "";
 		}
@@ -148,7 +170,11 @@ class CalendarDateTime extends DataObject
 		return CalendarUtil::microformat($this->StartDate, $time, self::config()->offset);
 	}
 
-	public function MicroformatEnd($offset = true) {
+	/**
+	 * @return string
+	 */
+	public function MicroformatEnd($offset = true)
+	{
 		if ($this->AllDay && $this->StartDate) {
 			$time = "00:00:00";
 			$date = new Carbon($this->StartDate);
@@ -164,6 +190,9 @@ class CalendarDateTime extends DataObject
 		return CalendarUtil::microformat($date, $time, self::config()->offset);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function ICSLink()
 	{
 		$icsStart = $this->obj('StartDate')->Format('YMMdd')."T".$this->obj('StartTime')->Format('Hmm');
@@ -196,6 +225,9 @@ class CalendarDateTime extends DataObject
 		);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getFormattedStartDate()
 	{
 		if (!$this->StartDate) {
@@ -206,6 +238,9 @@ class CalendarDateTime extends DataObject
 			: $this->obj('StartDate')->Format('dd-MM-Y');
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function getFormattedEndDate()
 	{
 		if (!$this->EndDate) {
@@ -216,6 +251,9 @@ class CalendarDateTime extends DataObject
 			: $this->obj('EndDate')->Format('dd-MM-Y');
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getFormattedStartTime()
 	{
 		if (!$this->StartTime) {
@@ -226,6 +264,9 @@ class CalendarDateTime extends DataObject
 			: Carbon::createFromTimeString($this->StartTime)->format('H:i');
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getFormattedEndTime()
 	{
 		if (!$this->EndTime) {
@@ -236,21 +277,33 @@ class CalendarDateTime extends DataObject
 			: Carbon::createFromTimeString($this->EndTime)->format('H:i');
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getFormattedAllDay()
 	{
 	   return $this->AllDay == 1 ? _t(__CLASS__.'.YES', 'Yes') : _t(__CLASS__.'.NO', 'No');
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getTitle()
 	{
 		return $this->Event()->Title;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getContent()
 	{
 		return $this->Event()->Content;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getAllDatesInRange()
 	{
 		$start = new \DateTime($this->StartDate);
@@ -265,6 +318,9 @@ class CalendarDateTime extends DataObject
 		return $dates;
 	}
 	
+	/**
+	 * @return bool
+	 */
 	public function canCreate($member = null, $context = [])
 	{
 		if (!$member) {
@@ -277,6 +333,9 @@ class CalendarDateTime extends DataObject
 		return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canEdit($member = null)
 	{
 		if (!$member) {
@@ -289,6 +348,9 @@ class CalendarDateTime extends DataObject
 		return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canDelete($member = null)
 	{
 		if (!$member) {
@@ -301,6 +363,9 @@ class CalendarDateTime extends DataObject
 		return Permission::check('CMS_ACCESS_CMSMain', 'any', $member);
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canView($member = null)
 	{
 		if (!$member) {

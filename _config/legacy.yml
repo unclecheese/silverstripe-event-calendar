@@ -1,0 +1,14 @@
+---
+Name: event-calendar-legacy
+---
+SilverStripe\ORM\DatabaseAdmin:
+  classname_value_remapping:
+    CachedCalendarEntry: UncleCheese\EventCalendar\Models\CachedCalendarEntry
+    Calendar: UncleCheese\EventCalendar\Pages\Calendar
+    CalendarAnnouncement: UncleCheese\EventCalendar\Models\CalendarAnnouncement
+    CalendarDateTime: UncleCheese\EventCalendar\Models\CalendarDateTime
+    CalendarEvent: UncleCheese\EventCalendar\Pages\CalendarEvent
+    ICSFeed: UncleCheese\EventCalendar\Models\ICSFeed
+    RecurringDayOfMonth: UncleCheese\EventCalendar\Models\RecurringDayOfMonth
+    RecurringDayOfWeek: UncleCheese\EventCalendar\Models\RecurringDayOfWeek
+    RecurringException: UncleCheese\EventCalendar\Models\RecurringException

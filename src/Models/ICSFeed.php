@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * An ICS feed (link and title) attached to a calendar
+ * 
+ * @author Aaron Carlino
+ * @author Grant Heggie
+ * @package silverstripe-event-calendar
+ */
+
 namespace UncleCheese\EventCalendar\Models;
 
 use SilverStripe\Forms\FieldList;
@@ -23,8 +31,8 @@ class ICSFeed extends DataObject
 	public function getCMSFields()
 	{
 		$fields = FieldList::create(
-			TextField::create('Title',_t('ICSFeed.TITLEOFFEED','Title of feed')),
-			TextField::create('URL',_t('ICSFeed.URLLINK','URL'),'http://')
+			TextField::create('Title', _t(__CLASS__.'.TITLEOFFEED', 'Title of feed')),
+			TextField::create('URL', _t(__CLASS__.'.URLLINK', 'URL'), 'http://')
 		);
 
 		$this->extend('updateCMSFields', $fields);

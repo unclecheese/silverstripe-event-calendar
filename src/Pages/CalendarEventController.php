@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Controller for the calendar event page
+ * 
+ * @author Aaron Carlino
+ * @author Grant Heggie
+ * @package silverstripe-event-calendar
+ */
+
 namespace UncleCheese\EventCalendar\Pages;
 
 use SilverStripe\ORM\DataList;
@@ -76,7 +84,7 @@ class CalendarEventController extends PageController
 	}
 	
 	/**
-	 * @return \SilverStripe\ORM\DataObject
+	 * @return mixed
 	 */
 	public function getCurrentDate()
 	{

@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Calendar event page
+ * 
+ * @author Aaron Carlino
+ * @author Grant Heggie
+ * @package silverstripe-event-calendar
+ */
+
 namespace UncleCheese\EventCalendar\Pages;
 
 use SilverStripe\Forms\CheckboxField;
@@ -28,6 +36,10 @@ class CalendarEvent extends Page
 	CONST RECUR_INTERVAL_MONTHLY = 3;
 
 	private static $table_name = 'UncleCheese_CalendarEvent';
+
+	private static $singular_name = 'Calendar event';
+
+	private static $plural_name = 'Calendar events';
 
 	private static $db = [
 		'Location' => 'Text',

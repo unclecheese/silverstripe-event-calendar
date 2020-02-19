@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * A day of the month - used to configure an event that is set to recur
+ * 
+ * @author Aaron Carlino
+ * @author Grant Heggie
+ * @package silverstripe-event-calendar
+ */
+
 namespace UncleCheese\EventCalendar\Models;
 
 use SilverStripe\ORM\DataObject;

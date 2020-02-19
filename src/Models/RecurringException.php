@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * An exception to a recurring event
+ * 
+ * @author Aaron Carlino
+ * @author Grant Heggie
+ * @package silverstripe-event-calendar
+ */
+
 namespace UncleCheese\EventCalendar\Models;
 
 use SilverStripe\Forms\DateField;
@@ -7,11 +15,16 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
 use UncleCheese\EventCalendar\Helpers\CalendarUtil;
+use UncleCheese\EventCalendar\Models\CalendarDateTime;
 use UncleCheese\EventCalendar\Pages\CalendarEvent;
 
 class RecurringException extends DataObject 
 {
     private static $table_name = 'UncleCheese_RecurringException';
+
+    private static $singular_name = 'Recurring exception';
+
+    private static $plural_name = 'Recurring exceptions';
     
 	private static $db = [
 		'ExceptionDate' => 'Date'
@@ -25,7 +38,7 @@ class RecurringException extends DataObject
 
     public function getCMSFields()
     {
-        DateField::set_default_config('showcalendar', true);
+        //DateField::set_default_config('showcalendar', true);
         $fields = FieldList::create(
             DateField::create('ExceptionDate', _t(__CLASS__.'.EXCEPTIONDATE','Exception date'))
         );
