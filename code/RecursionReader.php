@@ -1,6 +1,6 @@
 <?php
 
-class RecursionReader extends Object {
+class RecursionReader extends SS_Object {
 	
 	const DAY = 86400;
 
