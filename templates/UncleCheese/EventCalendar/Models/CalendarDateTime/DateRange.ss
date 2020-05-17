@@ -1,0 +1,1 @@
+<span class="dtstart" title="$MicroformatStart">$StartDate</span><% if $EndDate %>-<% end_if %><span class="dtend" title="$MicroformatEnd">$EndDate</span>

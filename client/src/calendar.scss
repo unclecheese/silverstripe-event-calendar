@@ -1,0 +1,43 @@
+@mixin reset-list-styles {
+    list-style: none; 
+    margin: 0; 
+    padding: 0;
+}
+
+.event-calendar-events-list {
+
+    ul, 
+    li {
+        @include reset-list-styles();
+    }
+
+    .event {
+        padding: 0 0 1em; 
+        margin: 0 0 1em; 
+        border-bottom: 1px solid #ccc;
+
+        &-dates {
+            font-weight: 700;
+        }
+
+        &-other-dates { 
+            margin: 1em 0 0;
+        
+            ul, li {
+                @include reset-list-styles();
+            }
+        
+            &-title {
+                margin:0;
+            }
+        }
+    }
+}
+
+.calendar-view-more {
+    
+    &.loading {
+        color: #ccc;
+    }
+}
+

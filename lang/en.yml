@@ -1,5 +1,5 @@
 en:
-  Calendar:
+  UncleCheese\EventCalendar\Pages\Calendar:
     OneDay: '$StartDayNameShort, $StartMonthNameShort. $StartDayNumberShort, $StartYearLong'
     SameMonthSameYear: '$StartMonthNameShort. $StartDayNumberShort — $EndDayNumberShort, $EndYearLong'
     DiffMonthSameYear: '$StartMonthNameShort. $StartDayNumberShort — $EndMonthNameShort. $EndDayNumberShort, $EndYearLong'
@@ -7,7 +7,7 @@ en:
     OneDayHeader: '$StartMonthNameLong $StartDayNumberShort$StartDaySuffix, $StartYearLong'
     MonthHeader: '$StartMonthNameLong, $StartYearLong'
     YearHeader: '$StartYearLong'
-  CalendarDateTime:
+  UncleCheese\EventCalendar\Models\CalendarDateTime:
     DATEFORMAT: mdy
     TIMEFORMAT: 12
     FIRSTDAYOFWEEK: Sunday

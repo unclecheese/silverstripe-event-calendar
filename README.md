@@ -1,37 +1,48 @@
-# SilverStripe Event Calendar Module
+# Silverstripe Event Calendar
 
-The Event Calendar module for SilverStripe
+## Introduction
 
-## Features
+This is an event calendar module for Silverstripe CMS, with the following features:
 
- * **Calendar** - This Page is used to hold/present events and announcments.
- * **Calendar Event** - This page represents an event, which can have many DateTimes.
- * **Recurring Events** - Calendar Events can also be set up reoccur automatically.
- * **Calendar Announcements** - Entries in a Calendar which don't have a page associated.
- * **ICS feeds** - Add multiple ICS feeds to a Calendar to display these events in the feed.
- * **ICS output** - Download an ics file for easy importing into calendar apps.
- * **RSS feed** - RSS feed of calendar events
- * **Calendar Widget** - Display a calendar view in a Widget.
- * **Caching**
+* **Calendar** - A page type used to hold/present events and announcements.
+* **Calendar event** - A page type which represents an event, with one or more DateTimes (an instance of an event).
+* **Recurring events** - Calendar events can be set up reoccur automatically.
+* **Calendar announcements** - Entries in a calendar which don't have an event page associated.
+* **ICS feeds** - Add external ICS feeds to a calendar to display these events.
+* **ICS output** - Download an ics file for easy importing into calendar apps.
+* **RSS feed** - RSS feed of calendar events.
+* **Calendar widget** - Display a calendar view in a widget, so website users can select to view events by year/month/week/day periods.
+* **Caching**
+
+## Requirements
+
+Silverstripe CMS 4.4 or greater
+
+Carbon ( version 1 - https://github.com/briannesbitt/carbon )
 
 ## Configuration Options
 
-Enable jquery
+Enable jQuery (that is, do not request a local copy)
+
 ```yaml
-Calendar:
+UncleCheese\EventCalendar\Pages\Calendar:
     jquery_included: true
 ```
 
-Enable caching, and years worth of data to cache
+Caching options
+
 ```yaml
-Calendar:
+UncleCheese\EventCalendar\Pages\Calendar:
     caching_enabled: true
     cache_future_years: 2
 ```
 
-Set default timezone, lang for ICS output:
+Set default time zone and language for ICS output
+
 ```yaml
-Calendar:
+UncleCheese\EventCalendar\Pages\Calendar:
     timezone: America/New_York
     language: EN
 ```
+
+

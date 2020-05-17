@@ -1,5 +1,5 @@
 de:
-  Calendar:
+  UncleCheese\EventCalendar\Pages\Calendar:
     OneDay: '$StartDayNumberShort. $StartMonthNameShort. $StartYearLong' #e.g. 4. Okt. 2009
     SameMonthSameYear: '$StartDayNumberShort. - $EndDayNumberShort. $StartMonthNameShort. $EndYearLong' #e.g. 4. - 6. Okt. 2009
     DiffMonthSameYear: '$StartDayNumberShort. $StartMonthNameShort - $EndDayNumberShort. $EndMonthNameShort. $EndYearFull' #e.g. 4. Okt. - 6. Nov. 2009
@@ -7,15 +7,23 @@ de:
     OneDayHeader: '$StartDayNumberShort. $StartMonthNameLong $StartYearLong' #"Headers" control the display when a date range is given to the calendar through the URL.
     MonthHeader: '$StartMonthNameLong $StartYearLong'
     YearHeader: '$StartYearLong'
-  Calendar:
     NUMBEROFEVENTS: 'Anzahl anzuzeigender Anlässe (Standard-Ansicht).'
     DEFAULTDATEHEADER: 'Standard-Titel (wird angezeigt wenn kein Datum selektiert worden ist).'
     NUMBERFUTUREDATES: 'Maximal anzuzeigende Daten bei sich wiederholenden Anlässen'
     UPCOMINGEVENTSFOR: 'Kommende Anlässe für %s'
     FILTER: 'Filtern'
-  CalendarDateTime:
+    ADD: 'Zu meinem Kalender hinzufügen'
+    ALLDAY: 'Den ganzen Tag'
+    NOEVENTS: 'Es wurden keine Anlässe gefunden.'
+    SUBSCRIBE: 'Diesen Kalender abonnieren.'
+    BROWSECALENDAR: 'Durchsuche den Kalender'
+    USECALENDAR: 'Kalender benutzen um Anlässe zu finden.'
+    TIME: 'Zeit'
+    MORE: 'mehr...'
+    SEEALSO: 'Siehe auch'
+  UncleCheese\EventCalendar\Models\CalendarDateTime:
     INVALIDFORMAT: 'Ungültiges Datums-Format. Gültig sind "dmy" oder "mdy".'
-  CalendarEvent:
+  UncleCheese\EventCalendar\Pages\CalendarEvent:
     REPEATEVENT: 'Wiederhole diesen Anlass'
     DESCRIBEINTERVAL: 'Definiere den Zeitraum in dem dieser Anlass wieder auftritt:'
     EVERY: 'Jede(n) '
@@ -29,22 +37,11 @@ de:
     ANYEXCEPTIONS: 'Gibt es Ausnahmen bei den sich wiederholenden Anlässen? Wenn ja, allfällige Ausnahmen unten eintragen.'
     DATE: 'Datum'
     RSSFEED: 'RSS-Feed dieses Kalenders'
-  Calendar.ss:
-    BROWSECALENDAR: 'Durchsuche den Kalender'
-    USECALENDAR: 'Kalender benutzen um Anlässe zu finden.'
-    SUBSCRIBE: 'Diesen Kalender abonnieren.'
-    ALLDAY: 'Den ganzen Tag'
-    TIME: 'Zeit'
-    MORE: 'mehr...'
-    SEEALSO: 'Siehe auch'
-    ADD: 'Zu meinem Kalender hinzufügen'
-    NOEVENTS: 'Es wurden keine Anlässe gefunden.'
-  CalendarEvent.ss:
     BROWSECALENDAR: $lang['de_DE']['Calendar.ss']['BROWSECALENDAR']
     USECALENDAR: $lang['de_DE']['Calendar.ss']['USECALENDAR']
     FILTERCALENDAR: 'Kalender filtrieren'
     BACKTO: 'Zurück zu'
     SUBSCRIBE: $lang['de_DE']['Calendar.ss']['SUBSCRIBE']
     ADDITIONALDATES: 'Zusätzliche Daten'
-  CalendarWidget:
+  UncleCheese\EventCalendar\Views\CalendarWidget:
     LOCALEFILE: 'date_de.js'

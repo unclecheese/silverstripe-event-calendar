@@ -1,5 +1,5 @@
 fi:
-  Calendar:
+  UncleCheese\EventCalendar\Pages\Calendar:
     OneDay: '$StartDayNameLong, $StartDayNumberShort.$StartMonthNumberShort.$StartYearLong'
     SameMonthSameYear: '$StartDayNumberShort.-$EndDayNumberShort.$StartMonthNumberShort.$EndYearLong'
     DiffMonthSameYear: '$StartMonthNameShort. $StartDayNumberShort - $EndMonthNameShort. $EndDayNumberShort, $EndYearLong'
@@ -28,13 +28,21 @@ fi:
     PREVIOUSMONTH: "Edellinen kuukausi"
     NEXTMONTH: "Seuraava kuukausi"
     PREVIOUSWEEKEND: "Edellinen viikonloppu"
-    NEXTWEEKEND: "Seuraava viikonloppu"    
-  CalendarDateTime:
+    NEXTWEEKEND: "Seuraava viikonloppu"
+    BROWSECALENDAR: 'Selaa kalenteria'
+    USECALENDAR: 'KÄytä kalenteria'
+    SUBSCRIBE: 'Tilaa RSS-syöte.'
+    ALLDAY: 'Koko päivä'
+    TIME: 'Aika'
+    MORE: 'Lisää...'
+    SEEALSO: 'Katso myös'
+    NOEVENTS: 'Ei tapahtumia'
+  UncleCheese\EventCalendar\Models\CalendarDateTime:
     DATEFORMAT: DMy
     TIMEFORMAT: 24
     FIRSTDAYOFWEEK: Monday
     INVALIDFORMAT: 'Epäkelpo formaatti.'
-  CalendarEvent:
+  UncleCheese\EventCalendar\Pages\CalendarEvent:
     REPEATEVENT: 'Toistuva tapahtuma'
     DESCRIBEINTERVAL: 'Toistuvuus:'
     EVERY: 'Joka '
@@ -50,41 +58,12 @@ fi:
     RSSFEED: 'RSS-styöte'
     ADD: 'Lisää tapahtuma omaan kalenteriisi'
     ADDITIONALDATES: 'Tapahtuman muut päivät'
-  Calendar.ss:
-    BROWSECALENDAR: 'Selaa kalenteria'
-    USECALENDAR: 'KÄytä kalenteria'
-    SUBSCRIBE: 'Tilaa RSS-syöte.'
-    ALLDAY: 'Koko päivä'
-    TIME: 'Aika'
-    MORE: 'Lisää...'
-    SEEALSO: 'Katso myös'
-    NOEVENTS: 'Ei tapahtumia'
-  CalendarEvent.ss:
     BROWSECALENDAR: 'Selaa kalenteria'
     USECALENDAR: 'Käytä kalentria'
     FILTERCALENDAR: 'Suodata'
     BACKTO: 'Takaisin'
     SUBSCRIBE: 'Tilaa kalenteri.'
     ADDITIONALDATES: 'Lisäpäivät'
-    ADD: 'Lisää kalenteriin'
     LOCALEFILE: date_fi.js
-    ADDITIONALDATES: 'Tapahtuman muut päivät'
-  EventList.ss:
-    ADD: 'Lisää kalenteriin'
-    MORE: 'Lisää'
-    ALLDAY: 'Koko päivä'
-  EventList:
-    ADD: 'Lisää kalenteriisi'
-    MORE: 'Lue lisää tapahtumasta'
-    ALLDAY: 'Koko päivä'
-  QuickNav.ss:
-    PREVIOUSDAY: "Edellinen päivä"
-    NEXTDAY: "Seuraava päivä"
-    PREVIOUSWEEK: "Edellinen viikko"
-    NEXTWEEK: "Seuraava viikko"
-    PREVIOUSMONTH: "Edellinen kuukausi"
-    NEXTMONTH: "Seuraava kuukausi"
-    PREVIOUSWEEKEND: "Edellinen viikonloppu"
-    NEXTWEEKEND: "Seuraava viikonloppu"
-  CalendarWidget:
+  UncleCheese\EventCalendar\Views\CalendarWidget:
     LOCALEFILE: 'date_fi.js'
