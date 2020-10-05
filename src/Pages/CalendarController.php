@@ -13,24 +13,16 @@ namespace UncleCheese\EventCalendar\Pages;
 use Carbon\Carbon;
 use UncleCheese\EventCalendar\Helpers\CalendarUtil;
 use UncleCheese\EventCalendar\Pages\Calendar;
-use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\Email\Email;
 use SilverStripe\Control\HTTP;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\RSS\RSSFeed;
 use SilverStripe\Core\Convert;
-use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\NumericField;
-use SilverStripe\Forms\TextField;
-use SilverStripe\Forms\GridField\GridField;
-use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\View\Requirements;
 use \PageController;
@@ -83,8 +75,8 @@ class CalendarController extends PageController
 		}
 	}
 
-	public function index(HTTPRequest $r) {
-
+	public function index(HTTPRequest $r)
+	{
 		$this->extend('index', $r);
 
 		switch ($this->DefaultView) {
@@ -134,22 +126,26 @@ class CalendarController extends PageController
 		return $this->respond();
 	}
 
-	public function weekend(HTTPRequest $r) {
+	public function weekend(HTTPRequest $r)
+	{
 		$this->setWeekendView();
 		return $this->respond();
 	}
 
-	public function month(HTTPRequest $r) {
+	public function month(HTTPRequest $r)
+	{
 		$this->setMonthView();
 		return $this->respond();
 	}
 
-	public function show(HTTPRequest $r) {
+	public function show(HTTPRequest $r)
+	{
 		$this->parseURL($r);
 		return $this->respond();
 	}
 
-	public function rss() {
+	public function rss()
+	{
 		$this->setDefaultView();
 		$events = $this->getEvents();
 		foreach($events as $event) {
@@ -185,7 +181,8 @@ class CalendarController extends PageController
 	/**
 	 * @return string
 	 */
-	public function monthjson(HTTPRequest $r) {
+	public function monthjson(HTTPRequest $r)
+	{
 		$json = [];
 		if (!$r->param('ID')) {
 			return json_encode($json);
@@ -551,8 +548,8 @@ class CalendarController extends PageController
 	 */
 	public function PreviousWeekLink()
 	{
-		$start = Carbon::parse($this->startDate)->subtractWeek();
-		$end = Carbon::parse($this->endDate)->subtractWeek();
+		$start = Carbon::parse($this->startDate)->subWeek();
+		$end = Carbon::parse($this->endDate)->subWeek();
 		return $this->getRangeLink($start, $end);
 	}
 
@@ -572,8 +569,7 @@ class CalendarController extends PageController
 	public function NextMonthLink()
 	{
 		$start = Carbon::parse($this->startDate)->addMonth();
-		$end = Carbon::parse($start)->endOfMonth();
-		return $this->getRangeLink($start, $end);
+		return $this->getMonthLink($start);
 	}
 
 	/**
@@ -582,8 +578,19 @@ class CalendarController extends PageController
 	public function PreviousMonthLink()
 	{
 		$start = Carbon::parse($this->startDate)->subMonth();
-		$end = Carbon::parse($start)->endOfMonth();
-		return $this->getRangeLink($start, $end);
+		return $this->getMonthLink($start);
+	}
+
+	/**
+	 * @return string
+	 */
+	private function getMonthLink($start)
+	{
+		return parent::join_links(
+			$this->Link(), 
+			"show",
+			$start->format('Ym')
+		);
 	}
 
 	/**
