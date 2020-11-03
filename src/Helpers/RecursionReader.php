@@ -10,7 +10,7 @@ use SilverStripe\Core\Injector\Injectable;
 class RecursionReader
 {
 	use Injectable;
-	
+
 	const DAY_SECONDS = 86400;		// Seconds in a day
 	const WEEK_SECONDS = 604800;	// Seconds in a week
 
@@ -38,7 +38,7 @@ class RecursionReader
 	 * @var array
 	 */
 	protected $allowedDaysOfWeek = [];
-	
+
 	/**
 	 * @var array
 	 */
@@ -65,7 +65,7 @@ class RecursionReader
 		$this->datetimeClass = $cal->getDateTimeClass();
 		$this->eventClass = $cal->getEventClass();
 		$relation = $cal->getDateToEventRelation();
-	
+
 		if ($datetime = DataList::create($this->datetimeClass)
 			->filter($relation, $event->ID)->first()
 		) {
@@ -85,7 +85,7 @@ class RecursionReader
 				}
 			}
 		}
-				
+
 		if ($exceptions = $event->getComponents('Exceptions')) {
 			foreach ($exceptions as $exception) {
 				$this->exceptions[] = $exception->ExceptionDate;
@@ -99,12 +99,13 @@ class RecursionReader
 	 */
 	public function recursionHappensOn($ts)
 	{
-		$testDate = Carbon::createFromTimestamp($ts);
+		$originalTestDate = Carbon::createFromTimestamp($ts);
+		$testDate = $originalTestDate->copy();
 		$startDate = Carbon::createFromTimestamp($this->ts);
 		$result = false;
-		
+
 		// Current date is before the recurring event begins.
-		if ($testDate->getTimestamp() < $startDate->getTimestamp() 
+		if ($testDate->getTimestamp() < $startDate->getTimestamp()
 			|| in_array($testDate->toDateString(), $this->exceptions)
 		) {
 			return $result;
@@ -124,15 +125,15 @@ class RecursionReader
 			// Weekly
 			case CalendarEvent::RECUR_INTERVAL_WEEKLY:
 				$testFirstDay = clone $testDate;
-				$testFirstDay->modify(($testFirstDay->format('l') == 'Sunday') 
-					? 'Monday last week' 
+				$testFirstDay->modify(($testFirstDay->format('l') == 'Sunday')
+					? 'Monday last week'
 					: 'Monday this week'
 				);
 				if ((($testFirstDay->getTimestamp() - $startDate->startOfWeek()->getTimestamp()) / self::WEEK_SECONDS) % $this->event->WeeklyInterval == 0
 					&& in_array($testDate->format('w'), $this->allowedDaysOfWeek)
 				) {
 					$result = true;
-				};							
+				};
 				break;
 
 			// Monthly
@@ -142,7 +143,7 @@ class RecursionReader
 					if ($this->event->MonthlyRecursionType1 == 1) {
 
 						// A given set of dates in the month e.g. 2 and 15.
-						if (in_array($testDate->reset()->format('j'), $this->allowedDaysOfMonth)) {
+						if (in_array($originalTestDate->format('j'), $this->allowedDaysOfMonth)) {
 							$result = true;
 						}
 
@@ -151,15 +152,15 @@ class RecursionReader
 						// e.g. "First Monday of the month"
 						if ($this->event->MonthlyIndex == 5) {
 							// Last day of the month?
-							$targetDate = $testDate->addMonth()->startOfMonth()->previous($this->event->MonthlyDayOfWeek)->dump();
+							$targetDate = $testDate->addMonth()->startOfMonth()->previous($this->event->MonthlyDayOfWeek)->format('Y-m-d H:i:s');
 						} else {
 							$testDate->modify("last day of previous month");
 							for ($i = 0; $i < $this->event->MonthlyIndex; $i++) {
-								$testDate->next($this->event->MonthlyDayOfWeek)->dump();
+								$testDate->next($this->event->MonthlyDayOfWeek)->format('Y-m-d H:i:s');
 							}
-							$targetDate = $testDate->dump();
+							$targetDate = $testDate->format('Y-m-d H:i:s');
 						}
-						return $testDate->reset()->dump() == $targetDate;
+						return $originalTestDate->format('Y-m-d H:i:s') == $targetDate;
 					}
 				}
 				break;
