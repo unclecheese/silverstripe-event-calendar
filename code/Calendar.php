@@ -382,6 +382,9 @@ class Calendar extends Page {
 					|| $startdatetime > $end && $enddatetime > $end) {
 					// do nothing; dates outside range
 				} else {
+					$startdatetime = $this->iCalDateToDateTime($event['DTSTART']);
+					$enddatetime = $this->iCalDateToDateTime($event['DTEND']);
+                    
 					$feedevent->StartDate = $startdatetime->format('Y-m-d');
 					$feedevent->StartTime = $startdatetime->format('H:i:s');
 
