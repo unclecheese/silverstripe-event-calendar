@@ -113,7 +113,7 @@ $('.calendar-widget').each(function() {
 	if($(this).data('start')) {		
 		var parts = $(this).data('start').split('-');				
 		opts.month = Number(parts[1])-1;
-		opts.year = parts[0];
+		opts.year = Number(parts[0]);
 
 		
 	}
