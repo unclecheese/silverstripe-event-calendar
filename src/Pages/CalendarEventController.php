@@ -60,7 +60,7 @@ class CalendarEventController extends PageController
 	{
 		if (!isset($_REQUEST['date'])) {
 			$dateObj =  $this->DateAndTime()->first();
-			if (!$date_obj) {
+			if (!$dateObj) {
 				return false;
 			}
 			$date = $dateObj->StartDate;
