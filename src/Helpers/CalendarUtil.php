@@ -50,26 +50,26 @@ class CalendarUtil
 	public static function format_character_replacements($start, $end)
 	{
 		return [
-			strftime('%a', $start),
-			strftime('%A', $start),
+			date('D', $start),
+			date('l'. $start),
 			date ('j', $start),
 			date ('d', $start),
 			date ('S', $start),
 			date ('n', $start),
 			date ('m', $start),
-			strftime('%b', $start), 
-			strftime('%B', $start), 
+			date('M', $start), 
+			date('F', $start), 
 			date ('y', $start), 
 			date ('Y', $start),
-			strftime('%a', $end),
-			strftime('%A', $end),
+			date('D', $end),
+			date('l'. $end),
 			date ('j', $end),
 			date ('d', $end),
 			date ('S', $end),
 			date ('n', $end),
 			date ('m', $end),
-			strftime('%b', $end), 
-			strftime('%B', $end), 
+			date('M', $end), 
+			date('F', $end), 
 			date ('y', $end), 
 			date ('Y', $end),
 		];	
@@ -178,21 +178,21 @@ class CalendarUtil
 	/**
 	 * @return array
 	 */
-	public static function get_months_map($key = '%b') 
+	public static function get_months_map($key = 'M') 
 	{
     	return [
-	  		'01' => strftime($key, strtotime('2000-01-01')),
-	  		'02' => strftime($key, strtotime('2000-02-01')),
-	  		'03' => strftime($key, strtotime('2000-03-01')),
-	  		'04' => strftime($key, strtotime('2000-04-01')),
-	  		'05' => strftime($key, strtotime('2000-05-01')),
-	  		'06' => strftime($key, strtotime('2000-06-01')),
-	  		'07' => strftime($key, strtotime('2000-07-01')),
-	  		'08' => strftime($key, strtotime('2000-08-01')),
-	  		'09' => strftime($key, strtotime('2000-09-01')),
-	  		'10' => strftime($key, strtotime('2000-10-01')),
-	  		'11' => strftime($key, strtotime('2000-11-01')),
-	  		'12' => strftime($key, strtotime('2000-12-01'))
+	  		'01' => date($key, strtotime('2000-01-01')),
+	  		'02' => date($key, strtotime('2000-02-01')),
+	  		'03' => date($key, strtotime('2000-03-01')),
+	  		'04' => date($key, strtotime('2000-04-01')),
+	  		'05' => date($key, strtotime('2000-05-01')),
+	  		'06' => date($key, strtotime('2000-06-01')),
+	  		'07' => date($key, strtotime('2000-07-01')),
+	  		'08' => date($key, strtotime('2000-08-01')),
+	  		'09' => date($key, strtotime('2000-09-01')),
+	  		'10' => date($key, strtotime('2000-10-01')),
+	  		'11' => date($key, strtotime('2000-11-01')),
+	  		'12' => date($key, strtotime('2000-12-01'))
 		];	
 	}
 
