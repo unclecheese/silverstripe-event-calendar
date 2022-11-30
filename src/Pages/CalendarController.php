@@ -657,7 +657,7 @@ class CalendarController extends PageController
 			$this,
 			__FUNCTION__,
 			FieldList::create(
-				$m = DropdownField::create('Month','', CalendarUtil::get_months_map('%B')),
+				$m = DropdownField::create('Month','', CalendarUtil::get_months_map('F')),
 				$y = DropdownField::create('Year','', array_combine($yearRange, $yearRange))
 			),
 			FieldList::create(
