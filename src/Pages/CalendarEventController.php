@@ -96,7 +96,7 @@ class CalendarEventController extends PageController
 			return $allDates->first();
 		}
 		if (strtotime($_REQUEST['date']) > 0) {
-			$date = date('Y-m-d', strtotime($_REQUEST['date']));
+			$date = date('Y-m-d', strtotime($_REQUEST['date'] ?? ''));
 			if ($this->Recursion) {
 				$datetime = $allDates->first();
 				if ($datetime) {

@@ -122,8 +122,8 @@ class CalendarUtil
 		$strStartDate = null;
 		$strEndDate = null;
 		
-		$start = strtotime($startDate);
-		$end = strtotime($endDate);
+		$start = strtotime($startDate ?? '');
+		$end = strtotime($endDate ?? '');
 		
 		$startYear = date("Y", $start);
 		$startMonth = date("m", $start);
@@ -240,12 +240,12 @@ class CalendarUtil
 		if ($a->StartDate == $b->StartDate) {
 			if ($a->StartTime == $b->StartTime) {
 				return 0;
-			} elseif (strtotime($a->StartTime) > strtotime($b->StartTime)) {
+			} elseif (strtotime($a->StartTime ?? '') > strtotime($b->StartTime ?? '')) {
 				return 1;
 			}
 			return -1;
 		}
-		elseif (strtotime($a->StartDate) > strtotime($b->StartDate)) {
+		elseif (strtotime($a->StartDate ?? '') > strtotime($b->StartDate ?? '')) {
 			return 1;
 		}
 		return -1;

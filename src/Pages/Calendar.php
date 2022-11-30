@@ -462,7 +462,7 @@ class Calendar extends Page
 		$counter = Carbon::parse($datetimeObj->StartDate);
 
 		if ($event = $datetimeObj->Event()->DateTimes()->First()) {
-			$endDate = strtotime($event->EndDate);
+			$endDate = strtotime($event->EndDate ?? '');
 		} else {
 			$endDate = false;
 		}
@@ -527,7 +527,7 @@ class Calendar extends Page
 					}
 					// check the end date
 					if ($recurringEventDatetime->EndDate) {
-						$endStamp = strtotime($recurringEventDatetime->EndDate);
+						$endStamp = strtotime($recurringEventDatetime->EndDate ?? '');
 						if ($endStamp > 0 && $endStamp < $dateCounter->getTimestamp()) {
 							break;
 						}
