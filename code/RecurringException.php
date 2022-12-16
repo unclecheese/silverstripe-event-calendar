@@ -33,7 +33,7 @@ class RecurringException extends DataObject {
 
     public function getFormattedExceptionDate() {
        if(!$this->ExceptionDate) return "--";
-       return CalendarUtil::get_date_format() == "mdy" ? $this->obj('ExceptionDate')->Format('m-d-Y') : $this->obj('ExceptionDate')->Format('d-m-Y');
+       return CalendarUtil::get_date_format() == "mdy" ? $this->obj('ExceptionDate')->Format('MM-dd-Y') : $this->obj('ExceptionDate')->Format('dd-MM-Y');
     }
 
 
